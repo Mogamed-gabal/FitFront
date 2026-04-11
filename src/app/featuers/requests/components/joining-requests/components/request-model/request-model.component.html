@@ -1,0 +1,74 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Doctor Details</h2>
+      <button class="close-btn" (click)="onClose()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="doctor">
+      <div class="doctor-info">
+        <div class="info-section">
+          <h3>Personal Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Name:</label>
+              <span>{{ doctor.name }}</span>
+            </div>
+            <div class="info-item">
+              <label>Email:</label>
+              <span>{{ doctor.email }}</span>
+            </div>
+            <div class="info-item">
+              <label>Phone:</label>
+              <span>{{ doctor.phone }}</span>
+            </div>
+            <div class="info-item">
+              <label>Status:</label>
+              <span class="status-badge" [class]="getStatusClass()">{{ doctor.status }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>Professional Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Specialization:</label>
+              <span>{{ doctor.specialization }}</span>
+            </div>
+            <div class="info-item">
+              <label>Experience:</label>
+              <span>{{ doctor.experience }} years</span>
+            </div>
+            <div class="info-item">
+              <label>Joined:</label>
+              <span>{{ formatDate(doctor.createdAt) }}</span>
+            </div>
+            <div class="info-item">
+              <label>Updated:</label>
+              <span>{{ formatDate(doctor.updatedAt) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section" *ngIf="doctor.shortBio">
+          <h3>Bio</h3>
+          <p class="bio-text">{{ doctor.shortBio }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="reject-btn" (click)="onReject()">
+        <i class="fa-solid fa-times"></i>
+        Reject
+      </button>
+      <button class="approve-btn" (click)="onApprove()">
+        <i class="fa-solid fa-check"></i>
+        Approve
+      </button>
+    </div>
+  </div>
+</div>

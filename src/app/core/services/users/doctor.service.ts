@@ -67,6 +67,30 @@ export interface GetDoctorByIdResponse {
   data: Doctor;
 }
 
+export interface ApproveDoctorResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: Doctor & {
+      approvedAt: string;
+      approvedBy: string;
+      emailVerified: string,
+    };
+  };
+}
+
+export interface RejectDoctorResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: Doctor & {
+      rejectedAt: string;
+      rejectedBy: string;
+      rejectionReason?: string;
+    };
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -110,5 +134,14 @@ export class DoctorService {
 
   deleteDoctor(id: string): Observable<{ success: boolean; message: string; data: Doctor }> {
     return this.http.delete<{ success: boolean; message: string; data: Doctor }>(`${this.baseUrl}/api/admin/users/${id}`);
+  }
+
+  approveDoctor(userId: string): Observable<ApproveDoctorResponse> {
+    return this.http.post<ApproveDoctorResponse>(`${this.baseUrl}/api/auth/admin/approve/${userId}`, {});
+  }
+
+  rejectDoctor(userId: string, rejectionReason?: string): Observable<RejectDoctorResponse> {
+    const body = rejectionReason ? { rejectionReason } : {};
+    return this.http.post<RejectDoctorResponse>(`${this.baseUrl}/api/auth/admin/reject/${userId}`, body);
   }
 }

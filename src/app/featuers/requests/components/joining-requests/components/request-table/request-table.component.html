@@ -1,0 +1,130 @@
+<div class="request-table-container">
+  <div class="table-card">
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Specialization</th>
+            <th>Experience</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (doctor of doctors; track trackByDoctorId($index, doctor)) {
+            <tr>
+              <td>{{ doctor.name }}</td>
+              <td>{{ doctor.email }}</td>
+              <td>{{ doctor.phone }}</td>
+              <td>{{ doctor.specialization }}</td>
+              <td>{{ doctor.experience }} years</td>
+              <td>
+                <span class="status-badge" [class]="getStatusClass(doctor.status)">
+                  {{ doctor.status }}
+                </span>
+              </td>
+              <td>{{ formatDate(doctor.createdAt) }}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="view-btn" (click)="onViewDoctor(doctor)">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>View</span>
+                  </button>
+                  
+                  @if (doctor.status === 'pending') {
+                    <button class="approve-btn" (click)="onApproveDoctor(doctor)">
+                      <i class="fa-solid fa-check"></i>
+                      <span>Approve</span>
+                    </button>
+                    
+                    <button class="reject-btn" (click)="onRejectDoctor(doctor)">
+                      <i class="fa-solid fa-times"></i>
+                      <span>Reject</span>
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="empty-state">
+                <div class="empty-content">
+                  <i class="fa-solid fa-user-md"></i>
+                  <p>No doctor requests found.</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Cards -->
+  <div class="mobile-cards">
+    @for (doctor of doctors; track trackByDoctorId($index, doctor)) {
+      <div class="doctor-card">
+        <div class="card-header">
+          <div class="user-info">
+            <div class="user-name">{{ doctor.name }}</div>
+            <div class="user-email">{{ doctor.email }}</div>
+          </div>
+          <span class="status-badge" [class]="getStatusClass(doctor.status)">
+            {{ doctor.status }}
+          </span>
+        </div>
+        
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Phone:</span>
+            <span class="value">{{ doctor.phone }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Specialization:</span>
+            <span class="value">{{ doctor.specialization }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Experience:</span>
+            <span class="value">{{ doctor.experience }} years</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Joined:</span>
+            <span class="value">{{ formatDate(doctor.createdAt) }}</span>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="action-buttons">
+            <button class="view-btn" (click)="onViewDoctor(doctor)">
+              <i class="fa-solid fa-eye"></i>
+              <span>View</span>
+            </button>
+            
+            @if (doctor.status === 'pending') {
+              <button class="approve-btn" (click)="onApproveDoctor(doctor)">
+                <i class="fa-solid fa-check"></i>
+                <span>Approve</span>
+              </button>
+              
+              <button class="reject-btn" (click)="onRejectDoctor(doctor)">
+                <i class="fa-solid fa-times"></i>
+                <span>Reject</span>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <div class="empty-content">
+          <i class="fa-solid fa-user-md"></i>
+          <p>No doctor requests found.</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

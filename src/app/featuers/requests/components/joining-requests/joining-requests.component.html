@@ -1,1 +1,34 @@
-<p>joining-requests works!</p>
+<div class="joining-requests-container">
+  <div class="header">
+    <h1>Joining Requests</h1>
+    <p>Review and approve doctor registration requests</p>
+  </div>
+
+  <div class="actions-bar">
+    <app-request-filter (filterChange)="onFilterChange($event)"></app-request-filter>
+    <button class="refresh-btn" (click)="onRefresh()">
+      <i class="fa-solid fa-sync-alt"></i>
+      Refresh
+    </button>
+  </div>
+
+  <div class="content">
+    <ng-container *ngIf="doctors$ | async as doctorsResponse">
+      <app-request-table
+        [doctors]="doctorsResponse?.data?.doctors || []"
+        [isLoading]="isLoading"
+        (view)="onViewDoctor($event)"
+        (approve)="onApproveDoctor($event)"
+        (reject)="onRejectDoctor($event)"
+      ></app-request-table>
+    </ng-container>
+  </div>
+
+  <app-request-model
+    [doctor]="selectedDoctor"
+    [isVisible]="showModal"
+    (close)="closeModal()"
+    (approve)="onApproveDoctor($event)"
+    (reject)="onRejectDoctor($event)"
+  ></app-request-model>
+</div>

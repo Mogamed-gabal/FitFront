@@ -1,0 +1,30 @@
+<div class="request-filter">
+  <div class="filter-group">
+    <div class="search-box">
+      <i class="fa-solid fa-search"></i>
+      <input
+        type="text"
+        placeholder="Search by name or email..."
+        [(ngModel)]="filters.search"
+        (input)="onSearchChange()"
+      />
+    </div>
+
+    <div class="select-box">
+      <select
+        [(ngModel)]="filters.specialization"
+        (change)="onSpecializationChange()"
+      >
+        <option value="">All Specializations</option>
+        @for (specialization of specializations; track specialization) {
+          <option [value]="specialization">{{ specialization }}</option>
+        }
+      </select>
+    </div>
+
+    <button class="clear-btn" (click)="onClearFilters()">
+      <i class="fa-solid fa-times"></i>
+      Clear
+    </button>
+  </div>
+</div>

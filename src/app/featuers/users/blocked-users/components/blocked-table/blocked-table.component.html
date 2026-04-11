@@ -1,4 +1,5 @@
 <div class="table-container">
+  <!-- Desktop Table -->
   <table class="blocked-users-table">
     <thead>
       <tr>
@@ -48,6 +49,53 @@
       }
     </tbody>
   </table>
+
+  <!-- Mobile Cards -->
+  <div class="mobile-cards">
+    @for (user of users; track user._id) {
+      <div class="user-card">
+        <div class="card-header">
+          <div class="user-info">
+            <div class="user-name">{{ user.name }}</div>
+            <div class="user-email">{{ user.email }}</div>
+          </div>
+          <span class="role-badge" [class]="user.role">{{ user.role }}</span>
+        </div>
+        
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Blocked At:</span>
+            <span class="value">{{ formatDate(user.blockedAt) }}</span>
+          </div>
+          <div class="info-row blocked-info">
+            <span class="label">Status:</span>
+            <span class="value">Blocked</span>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="action-buttons">
+            <button class="btn-view" (click)="onViewUser(user._id)">
+              <i class="fa-solid fa-eye"></i>
+              View
+            </button>
+            <button class="btn-unblock" (click)="onUnblockUser(user._id)">
+              <i class="fa-solid fa-lock-open"></i>
+              Unblock
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <div class="empty-content">
+          <i class="fa-solid fa-shield-halved"></i>
+          <h3>No Blocked Users Found</h3>
+          <p>There are currently no blocked users matching your criteria.</p>
+        </div>
+      </div>
+    }
+  </div>
   
   @if (loading) {
     <div class="loader-container">

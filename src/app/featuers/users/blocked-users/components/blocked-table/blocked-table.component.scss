@@ -184,15 +184,120 @@
 
 @media (max-width: 768px) {
   .table-container {
-    overflow-x: auto;
+    overflow-x: hidden;
   }
 
   .blocked-users-table {
-    min-width: 600px;
+    display: none;
   }
 
-  .action-buttons {
-    flex-direction: column;
-    gap: 0.25rem;
+  .mobile-cards {
+    display: block;
+  }
+
+  .user-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+
+      .user-info {
+        flex: 1;
+
+        .user-name {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #0f172a;
+          margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+          font-size: 0.875rem;
+          color: #64748b;
+          word-break: break-all;
+        }
+      }
+
+      .role-badge {
+        flex-shrink: 0;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.6rem;
+      }
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.875rem;
+
+        .label {
+          font-weight: 600;
+          color: #374151;
+        }
+
+        .value {
+          color: #64748b;
+        }
+      }
+
+      .blocked-info {
+        .value {
+          color: #dc2626;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .card-footer {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        width: 100%;
+
+        .btn-view, .btn-unblock {
+          flex: 1;
+          justify-content: center;
+          padding: 0.625rem 1rem;
+          font-size: 0.875rem;
+          min-height: 40px;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    .empty-content {
+      padding: 3rem 1rem;
+    }
+  }
+
+  .loader-container {
+    padding: 2rem 1rem;
   }
 }

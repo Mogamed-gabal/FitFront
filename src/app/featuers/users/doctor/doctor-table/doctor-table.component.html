@@ -1,4 +1,5 @@
 <div class="table-card">
+  <!-- Desktop Table -->
   <div class="table-responsive">
     <table class="doctor-table">
       <thead>
@@ -52,5 +53,61 @@
         }
       </tbody>
     </table>
+  </div>
+
+  <!-- Mobile Cards -->
+  <div class="mobile-cards">
+    @for (doctor of doctors; track doctor.id) {
+      <div class="doctor-card">
+        <div class="card-header">
+          <div class="user-info">
+            <div class="user-name">{{ doctor.name }}</div>
+            <div class="user-email">{{ doctor.email }}</div>
+          </div>
+          <span class="status-badge" [class]="doctor.status.toLowerCase()">{{ doctor.status }}</span>
+        </div>
+        
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Phone:</span>
+            <span class="value">{{ doctor.phone }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Specialization:</span>
+            <span class="value">{{ doctor.specialization }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Status:</span>
+            <span class="value">{{ doctor.status }}</span>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="action-buttons">
+            <button class="btn-view" (click)="onView(doctor)">
+              <i class="fa-solid fa-eye"></i>
+              View
+            </button>
+            @if (doctor.isBlocked) {
+              <button class="btn-unblock" (click)="onUnblock(doctor)">
+                <i class="fa-solid fa-unlock"></i>
+                Unblock
+              </button>
+            } @else {
+              <button class="btn-block" (click)="onBlock(doctor)">
+                <i class="fa-solid fa-ban"></i>
+                Block
+              </button>
+            }
+            <button class="btn-delete" (click)="onDelete(doctor)">
+              <i class="fa-solid fa-trash"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">No doctors found.</div>
+    }
   </div>
 </div>

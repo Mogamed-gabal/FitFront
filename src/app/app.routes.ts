@@ -44,6 +44,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./featuers/users/blocked-users/blocked-users.component').then((m) => m.BlockedUsersComponent),
       },
+      {
+        path: 'requests',
+        loadComponent: () =>
+          import('./featuers/requests/requests.component').then((m) => m.RequestsComponent),
+      },
+      {
+        path: 'requests/joining',
+        loadComponent: () =>
+          import('./featuers/requests/components/joining-requests/joining-requests.component').then((m) => m.JoiningRequestsComponent),
+      },
+      {
+        path: 'requests/withdrawl',
+        loadComponent: () =>
+          import('./featuers/requests/components/withdrawl-requests/withdrawl-requests.component').then((m) => m.WithdrawlRequestsComponent),
+      },
     ],
   },
   {

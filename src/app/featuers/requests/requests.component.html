@@ -1,0 +1,105 @@
+<div class="requests-container">
+  <div class="requests-header">
+    <h1>Requests Management</h1>
+    <p>Manage and review all user requests</p>
+  </div>
+
+  <div class="requests-grid">
+    <!-- Joining Requests Card -->
+    <div class="request-card joining-card" (click)="navigateToJoiningRequests()">
+      <div class="card-icon">
+        <i class="fa-solid fa-user-plus"></i>
+      </div>
+      <div class="card-content">
+        <h3>Joining Requests</h3>
+        <p>Review and approve new user registration requests</p>
+        <div class="card-stats">
+          <div class="stat-item">
+            <span class="stat-number">12</span>
+            <span class="stat-label">Pending</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">45</span>
+            <span class="stat-label">This Week</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-arrow">
+        <i class="fa-solid fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <!-- Withdrawl Requests Card -->
+    <div class="request-card withdrawl-card" (click)="navigateToWithdrawlRequests()">
+      <div class="card-icon">
+        <i class="fa-solid fa-money-bill-transfer"></i>
+      </div>
+      <div class="card-content">
+        <h3>Withdrawal Requests</h3>
+        <p>Process and manage user withdrawal requests</p>
+        <div class="card-stats">
+          <div class="stat-item">
+            <span class="stat-number">8</span>
+            <span class="stat-label">Pending</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">$2,450</span>
+            <span class="stat-label">Total Amount</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-arrow">
+        <i class="fa-solid fa-arrow-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions Section -->
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+      <button class="action-btn primary" (click)="navigateToJoiningRequests()">
+        <i class="fa-solid fa-user-check"></i>
+        <span>Review Joining Requests</span>
+      </button>
+      <button class="action-btn secondary" (click)="navigateToWithdrawlRequests()">
+        <i class="fa-solid fa-hand-holding-dollar"></i>
+        <span>Process Withdrawals</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="recent-activity">
+    <h2>Recent Activity</h2>
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-icon joining">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <div class="activity-content">
+          <p><strong>John Doe</strong> submitted a joining request</p>
+          <span class="activity-time">2 hours ago</span>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon withdrawl">
+          <i class="fa-solid fa-money-bill-transfer"></i>
+        </div>
+        <div class="activity-content">
+          <p><strong>Jane Smith</strong> requested $250 withdrawal</p>
+          <span class="activity-time">4 hours ago</span>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon joining">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+        <div class="activity-content">
+          <p><strong>Mike Johnson</strong> joining request approved</p>
+          <span class="activity-time">6 hours ago</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

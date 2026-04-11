@@ -1,0 +1,151 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-card doctor-modal-card" (click)="$event.stopPropagation()">
+    <button type="button" class="close-btn" (click)="closeModal()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <h3>Doctor Profile</h3>
+
+    @if (loading) {
+      <div class="modal-loader">
+        <div class="spinner"></div>
+        <p>Loading doctor details...</p>
+      </div>
+    } @else {
+      <div class="doctor-profile">
+        <!-- Profile Section -->
+        <div class="profile-section">
+          <div class="profile-picture">
+            @if (doctor.profilePicture && doctor.profilePicture.secure_url) {
+              <img [src]="doctor.profilePicture.secure_url" [alt]="doctor.name" class="profile-img" />
+            } @else {
+              <div class="profile-placeholder">
+                <i class="fa-solid fa-user-doctor"></i>
+              </div>
+            }
+          </div>
+          <div class="profile-info">
+            <h4>{{ doctor.name }}</h4>
+            <p class="specialization">{{ doctor.specialization }}</p>
+            <p class="status">{{ doctor.status }}</p>
+          </div>
+        </div>
+
+        <!-- Bio Section -->
+        @if (doctor.shortBio) {
+          <div class="bio-section">
+            <h5>About</h5>
+            <p>{{ doctor.shortBio }}</p>
+          </div>
+        }
+
+        <!-- Contact Info -->
+        <div class="contact-section">
+          <div class="contact-item">
+            <span class="label">Email</span>
+            <p>{{ doctor.email }}</p>
+          </div>
+          <div class="contact-item">
+            <span class="label">Phone</span>
+            <p>{{ doctor.phone }}</p>
+          </div>
+          <div class="contact-item">
+            <span class="label">Experience</span>
+            <p>{{ doctor.experience }} years</p>
+          </div>
+        </div>
+
+        <!-- ID Cards Section -->
+        @if (doctor.id_card_front || doctor.id_card_back) {
+          <div class="id-cards-section">
+            <h5>ID Cards</h5>
+            <div class="id-cards-grid">
+              @if (doctor.id_card_front) {
+                <div class="id-card">
+                  <h6>Front Side</h6>
+                  <div class="id-card-image">
+                    <img [src]="doctor.id_card_front.secure_url" alt="ID Card Front" />
+                  </div>
+                  <p>{{ doctor.id_card_front.originalName }}</p>
+                </div>
+              }
+              @if (doctor.id_card_back) {
+                <div class="id-card">
+                  <h6>Back Side</h6>
+                  <div class="id-card-image">
+                    <img [src]="doctor.id_card_back.secure_url" alt="ID Card Back" />
+                  </div>
+                  <p>{{ doctor.id_card_back.originalName }}</p>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Certificates Section -->
+        @if (doctor.certificates && doctor.certificates.length > 0) {
+          <div class="certificates-section">
+            <h5>Certificates</h5>
+            <div class="certificates-grid">
+              @for (cert of doctor.certificates; track cert._id) {
+                <div class="certificate-card">
+                  <div class="cert-image">
+                    @if (cert.secure_url) {
+                      <img [src]="cert.secure_url" [alt]="cert.originalName" />
+                    }
+                  </div>
+                  <div class="cert-info">
+                    <h6>{{ cert.originalName || cert.filename }}</h6>
+                    <p>{{ formatFileSize(cert.size) }}</p>
+                    @if (cert.secure_url) {
+                      <a [href]="cert.secure_url" target="_blank" class="cert-link">
+                        <i class="fa-solid fa-external-link-alt"></i>
+                        View Full Size
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Packages Section -->
+        @if (doctor.packages && doctor.packages.length > 0) {
+          <div class="packages-section">
+            <h5>Packages & Services</h5>
+            <div class="packages-grid">
+              @for (pkg of doctor.packages; track pkg.id) {
+                <div class="package-card">
+                  <div class="package-header">
+                    <h6>{{ pkg.name }}</h6>
+                    <div class="package-price">${{ pkg.price }}</div>
+                  </div>
+                  <div class="package-details">
+                    <p>{{ pkg.description }}</p>
+                    <div class="package-meta">
+                      <span class="duration">{{ pkg.duration }}</span>
+                      <span class="status" [class]="pkg.isActive ? 'active' : 'inactive'">
+                        {{ pkg.isActive ? 'Active' : 'Inactive' }}
+                      </span>
+                    </div>
+                    @if (pkg.features && pkg.features.length > 0) {
+                      <div class="package-features">
+                        <h6>Features:</h6>
+                        <ul>
+                          @for (feature of pkg.features; track $index) {
+                            <li>{{ feature }}</li>
+                          }
+                        </ul>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

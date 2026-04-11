@@ -1,0 +1,28 @@
+<header class="navbar">
+  <div class="navbar-left">
+    <button class="icon-btn mobile-only" type="button" (click)="onToggleMobileSidebar()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <button class="icon-btn desktop-only" type="button" (click)="onToggleSidebar()">
+      <i class="fa-solid" [class.fa-angles-left]="!sidebarCollapsed" [class.fa-angles-right]="sidebarCollapsed"></i>
+    </button>
+    <h1>{{ pageTitle() }}</h1>
+  </div>
+
+  <div class="navbar-right">
+    <div class="user-info">
+      <strong>{{ userName() }}</strong>
+      <span>{{ userRole() }}</span>
+    </div>
+    <button class="icon-btn" type="button" (click)="onToggleTheme()">
+      <i [class]="themeIcon()"></i>
+    </button>
+    <button class="icon-btn" type="button">
+      <i class="fa-solid fa-gear"></i>
+    </button>
+    <button class="logout-btn" type="button" (click)="onLogout()">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</header>

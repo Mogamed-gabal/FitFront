@@ -1,0 +1,22 @@
+<div class="blocked-filter">
+  <div class="search-wrap">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+      type="text"
+      [ngModel]="searchTerm"
+      (ngModelChange)="onSearch($event)"
+      placeholder="Search by name or email..."
+    />
+  </div>
+  
+  <div class="role-filter">
+    <select
+      [ngModel]="selectedRole"
+      (ngModelChange)="onRoleChange($event)"
+    >
+      <option value="all">All Roles</option>
+      <option value="client">Clients</option>
+      <option value="doctor">Doctors</option>
+    </select>
+  </div>
+</div>

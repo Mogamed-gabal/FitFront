@@ -1,0 +1,151 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-card client-modal-card" (click)="$event.stopPropagation()">
+    <button type="button" class="close-btn" (click)="closeModal()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <h3>Client Profile</h3>
+
+    @if (loading) {
+      <div class="modal-loader">
+        <div class="spinner"></div>
+        <p>Loading client details...</p>
+      </div>
+    } @else {
+      <div class="client-profile">
+        <!-- Profile Section -->
+        <div class="profile-section">
+          <div class="profile-picture">
+            <div class="profile-placeholder">
+              <i class="fa-solid fa-user"></i>
+            </div>
+          </div>
+          <div class="profile-info">
+            <h4>{{ client.name }}</h4>
+            <p class="role">{{ client.role }}</p>
+            <p class="status">{{ client.status }}</p>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="contact-section">
+          <h5>Contact Information</h5>
+          <div class="contact-grid">
+            <div class="contact-item">
+              <span class="label">Email</span>
+              <p>{{ client.email }}</p>
+              @if (client.emailVerified) {
+                <span class="verified-badge">
+                  <i class="fa-solid fa-check-circle"></i>
+                  Verified
+                </span>
+              }
+            </div>
+            <div class="contact-item">
+              <span class="label">Phone</span>
+              <p>{{ client.phone || 'N/A' }}</p>
+            </div>
+            <div class="contact-item">
+              <span class="label">Address</span>
+              <p>{{ client.address || 'N/A' }}</p>
+            </div>
+            <div class="contact-item">
+              <span class="label">Region</span>
+              <p>{{ client.region || 'N/A' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Details -->
+        <div class="personal-section">
+          <h5>Personal Information</h5>
+          <div class="personal-details">
+            <div class="personal-item">
+              <span class="label">Gender</span>
+              <p class="capitalize">{{ client.gender || 'N/A' }}</p>
+            </div>
+            <div class="personal-item">
+              <span class="label">Date of Birth</span>
+              <p>{{ formatDate(client.dateOfBirth) }}</p>
+            </div>
+            <div class="personal-item">
+              <span class="label">Height</span>
+              <p>{{ client.height ? client.height + ' cm' : 'N/A' }}</p>
+            </div>
+            <div class="personal-item">
+              <span class="label">Fitness Goal</span>
+              <p class="capitalize">{{ formatGoal(client.goal) }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Activity -->
+        <div class="activity-section">
+          <h5>Account Activity</h5>
+          <div class="activity-details">
+            <div class="activity-item">
+              <span class="label">Member Since</span>
+              <p>{{ formatDate(client.createdAt) }}</p>
+            </div>
+            <div class="activity-item">
+              <span class="label">Last Login</span>
+              <p>{{ formatDate(client.lastLogin) }}</p>
+            </div>
+            <div class="activity-item">
+              <span class="label">Last Updated</span>
+              <p>{{ formatDate(client.updatedAt) }}</p>
+            </div>
+            <div class="activity-item">
+              <span class="label">Login Attempts</span>
+              <p>{{ client.loginAttempts || 0 }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Status -->
+        <div class="account-section">
+          <h5>Account Status</h5>
+          <div class="account-details">
+            <div class="account-item">
+              <span class="label">Account Status</span>
+              <p class="status-badge" [class]="client.status">
+                {{ formatStatus(client.status) }}
+              </p>
+            </div>
+            <div class="account-item">
+              <span class="label">Blocked Status</span>
+              <p class="blocked-badge" [class]="client.isBlocked ? 'blocked' : 'active'">
+                {{ client.isBlocked ? 'Blocked' : 'Active' }}
+              </p>
+            </div>
+            <div class="account-item">
+              <span class="label">Deleted Status</span>
+              <p class="deleted-badge" [class]="client.isDeleted ? 'deleted' : 'active'">
+                {{ client.isDeleted ? 'Deleted' : 'Active' }}
+              </p>
+            </div>
+            <div class="account-item">
+              <span class="label">User ID</span>
+              <p class="user-id">{{ client._id }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Info -->
+        <div class="security-section">
+          <h5>Security Information</h5>
+          <div class="security-details">
+            <div class="security-item">
+              <span class="label">Password Reset Attempts</span>
+              <p>{{ client.passwordResetOtpAttempts || 0 }}</p>
+            </div>
+            <div class="security-item">
+              <span class="label">Weight History</span>
+              <p>{{ client.weightHistory.length || 0 }} records</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

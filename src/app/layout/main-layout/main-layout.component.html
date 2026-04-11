@@ -1,0 +1,25 @@
+<div class="admin-layout" [class.sidebar-collapsed]="sidebarCollapsed()">
+  <app-sidebar
+    [collapsed]="sidebarCollapsed()"
+    [mobileOpen]="mobileSidebarOpen()"
+    (closeMobile)="onCloseMobileSidebar()"
+  />
+
+  <div
+    class="mobile-overlay"
+    [class.open]="mobileSidebarOpen()"
+    (click)="onCloseMobileSidebar()"
+  ></div>
+
+  <div class="layout-main">
+    <app-navbar
+      [sidebarCollapsed]="sidebarCollapsed()"
+      (toggleSidebar)="onToggleSidebar()"
+      (toggleMobileSidebar)="onToggleMobileSidebar()"
+    />
+
+    <main class="page-content" (click)="onCloseMobileSidebar()">
+      <router-outlet />
+    </main>
+  </div>
+</div>

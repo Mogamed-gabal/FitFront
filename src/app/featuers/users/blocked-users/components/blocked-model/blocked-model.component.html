@@ -1,0 +1,46 @@
+@if (user) {
+  <div class="modal-overlay" (click)="onCloseModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>User Details</h3>
+        <button class="close-btn" (click)="onCloseModal()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="user-details-grid">
+          <div class="detail-group">
+            <label>Name</label>
+            <p>{{ user.name }}</p>
+          </div>
+          
+          <div class="detail-group">
+            <label>Email</label>
+            <p>{{ user.email }}</p>
+          </div>
+          
+          <div class="detail-group">
+            <label>Role</label>
+            <span class="role-badge" [class]="user.role">{{ user.role }}</span>
+          </div>
+          
+          <div class="detail-group">
+            <label>Block Reason</label>
+            <p class="reason">{{ user.blockReason }}</p>
+          </div>
+          
+          <div class="detail-group">
+            <label>Blocked At</label>
+            <p>{{ formatDate(user.blockedAt) }}</p>
+          </div>
+          
+          <div class="detail-group">
+            <label>Blocked By</label>
+            <p>{{ user.blockedBy }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

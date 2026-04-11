@@ -1,0 +1,57 @@
+<section class="clients-page">
+  <div class="page-header">
+    <h2>Clients</h2>
+    <div class="search-wrap">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input
+        type="text"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearch($event)"
+        placeholder="Search by name, email, role or status..."
+      />
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <p>Loading clients...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-container">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else {
+    <app-client-table
+      [clients]="paginatedClients()"
+      (viewClient)="openClientDetails($event)"
+      (blockClient)="onBlockClient($event)"
+      (unblockClient)="onUnblockClient($event)"
+      (deleteClient)="onDeleteClient($event)"
+    />
+  }
+
+  <div class="pagination-bar">
+    <p>
+      Page <strong>{{ currentPage() }}</strong> of <strong>{{ totalPages() }}</strong>
+    </p>
+    <div class="pagination-actions">
+      <button type="button" (click)="prevPage()" [disabled]="currentPage() === 1">Previous</button>
+      <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()">Next</button>
+    </div>
+  </div>
+
+  @if (detailLoading() || selectedClient(); as loading) {
+    <div class="view-loading-overlay">
+      <div class="view-loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading details...</p>
+      </div>
+    </div>
+  }
+
+  @if (selectedClient(); as client) {
+    <app-client-details-modal [client]="client" [loading]="detailLoading()" (close)="closeModal()" />
+  }
+</section>

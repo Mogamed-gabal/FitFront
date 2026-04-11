@@ -1,0 +1,29 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="collapsed"
+  [class.mobile-open]="mobileOpen"
+>
+  <div class="brand">
+    <div class="brand-icon">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+    <div class="brand-text" *ngIf="!collapsed">
+      <h2>Admin Panel</h2>
+      <span>Control Center</span>
+    </div>
+  </div>
+
+  <nav class="menu">
+    <a
+      *ngFor="let item of menuItems"
+      class="menu-link"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closeSidebarOnMobile()"
+    >
+      <i [class]="item.icon"></i>
+      <span *ngIf="!collapsed">{{ item.label }}</span>
+    </a>
+  </nav>
+</aside>

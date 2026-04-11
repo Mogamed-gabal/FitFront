@@ -1,0 +1,92 @@
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { AuthService } from '../../core/services/auth/auth.service';
+
+@Component({
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.scss',
+})
+export class NavbarComponent {
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+
+  @Input() sidebarCollapsed = false;
+  @Output() toggleSidebar = new EventEmitter<void>();
+  @Output() toggleMobileSidebar = new EventEmitter<void>();
+
+  protected readonly pageTitle = signal('Dashboard');
+  protected readonly isDarkMode = signal(false);
+  protected readonly userName = signal('Admin User');
+  protected readonly userRole = signal('admin');
+  protected readonly themeIcon = computed(() =>
+    this.isDarkMode() ? 'fa-solid fa-sun' : 'fa-solid fa-moon',
+  );
+
+  constructor() {
+    this.applySavedTheme();
+    this.updateTitle(this.router.url);
+
+    this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => this.updateTitle(event.urlAfterRedirects));
+
+    this.authService.getMe().subscribe({
+      next: (user) => {
+        const rawUser = user as Record<string, unknown>;
+        const possibleName =
+          (rawUser['name'] as string | undefined) ??
+          (rawUser['fullName'] as string | undefined) ??
+          (rawUser['username'] as string | undefined) ??
+          (rawUser['email'] as string | undefined);
+        const role = this.authService.getUserRole(user);
+
+        this.userName.set(possibleName || 'Admin User');
+        this.userRole.set(role || 'admin');
+      },
+    });
+  }
+
+  protected onToggleSidebar(): void {
+    this.toggleSidebar.emit();
+  }
+
+  protected onToggleMobileSidebar(): void {
+    this.toggleMobileSidebar.emit();
+  }
+
+  protected onToggleTheme(): void {
+    const nextMode = !this.isDarkMode();
+    this.isDarkMode.set(nextMode);
+    localStorage.setItem('app.theme', nextMode ? 'dark' : 'light');
+    document.body.classList.toggle('dark-mode', nextMode);
+  }
+
+  protected onLogout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
+  }
+
+  private applySavedTheme(): void {
+    const saved = localStorage.getItem('app.theme');
+    const dark = saved === 'dark';
+    this.isDarkMode.set(dark);
+    document.body.classList.toggle('dark-mode', dark);
+  }
+
+  private updateTitle(url: string): void {
+    const segment = url.split('?')[0].split('#')[0].split('/').filter(Boolean).pop();
+    if (!segment) {
+      this.pageTitle.set('Dashboard');
+      return;
+    }
+
+    const normalized = segment.replace(/-/g, ' ');
+    const title = normalized.charAt(0).toUpperCase() + normalized.slice(1);
+    this.pageTitle.set(title);
+  }
+}

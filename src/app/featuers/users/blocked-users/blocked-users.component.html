@@ -1,0 +1,57 @@
+<section class="blocked-users-page">
+  <header class="page-header">
+    <h2>Blocked Users</h2>
+    <p>View and manage blocked user accounts.</p>
+    
+    <app-blocked-filter
+      [searchTerm]="searchTerm()"
+      [selectedRole]="selectedRole()"
+      (searchChange)="onSearch($event)"
+      (roleChange)="onRoleChange($event)"
+    ></app-blocked-filter>
+  </header>
+
+  @if (loading()) {
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <p>Loading blocked users...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-container">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else {
+    <app-blocked-table
+      [users]="blockedUsers()"
+      [loading]="loading()"
+      (viewUser)="onViewUser($event)"
+      (unblockUser)="onUnblockUser($event)"
+    ></app-blocked-table>
+
+    <div class="pagination-bar">
+      <p>
+        Page <strong>{{ currentPage() }}</strong> of <strong>{{ pagination().totalPages }}</strong>
+        ({{ pagination().totalBlockedUsers }} total)
+      </p>
+      <div class="pagination-actions">
+        <button type="button" (click)="prevPage()" [disabled]="currentPage() === 1">
+          <i class="fa-solid fa-chevron-left"></i>
+          Previous
+        </button>
+        <button type="button" (click)="nextPage()" [disabled]="currentPage() === pagination().totalPages">
+          Next
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  }
+</section>
+
+<!-- User Details Modal -->
+@if (showModal() && selectedUser()) {
+  <app-blocked-model
+    [user]="selectedUser()"
+    (closeModal)="closeModal()"
+  ></app-blocked-model>
+}

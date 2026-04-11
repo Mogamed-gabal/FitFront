@@ -1,0 +1,70 @@
+<section class="doctor-page">
+  <div class="page-header">
+    <h2>Doctors</h2>
+    <div class="filters">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="text"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="onSearch($event)"
+          placeholder="Search by name, email, or specialization..."
+        />
+      </div>
+      <div class="specialization-filter">
+        <select
+          [ngModel]="selectedSpecialization()"
+          (ngModelChange)="onSpecializationChange($event)"
+        >
+          <option value="">All Specializations</option>
+          @for (spec of specializations(); track spec) {
+            <option [value]="spec">{{ spec }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <p>Loading doctors...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-container">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else {
+    <app-doctor-table
+      [doctors]="paginatedDoctors()"
+      (viewDoctor)="openDoctorDetails($event)"
+      (blockDoctor)="onBlockDoctor($event)"
+      (unblockDoctor)="onUnblockDoctor($event)"
+      (deleteDoctor)="onDeleteDoctor($event)"
+    />
+  }
+
+  <div class="pagination-bar">
+    <p>
+      Page <strong>{{ currentPage() }}</strong> of <strong>{{ totalPages() }}</strong>
+    </p>
+    <div class="pagination-actions">
+      <button type="button" (click)="prevPage()" [disabled]="currentPage() === 1">Previous</button>
+      <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()">Next</button>
+    </div>
+  </div>
+
+  @if (detailLoading()) {
+    <div class="view-loading-overlay">
+      <div class="view-loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading details...</p>
+      </div>
+    </div>
+  }
+
+  @if (selectedDoctor(); as doctor) {
+    <app-doctor-details-modal [doctor]="doctor" [loading]="false" (close)="closeModal()" />
+  }
+</section>

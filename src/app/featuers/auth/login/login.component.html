@@ -1,0 +1,66 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Admin Panel</h1>
+      <p>Sign in to continue</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="name@company.com"
+          [class.invalid]="form.controls.email.touched && form.controls.email.invalid"
+        />
+        @if (form.controls.email.touched && form.controls.email.errors?.['required']) {
+          <p class="field-error">Email is required.</p>
+        }
+        @if (form.controls.email.touched && form.controls.email.errors?.['email']) {
+          <p class="field-error">Please enter a valid email address.</p>
+        }
+      </div>
+
+      <div class="field-group">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Enter your password"
+            [class.invalid]="form.controls.password.touched && form.controls.password.invalid"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        @if (form.controls.password.touched && form.controls.password.errors?.['required']) {
+          <p class="field-error">Password is required.</p>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <div class="api-error" role="alert">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <button type="submit" class="login-btn" [disabled]="isSubmitting">
+        @if (isSubmitting) {
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Signing in...</span>
+        } @else {
+          <span>Login</span>
+        }
+      </button>
+    </form>
+  </div>
+</div>

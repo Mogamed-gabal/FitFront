@@ -59,6 +59,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./featuers/requests/components/withdrawl-requests/withdrawl-requests.component').then((m) => m.WithdrawlRequestsComponent),
       },
+      {
+        path: 'supervisors',
+        loadComponent: () =>
+          import('./featuers/supervisor/supervisor.component').then((m) => m.SupervisorComponent),
+      },
     ],
   },
   {

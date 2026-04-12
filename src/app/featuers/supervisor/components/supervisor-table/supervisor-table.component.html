@@ -1,0 +1,100 @@
+<div class="table-container">
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Supervisors List</h3>
+      <div class="table-stats" *ngIf="supervisors && supervisors.length > 0">
+        <span class="stat-item">
+          <i class="fa-solid fa-users"></i>
+          {{ supervisors.length }} Supervisors
+        </span>
+      </div>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th class="th-name">
+              <div class="th-content">
+                <i class="fa-solid fa-user"></i>
+                Name
+              </div>
+            </th>
+            <th class="th-email">
+              <div class="th-content">
+                <i class="fa-solid fa-envelope"></i>
+                Email
+              </div>
+            </th>
+            <th class="th-phone">
+              <div class="th-content">
+                <i class="fa-solid fa-phone"></i>
+                Phone
+              </div>
+            </th>
+            <th class="th-date">
+              <div class="th-content">
+                <i class="fa-solid fa-calendar"></i>
+                Created At
+              </div>
+            </th>
+            <th class="th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (isLoading) {
+            <tr>
+              <td colspan="5" class="loading-state">
+                <div class="loading-content">
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                  <span>Loading supervisors...</span>
+                </div>
+              </td>
+            </tr>
+          } @else if (supervisors && supervisors.length > 0) {
+            @for (supervisor of supervisors; track supervisor._id) {
+              <tr class="supervisor-row">
+                <td class="td-name">
+                  <div class="user-cell">
+                    <div class="user-avatar">
+                      <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="user-details">
+                      <div class="user-name">{{ supervisor.name }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="td-email">{{ supervisor.email }}</td>
+                <td class="td-phone">{{ supervisor.phone }}</td>
+                <td class="td-date">{{ formatDate(supervisor.createdAt) }}</td>
+                <td class="td-actions">
+                  <div class="action-buttons">
+                    <button class="view-btn" (click)="onViewSupervisor(supervisor)">
+                      <i class="fa-solid fa-eye"></i>
+                      <span>View</span>
+                    </button>
+                    
+                    <button class="delete-btn" (click)="onDeleteSupervisor(supervisor)">
+                      <i class="fa-solid fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td colspan="5" class="empty-state">
+                <div class="empty-content">
+                  <i class="fa-solid fa-user-tie"></i>
+                  <h4>No Supervisors Found</h4>
+                  <p>There are no supervisors in system.</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

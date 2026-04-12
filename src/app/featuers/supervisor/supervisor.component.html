@@ -1,0 +1,56 @@
+<div class="supervisor-container">
+  <div class="supervisor-header">
+    <h2>Supervisors Management</h2>
+    <button class="refresh-btn" (click)="loadSupervisors()">
+      <i class="fa-solid fa-sync-alt"></i>
+      Refresh
+    </button>
+    <button class="create-btn" (click)="openCreateModal()">
+      <i class="fa-solid fa-plus"></i>
+      Create Supervisor
+    </button>
+  </div>
+
+  <div class="supervisor-content">
+    <app-supervisor-table
+      [supervisors]="supervisors"
+      [isLoading]="isLoading"
+      (view)="onViewSupervisor($event)"
+      (delete)="onDeleteSupervisor($event)"
+    ></app-supervisor-table>
+
+    <div class="pagination" *ngIf="pagination && pagination.pages > 1">
+      <button 
+        class="pagination-btn" 
+        (click)="onPreviousPage()" 
+        [disabled]="currentPage <= 1">
+        <i class="fa-solid fa-chevron-left"></i>
+        Previous
+      </button>
+      
+      <span class="pagination-info">
+        Page {{ currentPage }} of {{ pagination.pages }}
+      </span>
+      
+      <button 
+        class="pagination-btn" 
+        (click)="onNextPage()" 
+        [disabled]="currentPage >= pagination.pages">
+        Next
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <app-supervisor-modal
+    [supervisor]="selectedSupervisor"
+    [isVisible]="showModal"
+    (close)="onCloseModal()"
+  ></app-supervisor-modal>
+
+  <app-creat-supervisor-modal
+    [isOpen]="isCreateModalOpen"
+    (create)="onCreateSupervisor($event)"
+    (close)="isCreateModalOpen = false"
+  ></app-creat-supervisor-modal>
+</div>

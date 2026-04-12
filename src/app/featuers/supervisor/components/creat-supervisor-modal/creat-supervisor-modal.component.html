@@ -1,0 +1,120 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Create Supervisor</h2>
+      <button class="close-btn" (click)="onClose()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form [formGroup]="supervisorForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Name *</label>
+            <input 
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="Enter supervisor name"
+              class="form-input"
+              [class]="{'error': supervisorForm.get('name')?.invalid && supervisorForm.get('name')?.touched}"
+            />
+            @if (supervisorForm.get('name')?.invalid && supervisorForm.get('name')?.touched) {
+              <div class="error-message">
+                Name is required
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input 
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Enter email address"
+              class="form-input"
+              [class]="{'error': supervisorForm.get('email')?.invalid && supervisorForm.get('email')?.touched}"
+            />
+            @if (supervisorForm.get('email')?.invalid && supervisorForm.get('email')?.touched) {
+              <div class="error-message">
+                @if (supervisorForm.get('email')?.hasError('required')) {
+                  Email is required
+                } @if (supervisorForm.get('email')?.hasError('email')) {
+                  Please enter a valid email
+                }
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <input 
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="Enter password (min 6 characters)"
+              class="form-input"
+              [class]="{'error': supervisorForm.get('password')?.invalid && supervisorForm.get('password')?.touched}"
+            />
+            @if (supervisorForm.get('password')?.invalid && supervisorForm.get('password')?.touched) {
+              <div class="error-message">
+                @if (supervisorForm.get('password')?.hasError('required')) {
+                  Password is required
+                } @if (supervisorForm.get('password')?.hasError('minlength')) {
+                  Password must be at least 6 characters
+                }
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone *</label>
+            <input 
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              placeholder="Enter phone number"
+              class="form-input"
+              [class]="{'error': supervisorForm.get('phone')?.invalid && supervisorForm.get('phone')?.touched}"
+            />
+            @if (supervisorForm.get('phone')?.invalid && supervisorForm.get('phone')?.touched) {
+              <div class="error-message">
+                Phone is required
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="address">Address *</label>
+            <textarea 
+              id="address"
+              formControlName="address"
+              placeholder="Enter address"
+              class="form-input"
+              rows="3"
+              [class]="{'error': supervisorForm.get('address')?.invalid && supervisorForm.get('address')?.touched}"
+            ></textarea>
+            @if (supervisorForm.get('address')?.invalid && supervisorForm.get('address')?.touched) {
+              <div class="error-message">
+                Address is required
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" [disabled]="supervisorForm.invalid">
+            <i class="fa-solid fa-plus"></i>
+            Create Supervisor
+          </button>
+          <button type="button" class="cancel-btn" (click)="onClose()">
+            <i class="fa-solid fa-times"></i>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -30,6 +30,41 @@ export interface DeleteSupervisorResponse {
   data: Supervisor;
 }
 
+export interface Permission {
+  name: string;
+  description: string;
+  category: string;
+  action: string;
+  resource: string;
+  level: number;
+}
+
+export interface UserPermission {
+  name: string;
+  assignedAt: string;
+  expiresAt: string | null;
+  isActive: boolean;
+}
+
+export interface GetAllPermissionsResponse {
+  success: boolean;
+  data: {
+    permissions: Permission[];
+  };
+}
+
+export interface GetUserPermissionsResponse {
+  success: boolean;
+  data: {
+    permissions: UserPermission[];
+  };
+}
+
+export interface PermissionActionResponse {
+  success: boolean;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -47,5 +82,27 @@ export class SupervisorService {
 
   createSupervisor(data: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/api/admin/supervisors`, data);
+  }
+
+  getAllPermissions(): Observable<GetAllPermissionsResponse> {
+    return this.http.get<GetAllPermissionsResponse>(`${this.baseUrl}/api/permissions/all`);
+  }
+
+  getUserPermissions(userId: string): Observable<GetUserPermissionsResponse> {
+    return this.http.get<GetUserPermissionsResponse>(`${this.baseUrl}/api/permissions/user/${userId}`);
+  }
+
+  grantPermission(userId: string, permissionName: string): Observable<PermissionActionResponse> {
+    return this.http.post<PermissionActionResponse>(`${this.baseUrl}/api/permissions/grant`, {
+      userId,
+      permissionName
+    });
+  }
+
+  revokePermission(userId: string, permissionName: string): Observable<PermissionActionResponse> {
+    return this.http.post<PermissionActionResponse>(`${this.baseUrl}/api/permissions/revoke`, {
+      userId,
+      permissionName
+    });
   }
 }

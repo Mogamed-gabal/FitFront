@@ -1,0 +1,51 @@
+<div class="stats-container">
+  <div class="stats-grid">
+    <!-- Total Logs Card -->
+    <div class="stat-card stat-total">
+      <div class="stat-icon">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Total Logs</h4>
+        <div class="stat-value">{{ totalLogs() }}</div>
+        <p class="stat-description">All audit activities</p>
+      </div>
+    </div>
+
+    <!-- Success Card -->
+    <div class="stat-card stat-success">
+      <div class="stat-icon">
+        <i class="fa-solid" [ngClass]="getOutcomeIcon('success')"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Success</h4>
+        <div class="stat-value">{{ successCount() }}</div>
+        <p class="stat-description">{{ successPercentage() }}% of total</p>
+      </div>
+    </div>
+
+    <!-- Failure Card -->
+    <div class="stat-card stat-failure">
+      <div class="stat-icon">
+        <i class="fa-solid" [ngClass]="getOutcomeIcon('failure')"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Failures</h4>
+        <div class="stat-value">{{ failureCount() }}</div>
+        <p class="stat-description">{{ failurePercentage() }}% of total</p>
+      </div>
+    </div>
+
+    <!-- Error Card -->
+    <div class="stat-card stat-error">
+      <div class="stat-icon">
+        <i class="fa-solid" [ngClass]="getOutcomeIcon('error')"></i>
+      </div>
+      <div class="stat-content">
+        <h4>Errors</h4>
+        <div class="stat-value">{{ errorCount() }}</div>
+        <p class="stat-description">{{ errorPercentage() }}% of total</p>
+      </div>
+    </div>
+  </div>
+</div>

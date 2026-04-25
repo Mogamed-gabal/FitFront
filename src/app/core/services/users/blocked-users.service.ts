@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../config/environment';
 
 export interface BlockedUser {
   _id: string;
@@ -38,7 +39,7 @@ export interface GetBlockedUsersParams {
 })
 export class BlockedUsersService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://fit-proo.vercel.app';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   getBlockedUsers(params: GetBlockedUsersParams = {}): Observable<GetBlockedUsersResponse> {
     let httpParams = new HttpParams();

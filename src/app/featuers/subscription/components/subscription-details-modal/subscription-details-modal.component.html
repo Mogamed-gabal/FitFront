@@ -1,0 +1,129 @@
+<div *ngIf="isVisible && subscription" class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Subscription Details</h3>
+      <button (click)="onClose()" class="close-btn">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Plan Information -->
+      <div class="detail-section">
+        <h4>Plan Information</h4>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <strong>Plan Name:</strong> {{ subscription.planName }}
+          </div>
+          <div class="detail-item">
+            <strong>Plan Type:</strong> 
+            <span class="plan-badge">{{ subscription.planType }}</span>
+          </div>
+          <div class="detail-item">
+            <strong>Status:</strong> 
+            <span class="status-badge" [class]="getStatusClass(subscription.status)">
+              {{ subscription.status }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <strong>Payment Status:</strong> 
+            <span class="payment-status-badge" [class]="getPaymentStatusClass(subscription.paymentStatus)">
+              {{ subscription.paymentStatus }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <strong>Amount:</strong> {{ subscription.currency }} {{ subscription.amount }}
+          </div>
+          <div class="detail-item">
+            <strong>Auto Renewal:</strong> 
+            <span class="renewal-badge" [class.enabled]="subscription.autoRenewal">
+              {{ subscription.autoRenewal ? 'Enabled' : 'Disabled' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Billing Information -->
+      <div class="detail-section">
+        <h4>Billing Information</h4>
+        <div class="billing-card">
+          <div class="billing-info">
+            <div class="info-row">
+              <strong>Address:</strong> {{ subscription.billingInfo.address }}
+            </div>
+            <div class="info-row">
+              <strong>City:</strong> {{ subscription.billingInfo.city }}
+            </div>
+            <div class="info-row">
+              <strong>Country:</strong> {{ subscription.billingInfo.country }}
+            </div>
+            <div class="info-row">
+              <strong>Zip Code:</strong> {{ subscription.billingInfo.zipCode }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Information -->
+      <div class="detail-section">
+        <h4>Payment Information</h4>
+        <div class="payment-card">
+          <div class="payment-info">
+            <div class="info-row">
+              <strong>Card Type:</strong> {{ subscription.paymentInfo.cardType }}
+            </div>
+            <div class="info-row">
+              <strong>Last Four Digits:</strong> **** **** **** {{ subscription.paymentInfo.lastFourDigits }}
+            </div>
+            <div class="info-row">
+              <strong>Expiry Date:</strong> {{ subscription.paymentInfo.expiryDate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="detail-section">
+        <h4>Important Dates</h4>
+        <div class="dates-grid">
+          <div class="date-item">
+            <div class="date-label">Start Date</div>
+            <div class="date-value">{{ subscription.startDate | date:'medium' }}</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label">End Date</div>
+            <div class="date-value">{{ subscription.endDate | date:'medium' }}</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label">Created</div>
+            <div class="date-value">{{ subscription.createdAt | date:'medium' }}</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label">Last Updated</div>
+            <div class="date-value">{{ subscription.updatedAt | date:'medium' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="detail-section">
+        <h4>Plan Features</h4>
+        <div class="features-list">
+          <div *ngFor="let feature of subscription.features" class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div class="feature-text">{{ feature }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Limits -->
+      <div class="detail-section">
+        <h4>Plan Limits</h4>
+        <div class="limits-grid">
+          <div *ngFor="let limit of subscription.limits | keyvalue" class="limit-item">
+            <div class="limit-key">{{ limit.key }}</div>
+            <div class="limit-value">{{ limit.value }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

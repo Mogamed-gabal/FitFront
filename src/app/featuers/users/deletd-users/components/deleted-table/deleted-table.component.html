@@ -1,0 +1,129 @@
+<div class="table-container">
+  <!-- Desktop Table -->
+  <div class="table-responsive">
+    <table class="deleted-users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Deleted At</th>
+          <th>Deleted By</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user._id) {
+          <tr>
+            <td>
+              <div class="user-info">
+                <div class="user-name">{{ user.name }}</div>
+              </div>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="role-badge" [class]="getRoleClass(user.role)">
+                <i class="fa-solid" [ngClass]="getRoleIcon(user.role)"></i>
+                {{ user.role }}
+              </span>
+            </td>
+            <td>{{ formatDate(user.deletedAt) }}</td>
+            <td>{{ user.deletedBy }}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-restore" (click)="onRestore(user)">
+                  <i class="fa-solid fa-undo"></i>
+                  Restore
+                </button>
+                <button class="btn-delete" (click)="onDelete(user)">
+                  <i class="fa-solid fa-trash"></i>
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-state">
+              <i class="fa-solid fa-inbox"></i>
+              <p>No deleted users found</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Cards -->
+  <div class="mobile-cards">
+    @for (user of users; track user._id) {
+      <div class="user-card">
+        <div class="card-header">
+          <div class="user-info">
+            <div class="user-name">{{ user.name }}</div>
+            <div class="user-email">{{ user.email }}</div>
+          </div>
+          <span class="role-badge" [class]="getRoleClass(user.role)">
+            <i class="fa-solid" [ngClass]="getRoleIcon(user.role)"></i>
+            {{ user.role }}
+          </span>
+        </div>
+        
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Deleted At:</span>
+            <span class="value">{{ formatDate(user.deletedAt) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Deleted By:</span>
+            <span class="value">{{ user.deletedBy }}</span>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="action-buttons">
+            <button class="btn-restore" (click)="onRestore(user)">
+              <i class="fa-solid fa-undo"></i>
+              Restore
+            </button>
+            <button class="btn-delete" (click)="onDelete(user)">
+              <i class="fa-solid fa-trash"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No deleted users found</p>
+      </div>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (pagination && pagination.pages > 1) {
+    <div class="pagination-bar">
+      <p>
+        Page <strong>{{ pagination.page }}</strong> of <strong>{{ pagination.pages }}</strong>
+        ({{ pagination.total }} total)
+      </p>
+      <div class="pagination-actions">
+        <button 
+          type="button" 
+          (click)="onPageChange(pagination.page - 1)"
+          [disabled]="!pagination.hasPrev"
+        >
+          Previous
+        </button>
+        <button 
+          type="button" 
+          (click)="onPageChange(pagination.page + 1)"
+          [disabled]="!pagination.hasNext"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  }
+</div>

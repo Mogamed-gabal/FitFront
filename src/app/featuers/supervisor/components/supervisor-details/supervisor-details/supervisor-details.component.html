@@ -1,0 +1,173 @@
+<div class="card-container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Supervisor Details</h2>
+    </div>
+    
+    <div class="card-body">
+      <div class="info-section">
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Supervisor ID:</strong> {{ supervisorId }}
+          </div>
+          <div class="info-item">
+            <strong>Status:</strong> Active
+          </div>
+          <div class="info-item">
+            <strong>Role:</strong> Supervisor
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-button" [class.active]="activeTab === 'permissions'" (click)="activeTab = 'permissions'">
+          Permissions
+        </button>
+        <button class="tab-button" [class.active]="activeTab === 'logs'" (click)="activeTab = 'logs'">
+          Logs
+        </button>
+      </div>
+
+      <div class="tab-content">
+        <!-- Permissions Tab -->
+        <div *ngIf="activeTab === 'permissions'" class="permissions-section">
+          <app-permissions-panel [userId]="supervisorId"></app-permissions-panel>
+        </div>
+
+        <!-- Logs Tab -->
+        <div *ngIf="activeTab === 'logs'" class="logs-section">
+          <div class="filters-card">
+            <div class="filters-grid">
+              <input type="date" [(ngModel)]="filters.dateFrom" placeholder="Date From" class="filter-input" (change)="onFilterChange()">
+              <input type="date" [(ngModel)]="filters.dateTo" placeholder="Date To" class="filter-input" (change)="onFilterChange()">
+              <select [(ngModel)]="filters.action" class="filter-select" (change)="onFilterChange()">
+                <option value="">All Actions</option>
+                <option value="CREATE">Create</option>
+                <option value="UPDATE">Update</option>
+                <option value="DELETE">Delete</option>
+                <option value="VIEW">View</option>
+              </select>
+              <select [(ngModel)]="filters.module" class="filter-select" (change)="onFilterChange()">
+                <option value="">All Modules</option>
+                <option value="USERS">Users</option>
+                <option value="PERMISSIONS">Permissions</option>
+                <option value="SUPERVISORS">Supervisors</option>
+              </select>
+              <select [(ngModel)]="filters.status" class="filter-select" (change)="onFilterChange()">
+                <option value="">All Status</option>
+                <option value="SUCCESS">Success</option>
+                <option value="FAILURE">Failure</option>
+                <option value="PENDING">Pending</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-responsive">
+              <table class="logs-table">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>Module</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Target Entity</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let log of logs" class="table-row-hover">
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.module }}</td>
+                    <td>
+                      <span class="status-badge" 
+                            [class.success]="log.outcome.status === 'SUCCESS'" 
+                            [class.failed]="log.outcome.status === 'FAILURE'" 
+                            [class.pending]="log.outcome.status === 'PENDING'">
+                        {{ log.outcome.status }}
+                      </span>
+                    </td>
+                    <td>{{ log.timestamp | date:'medium' }}</td>
+                    <td>{{ log.target.entityType }}</td>
+                    <td>
+                      <button (click)="viewLogDetails(log)" class="view-btn">View</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="pagination" *ngIf="pagination">
+            <button (click)="previousPage()" 
+                    [disabled]="pagination.currentPage <= 1" 
+                    class="page-btn">
+              Previous
+            </button>
+            <span class="page-info">
+              Page {{ pagination.currentPage }} of {{ pagination.totalPages }}
+            </span>
+            <button (click)="nextPage()" 
+                    [disabled]="pagination.currentPage >= pagination.totalPages" 
+                    class="page-btn">
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Details Modal -->
+  <div *ngIf="selectedLog" class="modal-overlay" (click)="closeLogDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Log Details</h3>
+        <button (click)="closeLogDetails()" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-row">
+          <strong>Action:</strong> {{ selectedLog.action }}
+        </div>
+        <div class="detail-row">
+          <strong>Module:</strong> {{ selectedLog.module }}
+        </div>
+        <div class="detail-row">
+          <strong>Status:</strong> {{ selectedLog.outcome.status }}
+        </div>
+        <div class="detail-row">
+          <strong>Date:</strong> {{ selectedLog.timestamp | date:'medium' }}
+        </div>
+        <div class="detail-row">
+          <strong>Target Entity:</strong> {{ selectedLog.target.entityType }}
+        </div>
+        <div class="detail-row">
+          <strong>Description:</strong> {{ selectedLog.context.description }}
+        </div>
+        <div class="detail-row">
+          <strong>Reason:</strong> {{ selectedLog.context.reason }}
+        </div>
+        <div class="detail-row">
+          <strong>Endpoint:</strong> {{ selectedLog.technical.endpoint }}
+        </div>
+        <div class="detail-row">
+          <strong>Method:</strong> {{ selectedLog.technical.method }}
+        </div>
+        <div class="detail-row">
+          <strong>IP Address:</strong> {{ selectedLog.technical.ipAddress }}
+        </div>
+        <div class="detail-row">
+          <strong>Duration:</strong> {{ selectedLog.technical.duration }}ms
+        </div>
+        <div class="detail-row">
+          <strong>Previous State:</strong>
+          <pre>{{ selectedLog.target.previousState | json }}</pre>
+        </div>
+        <div class="detail-row">
+          <strong>New State:</strong>
+          <pre>{{ selectedLog.target.newState | json }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

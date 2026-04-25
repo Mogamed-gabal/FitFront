@@ -13,17 +13,8 @@ import { Subject, debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 import { Doctor, DoctorService, GetDoctorsParams } from '../../../core/services/users/doctor.service';
 import { DoctorTableComponent } from './doctor-table/doctor-table.component';
 import { DoctorDetailsModalComponent } from './doctor-details-modal/doctor-details-modal.component';
+import { DoctorTableRow } from './doctor.types';
 import Swal from 'sweetalert2';
-
-export interface DoctorTableRow {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  specialization: string;
-  status: 'approved' | 'pending' | 'rejected';
-  isBlocked: boolean;
-}
 
 @Component({
   selector: 'app-doctor',
@@ -72,6 +63,7 @@ export class DoctorComponent implements OnInit {
       specialization: doctor.specialization,
       status: doctor.status,
       isBlocked: doctor.isBlocked,
+      isRecommended: doctor.isRecommended,
     };
   }
 
@@ -226,6 +218,73 @@ export class DoctorComponent implements OnInit {
         });
       }
     });
+  }
+
+  protected onRecommendDoctor(doctor: DoctorTableRow): void {
+    Swal.fire({
+      title: 'Recommend Doctor',
+      text: `Do you want to recommend ${doctor.name}?`,
+      icon: 'question',
+      input: 'text',
+      inputLabel: 'Reason (optional)',
+      inputPlaceholder: 'Enter reason...',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Recommend',
+      cancelButtonText: 'Cancel',
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        const reason = result.value || '';
+        this.doctorService.recommendDoctor(doctor.id, reason).subscribe({
+          next: (response) => {
+            Swal.fire('Recommended!', `${doctor.name} has been recommended.`, 'success');
+            this.updateDoctorInList(response.data);
+          },
+          error: (err: unknown) => {
+            this.errorMessage.set(this.extractErrorMessage(err));
+          }
+        });
+      }
+    });
+  }
+
+  protected onUnrecommendDoctor(doctor: DoctorTableRow): void {
+    Swal.fire({
+      title: 'Remove Recommendation',
+      text: `Are you sure you want to remove recommendation for ${doctor.name}?`,
+      icon: 'warning',
+      input: 'text',
+      inputLabel: 'Reason (optional)',
+      inputPlaceholder: 'Enter reason...',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Remove Recommendation',
+      cancelButtonText: 'Cancel',
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        const reason = result.value || '';
+        this.doctorService.unrecommendDoctor(doctor.id, reason).subscribe({
+          next: (response) => {
+            Swal.fire('Removed!', `Recommendation for ${doctor.name} has been removed.`, 'success');
+            this.updateDoctorInList(response.data);
+          },
+          error: (err: unknown) => {
+            this.errorMessage.set(this.extractErrorMessage(err));
+          }
+        });
+      }
+    });
+  }
+
+  private updateDoctorInList(updatedDoctor: Doctor): void {
+    const currentDoctors = this.doctors();
+    const index = currentDoctors.findIndex(d => d._id === updatedDoctor._id);
+    if (index !== -1) {
+      currentDoctors[index] = updatedDoctor;
+      this.doctors.set([...currentDoctors]);
+    }
   }
 
   private loadDoctors(): void {

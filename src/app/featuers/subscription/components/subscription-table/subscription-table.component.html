@@ -1,0 +1,105 @@
+<div class="table-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Loading subscriptions...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && subscriptions.length === 0" class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h3>No subscriptions found</h3>
+    <p>There are no subscriptions matching your criteria.</p>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading && subscriptions.length > 0" class="table-wrapper">
+    <div class="table-responsive">
+      <table class="subscription-table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Plan Name</th>
+            <th>Plan Type</th>
+            <th>Status</th>
+            <th>Payment Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let subscription of subscriptions" class="table-row">
+            <td>{{ subscription.userId }}</td>
+            <td>{{ subscription.planName }}</td>
+            <td>
+              <span class="plan-badge">{{ subscription.planType }}</span>
+            </td>
+            <td>
+              <span 
+                class="status-badge" 
+                [class]="getStatusClass(subscription.status)">
+                {{ subscription.status }}
+              </span>
+            </td>
+            <td>
+              <span 
+                class="payment-status-badge" 
+                [class]="getPaymentStatusClass(subscription.paymentStatus)">
+                {{ subscription.paymentStatus }}
+              </span>
+            </td>
+            <td>{{ subscription.startDate | date:'medium' }}</td>
+            <td>{{ subscription.endDate | date:'medium' }}</td>
+            <td>
+              <div class="action-buttons">
+                <button 
+                  (click)="onView(subscription)"
+                  class="action-btn view-btn"
+                  title="View Details">
+                  👁️
+                </button>
+                <button 
+                  (click)="onCancel(subscription)"
+                  class="action-btn cancel-btn"
+                  title="Cancel Subscription"
+                  [disabled]="subscription.status === 'CANCELLED' || subscription.status === 'EXPIRED'">
+                  ❌
+                </button>
+                <button 
+                  (click)="onRenew(subscription)"
+                  class="action-btn renew-btn"
+                  title="Renew Subscription"
+                  [disabled]="subscription.status === 'ACTIVE' || subscription.status === 'CANCELLED'">
+                  🔄
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && subscriptions.length > 0 && pagination.pages > 1" class="pagination">
+    <button 
+      (click)="onPageChange(pagination.page - 1)"
+      [disabled]="!pagination.hasPrev"
+      class="pagination-btn">
+      ← Previous
+    </button>
+    
+    <div class="pagination-info">
+      <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+      <span class="total-count">({{ pagination.total }} total)</span>
+    </div>
+    
+    <button 
+      (click)="onPageChange(pagination.page + 1)"
+      [disabled]="!pagination.hasNext"
+      class="pagination-btn">
+      Next →
+    </button>
+  </div>
+</div>

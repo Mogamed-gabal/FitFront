@@ -45,6 +45,11 @@ export const routes: Routes = [
           import('./featuers/users/blocked-users/blocked-users.component').then((m) => m.BlockedUsersComponent),
       },
       {
+        path: 'users/deletd',
+        loadComponent: () =>
+          import('./featuers/users/deletd-users/deletd-users.component').then((m) => m.DeletdUsersComponent),
+      },
+      {
         path: 'requests',
         loadComponent: () =>
           import('./featuers/requests/requests.component').then((m) => m.RequestsComponent),
@@ -60,9 +65,29 @@ export const routes: Routes = [
           import('./featuers/requests/components/withdrawl-requests/withdrawl-requests.component').then((m) => m.WithdrawlRequestsComponent),
       },
       {
-        path: 'supervisors',
+        path: 'supervisor',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./featuers/supervisor/supervisor.component').then((m) => m.SupervisorComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./featuers/supervisor/components/supervisor-details/supervisor-details/supervisor-details.component').then((m) => m.SupervisorDetailsComponent),
+          }
+        ]
+      },
+      {
+        path: 'audit',
         loadComponent: () =>
-          import('./featuers/supervisor/supervisor.component').then((m) => m.SupervisorComponent),
+          import('./featuers/audit/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),
+      },
+      {
+        path: 'subscription',
+        loadComponent: () =>
+          import('./featuers/subscription/subscription.component').then((m) => m.SubscriptionComponent),
       },
     ],
   },

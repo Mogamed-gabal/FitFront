@@ -1,0 +1,192 @@
+<section class="audit-logs-page">
+  <header class="audit-header">
+    <h2>Audit Logs</h2>
+    <p>Monitor and analyze system activity and user actions.</p>
+  </header>
+
+  <!-- Statistics Dashboard -->
+  <div class="stats-section">
+    <app-audit-stats [statistics]="statistics()" />
+  </div>
+
+  <!-- Activity Summary -->
+  @if (activitySummary()) {
+    <div class="summary-section">
+      <app-audit-summary [summary]="activitySummary()" />
+    </div>
+  }
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <app-audit-filters 
+      [actionTypes]="actionTypes()"
+      [targetTypes]="targetTypes()"
+      (filtersChange)="onFiltersChange($event)"
+    />
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="content-section">
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading audit logs...</p>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading() && !hasLogs()) {
+      <div class="empty-state">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <h3>No audit logs found</h3>
+        <p>Try adjusting your filters or check back later for new activity.</p>
+      </div>
+    }
+
+    <!-- Audit Table -->
+    @if (!isLoading() && hasLogs()) {
+      <div class="table-section">
+        <app-audit-table 
+          [logs]="logs()"
+          [pagination]="pagination()"
+          (logClick)="onLogClick($event)"
+          (pageChange)="onPageChange($event)"
+        />
+      </div>
+    }
+  </div>
+
+  <!-- Log Details Modal -->
+  @if (showDetailsModal() && selectedLog()) {
+    <div class="modal-overlay" (click)="closeDetailsModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Audit Log Details</h3>
+          <button class="close-button" (click)="closeDetailsModal()">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          @if (selectedLog()) {
+            <div class="log-details">
+              <!-- Actor Information -->
+              <div class="detail-section">
+                <h4>Actor</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <span class="label">Name:</span>
+                    <span class="value">{{ selectedLog()!.actor.name }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Email:</span>
+                    <span class="value">{{ selectedLog()!.actor.email }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Role:</span>
+                    <span class="value">{{ selectedLog()!.actor.role }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Information -->
+              <div class="detail-section">
+                <h4>Action</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <span class="label">Type:</span>
+                    <span class="value">{{ selectedLog()!.action.type }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Name:</span>
+                    <span class="value">{{ selectedLog()!.action.name }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Description:</span>
+                    <span class="value">{{ selectedLog()!.action.description }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Target Information -->
+              <div class="detail-section">
+                <h4>Target</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <span class="label">Type:</span>
+                    <span class="value">{{ selectedLog()!.target.type }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Name:</span>
+                    <span class="value">{{ selectedLog()!.target.name }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">ID:</span>
+                    <span class="value">{{ selectedLog()!.target.id }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Additional Information -->
+              <div class="detail-section">
+                <h4>Additional Information</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <span class="label">Module:</span>
+                    <span class="value">{{ selectedLog()!.module }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Outcome:</span>
+                    <span class="value" [class]="getOutcomeClass(selectedLog()!.outcome)">
+                      {{ selectedLog()!.outcome }}
+                    </span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Duration:</span>
+                    <span class="value">{{ formatDuration(selectedLog()!.duration) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Timestamp:</span>
+                    <span class="value">{{ formatTimestamp(selectedLog()!.timestamp) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">IP Address:</span>
+                    <span class="value">{{ selectedLog()!.context.ip }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Session ID:</span>
+                    <span class="value">{{ selectedLog()!.context.sessionId }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Details/Reason -->
+              @if (selectedLog()!.details.reason || selectedLog()!.details.previousData) {
+                <div class="detail-section">
+                  <h4>Details</h4>
+                  @if (selectedLog()!.details.reason) {
+                    <div class="detail-item">
+                      <span class="label">Reason:</span>
+                      <span class="value">{{ selectedLog()!.details.reason }}</span>
+                    </div>
+                  }
+                  @if (selectedLog()!.details.previousData) {
+                    <div class="detail-item">
+                      <span class="label">Previous Data:</span>
+                      <pre class="json-data">{{ selectedLog()!.details.previousData | json }}</pre>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-close" (click)="closeDetailsModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

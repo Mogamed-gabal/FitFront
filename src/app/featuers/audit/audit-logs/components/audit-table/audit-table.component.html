@@ -1,0 +1,138 @@
+<div class="table-container">
+  <!-- Desktop Table -->
+  <div class="table-responsive">
+    <table class="audit-table">
+      <thead>
+        <tr>
+          <th>Actor</th>
+          <th>Action</th>
+          <th>Target</th>
+          <th>Module</th>
+          <th>Outcome</th>
+          <th>Timestamp</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (log of logs; track log._id) {
+          <tr class="log-row" (click)="onLogRowClick(log)">
+            <td>
+              <div class="actor-info">
+                <div class="actor-name">{{ log.actor.name }}</div>
+                <div class="actor-email">{{ log.actor.email }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="action-info">
+                <div class="action-name">{{ log.action.name }}</div>
+                <div class="action-type">{{ log.action.type }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="target-info">
+                <div class="target-name">{{ log.target.name }}</div>
+                <div class="target-type">{{ log.target.type }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="module-info">
+                <i class="fa-solid" [ngClass]="getModuleIcon(log.module)"></i>
+                <span>{{ log.module }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="outcome-badge" [class]="getOutcomeClass(log.outcome)">
+                <i class="fa-solid" [ngClass]="getOutcomeIcon(log.outcome)"></i>
+                {{ log.outcome }}
+              </span>
+            </td>
+            <td>{{ formatTimestamp(log.timestamp) }}</td>
+            <td>{{ formatDuration(log.duration) }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-state">
+              <i class="fa-solid fa-inbox"></i>
+              <p>No audit logs found</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Cards -->
+  <div class="mobile-cards">
+    @for (log of logs; track log._id) {
+      <div class="log-card" (click)="onLogRowClick(log)">
+        <div class="card-header">
+          <div class="actor-info">
+            <div class="actor-name">{{ log.actor.name }}</div>
+            <div class="actor-email">{{ log.actor.email }}</div>
+          </div>
+          <span class="outcome-badge" [class]="getOutcomeClass(log.outcome)">
+            <i class="fa-solid" [ngClass]="getOutcomeIcon(log.outcome)"></i>
+            {{ log.outcome }}
+          </span>
+        </div>
+        
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Action:</span>
+            <span class="value">{{ log.action.name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Target:</span>
+            <span class="value">{{ log.target.name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Module:</span>
+            <span class="value">
+              <i class="fa-solid" [ngClass]="getModuleIcon(log.module)"></i>
+              {{ log.module }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="label">Time:</span>
+            <span class="value">{{ formatTimestamp(log.timestamp) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Duration:</span>
+            <span class="value">{{ formatDuration(log.duration) }}</span>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No audit logs found</p>
+      </div>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (pagination && pagination.pages > 1) {
+    <div class="pagination-bar">
+      <p>
+        Page <strong>{{ pagination.page }}</strong> of <strong>{{ pagination.pages }}</strong>
+        ({{ pagination.total }} total)
+      </p>
+      <div class="pagination-actions">
+        <button 
+          type="button" 
+          (click)="onPageChangeClick(pagination.page - 1)"
+          [disabled]="!pagination.hasPrev"
+        >
+          Previous
+        </button>
+        <button 
+          type="button" 
+          (click)="onPageChangeClick(pagination.page + 1)"
+          [disabled]="!pagination.hasNext"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  }
+</div>

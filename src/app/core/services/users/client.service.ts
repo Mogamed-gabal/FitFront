@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Client, GetClientsResponse } from '../../models/user/client';
+import { environment } from '../../config/environment';
 
 export interface GetClientsParams {
   page?: number;
@@ -19,7 +20,7 @@ export interface GetClientByIdResponse {
 })
 export class ClientService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://fit-proo.vercel.app';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   getClients(params: GetClientsParams = {}): Observable<GetClientsResponse> {
     let httpParams = new HttpParams();

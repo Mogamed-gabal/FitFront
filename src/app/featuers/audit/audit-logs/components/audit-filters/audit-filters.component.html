@@ -1,0 +1,91 @@
+<div class="filter-card">
+  <div class="filter-header">
+    <h3>Filters</h3>
+  </div>
+  
+  <div class="filter-body">
+    <div class="filter-grid">
+      <!-- Search Input -->
+      <div class="filter-field">
+        <label for="search">Search</label>
+        <div class="search-input">
+          <i class="fa-solid fa-search"></i>
+          <input
+            id="search"
+            type="text"
+            [(ngModel)]="currentSearch"
+            (ngModelChange)="onSearchChange($event)"
+            placeholder="Search by actor, action, or target..."
+          />
+        </div>
+      </div>
+
+      <!-- Action Types Dropdown -->
+      <div class="filter-field">
+        <label for="action">Action Type</label>
+        <select id="action" [(ngModel)]="currentAction" (ngModelChange)="onActionChange($event)">
+          <option value="">All Actions</option>
+          @for (actionType of getActionTypesArray(); track actionType.type) {
+            <option [value]="actionType.type">{{ actionType.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Target Types Dropdown -->
+      <div class="filter-field">
+        <label for="target">Target Type</label>
+        <select id="target" [(ngModel)]="currentTarget" (ngModelChange)="onTargetChange($event)">
+          <option value="">All Targets</option>
+          @for (targetType of getTargetTypesArray(); track targetType.type) {
+            <option [value]="targetType.type">{{ targetType.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Outcome Dropdown -->
+      <div class="filter-field">
+        <label for="outcome">Outcome</label>
+        <select id="outcome" [(ngModel)]="currentOutcome" (ngModelChange)="onOutcomeChange($event)">
+          <option value="">All Outcomes</option>
+          <option value="success">Success</option>
+          <option value="failure">Failure</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
+
+      <!-- Date From -->
+      <div class="filter-field">
+        <label for="dateFrom">Date From</label>
+        <input
+          id="dateFrom"
+          type="date"
+          [(ngModel)]="currentDateFrom"
+          (ngModelChange)="onDateFromChange($event)"
+        />
+      </div>
+
+      <!-- Date To -->
+      <div class="filter-field">
+        <label for="dateTo">Date To</label>
+        <input
+          id="dateTo"
+          type="date"
+          [(ngModel)]="currentDateTo"
+          (ngModelChange)="onDateToChange($event)"
+        />
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="filter-actions">
+      <button class="btn-apply" (click)="onApplyFilters()">
+        <i class="fa-solid fa-filter"></i>
+        Apply Filters
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <i class="fa-solid fa-undo"></i>
+        Reset
+      </button>
+    </div>
+  </div>
+</div>

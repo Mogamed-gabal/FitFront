@@ -1,0 +1,105 @@
+<div class="summary-container">
+  <div class="summary-header">
+    <h3>Activity Summary</h3>
+    <div class="total-actions">
+      <span class="total-number">{{ totalActions() }}</span>
+      <span class="total-label">Total Actions</span>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <!-- Top Actions -->
+    <div class="summary-card">
+      <div class="card-header">
+        <h4>Top Actions</h4>
+        <i class="fa-solid fa-chart-bar"></i>
+      </div>
+      <div class="card-content">
+        @if (topActions().length > 0) {
+          <div class="action-list">
+            @for (action of topActions(); track action.action) {
+              <div class="action-item">
+                <div class="action-info">
+                  <span class="action-name">{{ action.action }}</span>
+                  <span class="action-count">{{ action.count }}</span>
+                </div>
+                <div class="action-progress">
+                  <div class="progress-bar">
+                    <div 
+                      class="progress-fill" 
+                      [style.width.%]="action.percentage"
+                    ></div>
+                  </div>
+                  <span class="progress-text">{{ formatPercentage(action.percentage) }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <i class="fa-solid fa-chart-bar"></i>
+            <p>No action data available</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- User Activity -->
+    <div class="summary-card">
+      <div class="card-header">
+        <h4>User Activity</h4>
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <div class="card-content">
+        @if (userActivity().length > 0) {
+          <div class="user-list">
+            @for (user of userActivity().slice(0, 5); track user.userId) {
+              <div class="user-item">
+                <div class="user-info">
+                  <span class="user-name">{{ user.userName }}</span>
+                  <span class="user-actions">{{ user.actionCount }} actions</span>
+                </div>
+              </div>
+            }
+          </div>
+          @if (userActivity().length > 5) {
+            <div class="more-users">
+              <span>... and {{ userActivity().length - 5 }} more users</span>
+            </div>
+          }
+        } @else {
+          <div class="empty-state">
+            <i class="fa-solid fa-users"></i>
+            <p>No user activity data available</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Daily Activity -->
+    <div class="summary-card">
+      <div class="card-header">
+        <h4>Daily Activity</h4>
+        <i class="fa-solid fa-calendar-days"></i>
+      </div>
+      <div class="card-content">
+        @if (dailyActivity().length > 0) {
+          <div class="daily-chart">
+            @for (day of dailyActivity(); track day.date) {
+              <div class="day-item">
+                <div class="day-bar" [style.height.%]="getDayHeight(day.count)"></div>
+                <span class="day-label">{{ formatDate(day.date) }}</span>
+                <span class="day-count">{{ day.count }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <i class="fa-solid fa-calendar-days"></i>
+            <p>No daily activity data available</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

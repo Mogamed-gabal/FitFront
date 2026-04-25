@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { SupervisorService, Supervisor, GetSupervisorsResponse } from '../../core/services/supervisor.service';
 import { SupervisorTableComponent } from './components/supervisor-table/supervisor-table.component';
 import { SupervisorModalComponent } from './components/supervisor-modal/supervisor-modal.component';
@@ -21,7 +22,7 @@ export class SupervisorComponent implements OnInit {
   currentPage = 1;
   limit = 10;
 
-  constructor(private supervisorService: SupervisorService) {}
+  constructor(private supervisorService: SupervisorService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadSupervisors();
@@ -41,9 +42,8 @@ export class SupervisorComponent implements OnInit {
     });
   }
 
-  onViewSupervisor(supervisor: Supervisor): void {
-    this.selectedSupervisor = supervisor;
-    this.showModal = true;
+  onViewSupervisor(id: string): void {
+    this.router.navigate(['/supervisor', id]);
   }
 
   onDeleteSupervisor(supervisor: Supervisor): void {

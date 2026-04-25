@@ -9,6 +9,7 @@
           <th>Phone</th>
           <th>Specialization</th>
           <th>Status</th>
+          <th>Recommendation</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -23,11 +24,29 @@
               <span class="status-badge" [class]="doctor.status.toLowerCase()">{{ doctor.status }}</span>
             </td>
             <td>
+              @if (doctor.isRecommended) {
+                <span class="recommended-badge">Recommended ⭐</span>
+              } @else {
+                <span class="not-recommended-badge">Not Recommended</span>
+              }
+            </td>
+            <td>
               <div class="action-buttons">
                 <button class="btn-view" (click)="onView(doctor)">
                   <i class="fa-solid fa-eye"></i>
                   View
                 </button>
+                @if (doctor.isRecommended) {
+                  <button class="btn-unrecommend" (click)="onUnrecommend(doctor)">
+                    <i class="fa-solid fa-star"></i>
+                    Unrecommend
+                  </button>
+                } @else {
+                  <button class="btn-recommend" (click)="onRecommend(doctor)">
+                    <i class="fa-solid fa-star"></i>
+                    Recommend
+                  </button>
+                }
                 @if (doctor.isBlocked) {
                   <button class="btn-unblock" (click)="onUnblock(doctor)">
                     <i class="fa-solid fa-unlock"></i>
@@ -48,7 +67,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="6" class="empty-state">No doctors found.</td>
+            <td colspan="7" class="empty-state">No doctors found.</td>
           </tr>
         }
       </tbody>
@@ -64,7 +83,14 @@
             <div class="user-name">{{ doctor.name }}</div>
             <div class="user-email">{{ doctor.email }}</div>
           </div>
-          <span class="status-badge" [class]="doctor.status.toLowerCase()">{{ doctor.status }}</span>
+          <div class="card-badges">
+            <span class="status-badge" [class]="doctor.status.toLowerCase()">{{ doctor.status }}</span>
+            @if (doctor.isRecommended) {
+              <span class="recommended-badge">Recommended ⭐</span>
+            } @else {
+              <span class="not-recommended-badge">Not Recommended</span>
+            }
+          </div>
         </div>
         
         <div class="card-body">
@@ -88,6 +114,17 @@
               <i class="fa-solid fa-eye"></i>
               View
             </button>
+            @if (doctor.isRecommended) {
+              <button class="btn-unrecommend" (click)="onUnrecommend(doctor)">
+                <i class="fa-solid fa-star"></i>
+                Unrecommend
+              </button>
+            } @else {
+              <button class="btn-recommend" (click)="onRecommend(doctor)">
+                <i class="fa-solid fa-star"></i>
+                Recommend
+              </button>
+            }
             @if (doctor.isBlocked) {
               <button class="btn-unblock" (click)="onUnblock(doctor)">
                 <i class="fa-solid fa-unlock"></i>

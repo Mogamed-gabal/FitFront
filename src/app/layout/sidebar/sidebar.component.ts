@@ -18,7 +18,9 @@ export class SidebarComponent {
     { label: 'Dashboard', icon: 'fa-solid fa-chart-line', route: '/dashboard' },
     { label: 'Users', icon: 'fa-solid fa-users', route: '/users' },
     { label: 'Requests', icon: 'fa-solid fa-file-contract', route: '/requests' },
-    { label: 'Supervisors', icon: 'fa-solid fa-user-tie', route: '/supervisors' },
+    { label: 'Supervisors', icon: 'fa-solid fa-user-tie', route: '/supervisor' },
+    { label: 'Audit Logs', icon: 'fa-solid fa-history', route: '/audit' },
+    { label: 'Subscription', icon: 'fa-solid fa-credit-card', route: '/subscription' },
   ];
 
   protected closeSidebarOnMobile(): void {

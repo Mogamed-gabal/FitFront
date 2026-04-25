@@ -1,0 +1,68 @@
+<div class="filter-card">
+  <div class="filter-header">
+    <h3>Filters</h3>
+  </div>
+  
+  <div class="filter-body">
+    <div class="filter-grid">
+      <!-- Search Input -->
+      <div class="filter-field">
+        <label for="search">Search</label>
+        <div class="search-input">
+          <i class="fa-solid fa-search"></i>
+          <input
+            id="search"
+            type="text"
+            [(ngModel)]="filters.search"
+            (ngModelChange)="onSearchChange()"
+            placeholder="Search by name or email..."
+          />
+        </div>
+      </div>
+
+      <!-- Role Select -->
+      <div class="filter-field">
+        <label for="role">Role</label>
+        <select id="role" [(ngModel)]="filters.role">
+          <option value="">All Roles</option>
+          <option value="client">Client</option>
+          <option value="doctor">Doctor</option>
+          <option value="supervisor">Supervisor</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <!-- Date From -->
+      <div class="filter-field">
+        <label for="deletedFrom">Deleted From</label>
+        <input
+          id="deletedFrom"
+          type="date"
+          [(ngModel)]="filters.deletedFrom"
+        />
+      </div>
+
+      <!-- Date To -->
+      <div class="filter-field">
+        <label for="deletedTo">Deleted To</label>
+        <input
+          id="deletedTo"
+          type="date"
+          [(ngModel)]="filters.deletedTo"
+        />
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="filter-actions">
+      <button class="btn-apply" (click)="onApplyFilters()">
+        <i class="fa-solid fa-filter"></i>
+        Apply Filters
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <i class="fa-solid fa-undo"></i>
+        Reset
+      </button>
+    </div>
+  </div>
+</div>

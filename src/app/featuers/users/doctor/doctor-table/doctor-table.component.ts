@@ -1,15 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-export interface DoctorTableRow {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  specialization: string;
-  status: 'approved' | 'pending' | 'rejected';
-  isBlocked: boolean;
-}
+import { DoctorTableRow } from '../doctor.types';
 
 @Component({
   selector: 'app-doctor-table',
@@ -24,6 +15,8 @@ export class DoctorTableComponent {
   @Output() blockDoctor = new EventEmitter<DoctorTableRow>();
   @Output() unblockDoctor = new EventEmitter<DoctorTableRow>();
   @Output() deleteDoctor = new EventEmitter<DoctorTableRow>();
+  @Output() recommendDoctor = new EventEmitter<DoctorTableRow>();
+  @Output() unrecommendDoctor = new EventEmitter<DoctorTableRow>();
 
   protected onView(doctor: DoctorTableRow): void {
     this.viewDoctor.emit(doctor);
@@ -39,5 +32,13 @@ export class DoctorTableComponent {
 
   protected onDelete(doctor: DoctorTableRow): void {
     this.deleteDoctor.emit(doctor);
+  }
+
+  protected onRecommend(doctor: DoctorTableRow): void {
+    this.recommendDoctor.emit(doctor);
+  }
+
+  protected onUnrecommend(doctor: DoctorTableRow): void {
+    this.unrecommendDoctor.emit(doctor);
   }
 }

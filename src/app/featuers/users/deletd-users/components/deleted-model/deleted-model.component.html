@@ -1,0 +1,46 @@
+@if (isVisible) {
+  <div class="modal-overlay" (click)="onOverlayClick($event)">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ modalTitle }}</h3>
+        <button class="close-button" (click)="onCancel()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="warning-message">
+          <i class="fa-solid fa-exclamation-triangle" [class]="type === 'restore' ? 'restore-icon' : 'delete-icon'"></i>
+          <p>{{ modalMessage }}</p>
+        </div>
+
+        @if (user) {
+          <div class="user-details">
+            <div class="user-info">
+              <div class="user-name">{{ user.name }}</div>
+              <div class="user-email">{{ user.email }}</div>
+              <div class="user-role">{{ user.role }}</div>
+            </div>
+          </div>
+        }
+
+        <div class="reason-section">
+          <label for="reason">Reason (optional)</label>
+          <textarea
+            id="reason"
+            [(ngModel)]="reason"
+            placeholder="Enter reason for this action..."
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="onCancel()">Cancel</button>
+        <button class="btn-confirm" [class]="confirmButtonClass" (click)="onConfirm()">
+          {{ confirmButtonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

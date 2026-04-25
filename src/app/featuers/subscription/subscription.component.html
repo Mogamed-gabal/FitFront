@@ -1,0 +1,212 @@
+<div class="subscription-container">
+  <div class="page-header">
+    <h1>Subscription Management</h1>
+    <p>Manage your subscriptions and billing information</p>
+  </div>
+
+  <!-- Statistics Dashboard -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon total">
+        📊
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ statistics.totalSubscriptions }}</div>
+        <div class="stat-label">Total Subscriptions</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active">
+        ✅
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ statistics.activeSubscriptions }}</div>
+        <div class="stat-label">Active Subscriptions</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon paid">
+        💳
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ statistics.paidSubscriptions }}</div>
+        <div class="stat-label">Paid Subscriptions</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon pending">
+        ⏳
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ statistics.pendingSubscriptions }}</div>
+        <div class="stat-label">Pending Subscriptions</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon failed">
+        ❌
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ statistics.failedSubscriptions }}</div>
+        <div class="stat-label">Failed Subscriptions</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon revenue">
+        💰
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${{ statistics.totalRevenue.toLocaleString() }}</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon duration">
+        ⏱️
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ statistics.avgDuration }} days</div>
+        <div class="stat-label">Avg Duration</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="filters-section">
+      <app-subscription-filter 
+        (filtersChange)="onFiltersChange($event)">
+      </app-subscription-filter>
+    </div>
+
+    <div class="table-section">
+      <app-subscription-table
+        [subscriptions]="subscriptions"
+        [isLoading]="isLoading"
+        [pagination]="pagination"
+        (viewSubscription)="onViewSubscription($event)"
+        (cancelSubscription)="onCancelSubscription($event)"
+        (renewSubscription)="onRenewSubscription($event)"
+        (pageChange)="onPageChange($event)">
+      </app-subscription-table>
+    </div>
+  </div>
+
+  <!-- Subscription Details Modal -->
+  <div *ngIf="showDetailsModal && selectedSubscription" 
+       class="modal-overlay" 
+       (click)="closeDetailsModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Subscription Details</h3>
+        <button (click)="closeDetailsModal()" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-section">
+          <h4>Plan Information</h4>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Plan Name:</strong> {{ selectedSubscription.planName }}
+            </div>
+            <div class="detail-item">
+              <strong>Plan Type:</strong> {{ selectedSubscription.planType }}
+            </div>
+            <div class="detail-item">
+              <strong>Status:</strong> 
+              <span class="status-badge" 
+                    [class.active]="selectedSubscription.status === 'ACTIVE'"
+                    [class.pending]="selectedSubscription.status === 'PENDING'"
+                    [class.cancelled]="selectedSubscription.status === 'CANCELLED'"
+                    [class.expired]="selectedSubscription.status === 'EXPIRED'">
+                {{ selectedSubscription.status }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <strong>Payment Status:</strong> 
+              <span class="payment-badge" 
+                    [class.paid]="selectedSubscription.paymentStatus === 'PAID'"
+                    [class.pending]="selectedSubscription.paymentStatus === 'PENDING'"
+                    [class.failed]="selectedSubscription.paymentStatus === 'FAILED'">
+                {{ selectedSubscription.paymentStatus }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Billing Information</h4>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Amount:</strong> {{ selectedSubscription.currency }} {{ selectedSubscription.amount }}
+            </div>
+            <div class="detail-item">
+              <strong>Address:</strong> {{ selectedSubscription.billingInfo.address }}
+            </div>
+            <div class="detail-item">
+              <strong>City:</strong> {{ selectedSubscription.billingInfo.city }}
+            </div>
+            <div class="detail-item">
+              <strong>Country:</strong> {{ selectedSubscription.billingInfo.country }}
+            </div>
+            <div class="detail-item">
+              <strong>Zip Code:</strong> {{ selectedSubscription.billingInfo.zipCode }}
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Payment Information</h4>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Card Type:</strong> {{ selectedSubscription.paymentInfo.cardType }}
+            </div>
+            <div class="detail-item">
+              <strong>Last Four Digits:</strong> **** **** **** {{ selectedSubscription.paymentInfo.lastFourDigits }}
+            </div>
+            <div class="detail-item">
+              <strong>Expiry Date:</strong> {{ selectedSubscription.paymentInfo.expiryDate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Dates</h4>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Start Date:</strong> {{ selectedSubscription.startDate | date:'medium' }}
+            </div>
+            <div class="detail-item">
+              <strong>End Date:</strong> {{ selectedSubscription.endDate | date:'medium' }}
+            </div>
+            <div class="detail-item">
+              <strong>Auto Renewal:</strong> {{ selectedSubscription.autoRenewal ? 'Enabled' : 'Disabled' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Features</h4>
+          <ul class="feature-list">
+            <li *ngFor="let feature of selectedSubscription.features">
+              {{ feature }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="detail-section">
+          <h4>Limits</h4>
+          <div class="limits-grid">
+            <div *ngFor="let limit of selectedSubscription.limits | keyvalue" class="limit-item">
+              <strong>{{ limit.key }}:</strong> {{ limit.value }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

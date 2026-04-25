@@ -8,6 +8,7 @@ import {
   CurrentUser,
   LoginRequest,
 } from '../../models/auth.model';
+import { environment } from '../../config/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -16,10 +17,10 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
 
-  private readonly apiBase = 'https://fit-proo.vercel.app/api/auth';
-  private readonly accessTokenKey = 'auth.accessToken';
-  private readonly refreshTokenKey = 'auth.refreshToken';
-  private readonly allowedRoles = new Set(['admin', 'supervisor']);
+  private readonly apiBase = environment.apiBaseUrl + environment.authEndpoint;
+  private readonly accessTokenKey = environment.accessTokenKey;
+  private readonly refreshTokenKey = environment.refreshTokenKey;
+  private readonly allowedRoles = new Set(environment.allowedRoles);
 
   login(payload: LoginRequest): Observable<AuthTokens> {
     return this.http

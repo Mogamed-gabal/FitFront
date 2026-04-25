@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../config/environment';
 
 export interface Supervisor {
   _id: string;
@@ -65,44 +66,107 @@ export interface PermissionActionResponse {
   message: string;
 }
 
+export interface AuditLog {
+  _id: string;
+  supervisorId: string;
+  action: string;
+  module: string;
+  outcome: {
+    status: string;
+  };
+  timestamp: string;
+  target: {
+    entityType: string;
+    previousState?: any;
+    newState?: any;
+  };
+  context: {
+    description: string;
+    reason: string;
+  };
+  technical: {
+    endpoint: string;
+    method: string;
+    ipAddress: string;
+    duration: number;
+  };
+}
+
+export interface GetAuditLogsResponse {
+  success: boolean;
+  data: {
+    logs: AuditLog[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      total: number;
+      limit: number;
+    };
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SupervisorService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://fit-proo.vercel.app';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   getSupervisors(page: number = 1, limit: number = 10): Observable<GetSupervisorsResponse> {
-    return this.http.get<GetSupervisorsResponse>(`${this.baseUrl}/api/admin/supervisors?page=${page}&limit=${limit}`);
+    return this.http.get<GetSupervisorsResponse>(`${this.baseUrl}${environment.supervisorEndpoint}?page=${page}&limit=${limit}`);
   }
 
   deleteSupervisor(id: string): Observable<DeleteSupervisorResponse> {
-    return this.http.delete<DeleteSupervisorResponse>(`${this.baseUrl}/api/admin/supervisors/${id}`);
+    return this.http.delete<DeleteSupervisorResponse>(`${this.baseUrl}${environment.supervisorEndpoint}/${id}`);
   }
 
   createSupervisor(data: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/api/admin/supervisors`, data);
+    return this.http.post<any>(`${this.baseUrl}${environment.supervisorEndpoint}`, data);
   }
 
   getAllPermissions(): Observable<GetAllPermissionsResponse> {
-    return this.http.get<GetAllPermissionsResponse>(`${this.baseUrl}/api/permissions/all`);
+    return this.http.get<GetAllPermissionsResponse>(`${this.baseUrl}${environment.permissionsEndpoint}/all`);
   }
 
   getUserPermissions(userId: string): Observable<GetUserPermissionsResponse> {
-    return this.http.get<GetUserPermissionsResponse>(`${this.baseUrl}/api/permissions/user/${userId}`);
+    return this.http.get<GetUserPermissionsResponse>(`${this.baseUrl}${environment.permissionsEndpoint}/user/${userId}`);
   }
 
   grantPermission(userId: string, permissionName: string): Observable<PermissionActionResponse> {
-    return this.http.post<PermissionActionResponse>(`${this.baseUrl}/api/permissions/grant`, {
+    return this.http.post<PermissionActionResponse>(`${this.baseUrl}${environment.permissionsEndpoint}/grant`, {
       userId,
       permissionName
     });
   }
 
   revokePermission(userId: string, permissionName: string): Observable<PermissionActionResponse> {
-    return this.http.post<PermissionActionResponse>(`${this.baseUrl}/api/permissions/revoke`, {
+    return this.http.post<PermissionActionResponse>(`${this.baseUrl}${environment.permissionsEndpoint}/revoke`, {
       userId,
       permissionName
     });
+  }
+
+  getAuditLogs(params: {
+    page?: number;
+    limit?: number;
+    supervisorId?: string;
+    action?: string;
+    module?: string;
+    status?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  }): Observable<GetAuditLogsResponse> {
+    let httpParams = new HttpParams();
+    
+    if (params.page) httpParams = httpParams.set('page', params.page.toString());
+    if (params.limit) httpParams = httpParams.set('limit', params.limit.toString());
+    if (params.supervisorId) httpParams = httpParams.set('supervisorId', params.supervisorId);
+    if (params.action) httpParams = httpParams.set('action', params.action);
+    if (params.module) httpParams = httpParams.set('module', params.module);
+    if (params.status) httpParams = httpParams.set('status', params.status);
+    if (params.dateFrom) httpParams = httpParams.set('dateFrom', params.dateFrom);
+    if (params.dateTo) httpParams = httpParams.set('dateTo', params.dateTo);
+
+    return this.http.get<GetAuditLogsResponse>(`${this.baseUrl}/api/supervisor-audit/logs`, { params: httpParams });
   }
 }

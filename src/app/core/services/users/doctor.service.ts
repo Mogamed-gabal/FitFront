@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../config/environment';
 
 export interface Doctor {
   _id: string;
@@ -11,6 +12,9 @@ export interface Doctor {
   experience: number;
   status: 'approved' | 'pending' | 'rejected';
   isBlocked: boolean;
+  isRecommended: boolean;
+  recommendedAt?: string;
+  recommendationReason?: string;
   profilePicture?: Certificate;
   id_card_front?: Certificate;
   id_card_back?: Certificate;
@@ -96,7 +100,7 @@ export interface RejectDoctorResponse {
 })
 export class DoctorService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://fit-proo.vercel.app';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   getDoctors(params: GetDoctorsParams = {}): Observable<GetDoctorsResponse> {
     let httpParams = new HttpParams();
@@ -143,5 +147,15 @@ export class DoctorService {
   rejectDoctor(userId: string, rejectionReason?: string): Observable<RejectDoctorResponse> {
     const body = rejectionReason ? { rejectionReason } : {};
     return this.http.post<RejectDoctorResponse>(`${this.baseUrl}/api/auth/admin/reject/${userId}`, body);
+  }
+
+  recommendDoctor(doctorId: string, reason?: string): Observable<{ success: boolean; message: string; data: Doctor }> {
+    return this.http.post<{ success: boolean; message: string; data: Doctor }>(`${this.baseUrl}/api/doctors/${doctorId}/recommend`, { reason });
+  }
+
+  unrecommendDoctor(doctorId: string, reason?: string): Observable<{ success: boolean; message: string; data: Doctor }> {
+    return this.http.delete<{ success: boolean; message: string; data: Doctor }>(`${this.baseUrl}/api/doctors/${doctorId}/recommend`, {
+      body: { reason }
+    });
   }
 }

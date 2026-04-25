@@ -11,11 +11,11 @@ import { Supervisor } from '../../../../core/services/supervisor.service';
 export class SupervisorTableComponent {
   @Input() supervisors: Supervisor[] | null = null;
   @Input() isLoading = false;
-  @Output() view = new EventEmitter<Supervisor>();
+  @Output() view = new EventEmitter<string>();
   @Output() delete = new EventEmitter<Supervisor>();
 
-  onViewSupervisor(supervisor: Supervisor): void {
-    this.view.emit(supervisor);
+  onView(id: string): void {
+    this.view.emit(id);
   }
 
   onDeleteSupervisor(supervisor: Supervisor): void {

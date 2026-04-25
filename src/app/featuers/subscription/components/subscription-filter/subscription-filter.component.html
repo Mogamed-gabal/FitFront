@@ -1,0 +1,53 @@
+<div class="filter-container">
+  <div class="filter-grid">
+    <div class="filter-item">
+      <label for="search" class="filter-label">Search</label>
+      <input
+        type="text"
+        id="search"
+        [(ngModel)]="filters.search"
+        (input)="onSearchChange()"
+        placeholder="Search subscriptions..."
+        class="filter-input"
+      />
+    </div>
+
+    <div class="filter-item">
+      <label for="status" class="filter-label">Status</label>
+      <select
+        id="status"
+        [(ngModel)]="filters.status"
+        (change)="onFiltersChange()"
+        class="filter-select"
+      >
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label for="planType" class="filter-label">Plan Type</label>
+      <select
+        id="planType"
+        [(ngModel)]="filters.planType"
+        (change)="onFiltersChange()"
+        class="filter-select"
+      >
+        <option *ngFor="let option of planTypeOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <button
+        (click)="clearFilters()"
+        class="clear-btn"
+        [disabled]="!filters.search && !filters.status && !filters.planType"
+      >
+        Clear Filters
+      </button>
+    </div>
+  </div>
+</div>

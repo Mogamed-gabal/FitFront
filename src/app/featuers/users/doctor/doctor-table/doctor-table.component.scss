@@ -101,6 +101,24 @@
       background: #fee2e2;
     }
   }
+
+  .btn-recommend {
+    background: #10b981;
+    color: white;
+
+    &:hover {
+      background: #059669;
+    }
+  }
+
+  .btn-unrecommend {
+    background: #ef4444;
+    color: white;
+
+    &:hover {
+      background: #dc2626;
+    }
+  }
 }
 
 .status-badge {
@@ -279,8 +297,15 @@ tbody tr {
         }
       }
 
-      .status-badge {
+      .card-badges {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-end;
         flex-shrink: 0;
+      }
+
+      .status-badge {
         font-size: 0.75rem;
         padding: 0.25rem 0.6rem;
         min-width: auto;

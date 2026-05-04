@@ -1,0 +1,168 @@
+@if (progress) {
+  <div class="diet-progress">
+    <!-- Summary Cards -->
+    <div class="summary-section">
+      <h4>📊 Progress Overview</h4>
+      <div class="summary-grid">
+        <!-- Completion Rate -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-percentage"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ progress.overallProgress.completionRate }}%</div>
+            <div class="card-label">Completion Rate</div>
+          </div>
+        </div>
+
+        <!-- Completed Days -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ progress.overallProgress.completedDays }}</div>
+            <div class="card-label">Completed Days</div>
+            <div class="card-sublabel">of {{ progress.overallProgress.totalDays }} total</div>
+          </div>
+        </div>
+
+        <!-- Streak Days -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ progress.overallProgress.streakDays || 0 }}</div>
+            <div class="card-label">Current Streak</div>
+            <div class="card-sublabel">consecutive days</div>
+          </div>
+        </div>
+
+        <!-- Missed Days -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-calendar-xmark"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ progress.overallProgress.missedDays || 0 }}</div>
+            <div class="card-label">Missed Days</div>
+            <div class="card-sublabel">need attention</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Progress Bar -->
+    <div class="main-progress-section">
+      <h4>🎯 Overall Progress</h4>
+      <div class="progress-container">
+        <div class="progress-bar-large">
+          <div 
+            class="progress-fill {{ getProgressClass(progress.overallProgress.completionRate) }}"
+            [style.width.%]="progress.overallProgress.completionRate"
+          ></div>
+        </div>
+        <div class="progress-label">
+          <span>{{ progress.overallProgress.completedDays }} of {{ progress.overallProgress.totalDays }} days completed</span>
+          <span class="progress-percentage">{{ progress.overallProgress.completionRate }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Progress -->
+    <div class="weekly-progress-section">
+      <h4>📈 Weekly Breakdown</h4>
+      <div class="weekly-grid">
+        @for (week of progress.weeklyProgress; track week.week) {
+          <div class="week-card">
+            <div class="week-header">
+              <span class="week-title">Week {{ week.week }}</span>
+              <span class="week-percentage">{{ week.completionRate }}%</span>
+            </div>
+            <div class="week-progress-bar">
+              <div 
+                class="week-progress-fill {{ getProgressClass(week.completionRate) }}"
+                [style.width.%]="week.completionRate"
+              ></div>
+            </div>
+            <div class="week-details">
+              <span>{{ week.completedDays }}/{{ week.totalDays }} days</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Nutrition Summary -->
+    <div class="nutrition-section">
+      <h4>🥗 Nutrition Summary</h4>
+      <div class="nutrition-grid">
+        <!-- Calories -->
+        <div class="nutrition-card">
+          <div class="nutrition-header">
+            <div class="nutrition-icon">
+              <i class="fa-solid fa-fire-flame-curved"></i>
+            </div>
+            <div class="nutrition-title">
+              <span class="nutrition-name">Calories</span>
+              <span class="nutrition-status {{ getNutritionStatusClass(progress.nutritionSummary.averageDailyCalories, progress.nutritionSummary.targetDailyCalories) }}">
+                <i class="{{ getNutritionStatusIcon(progress.nutritionSummary.averageDailyCalories, progress.nutritionSummary.targetDailyCalories) }}"></i>
+                {{ calculateNutritionPercentage(progress.nutritionSummary.averageDailyCalories, progress.nutritionSummary.targetDailyCalories) }}%
+              </span>
+            </div>
+          </div>
+          <div class="nutrition-values">
+            <div class="nutrition-actual">{{ roundNumber(progress.nutritionSummary.averageDailyCalories) }}</div>
+            <div class="nutrition-target">Target: {{ progress.nutritionSummary.targetDailyCalories }}</div>
+          </div>
+        </div>
+
+        <!-- Protein -->
+        <div class="nutrition-card">
+          <div class="nutrition-header">
+            <div class="nutrition-icon">
+              <i class="fa-solid fa-dumbbell"></i>
+            </div>
+            <div class="nutrition-title">
+              <span class="nutrition-name">Protein</span>
+              <span class="nutrition-status {{ getNutritionStatusClass(progress.nutritionSummary.averageProtein, progress.nutritionSummary.targetProtein) }}">
+                <i class="{{ getNutritionStatusIcon(progress.nutritionSummary.averageProtein, progress.nutritionSummary.targetProtein) }}"></i>
+                {{ calculateNutritionPercentage(progress.nutritionSummary.averageProtein, progress.nutritionSummary.targetProtein) }}%
+              </span>
+            </div>
+          </div>
+          <div class="nutrition-values">
+            <div class="nutrition-actual">{{ roundNumber(progress.nutritionSummary.averageProtein) }}g</div>
+            <div class="nutrition-target">Target: {{ progress.nutritionSummary.targetProtein }}g</div>
+          </div>
+        </div>
+
+        <!-- Carbs -->
+        <div class="nutrition-card">
+          <div class="nutrition-header">
+            <div class="nutrition-icon">
+              <i class="fa-solid fa-wheat-awn"></i>
+            </div>
+            <div class="nutrition-title">
+              <span class="nutrition-name">Carbs</span>
+              <span class="nutrition-status {{ getNutritionStatusClass(progress.nutritionSummary.averageCarbs, progress.nutritionSummary.targetCarbs) }}">
+                <i class="{{ getNutritionStatusIcon(progress.nutritionSummary.averageCarbs, progress.nutritionSummary.targetCarbs) }}"></i>
+                {{ calculateNutritionPercentage(progress.nutritionSummary.averageCarbs, progress.nutritionSummary.targetCarbs) }}%
+              </span>
+            </div>
+          </div>
+          <div class="nutrition-values">
+            <div class="nutrition-actual">{{ roundNumber(progress.nutritionSummary.averageCarbs) }}g</div>
+            <div class="nutrition-target">Target: {{ progress.nutritionSummary.targetCarbs }}g</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="no-data">
+    <i class="fa-solid fa-chart-line"></i>
+    <p>No progress data available</p>
+  </div>
+}

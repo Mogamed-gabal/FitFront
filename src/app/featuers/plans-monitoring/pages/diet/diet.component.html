@@ -1,0 +1,72 @@
+<div class="diet-page">
+  <!-- Header Section -->
+  <div class="diet-header">
+    <div class="header-content">
+      <button class="back-button" (click)="back.emit()">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Plans
+      </button>
+      <div class="header-info">
+        <h1>Diet Plans Monitoring</h1>
+        <p>View and monitor all diet plans in the system</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <app-diet-filter (filtersChange)="onFiltersChange($event)"></app-diet-filter>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading diet plans...</p>
+    </div>
+  }
+
+  <!-- Diet Plans Grid -->
+  @else {
+    <div class="diet-plans-grid">
+      @for (plan of filteredPlans(); track plan._id) {
+        <div class="diet-plan-wrapper">
+          <!-- Diet Card -->
+          <app-diet-card 
+            [plan]="plan"
+            [isExpanded]="selectedPlanId() === plan._id"
+            [expandedType]="expandedType()"
+            (viewDetails)="onViewDetails(plan._id)"
+            (viewProgress)="onViewProgress(plan._id)"
+          ></app-diet-card>
+
+          <!-- Expanded Content -->
+          @if (selectedPlanId() === plan._id && expandedType()) {
+            <div class="expanded-content">
+              @if (expandedType() === 'details') {
+                <app-diet-details [plan]="getSelectedPlan()"></app-diet-details>
+              }
+              @if (expandedType() === 'progress') {
+                <app-diet-progress [progress]="selectedPlanProgress()"></app-diet-progress>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Empty State -->
+    @if (filteredPlans().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-utensils"></i>
+        </div>
+        <h3>No Diet Plans Found</h3>
+        <p>No diet plans match your current filters.</p>
+        <button class="reset-filters-btn" (click)="onFiltersChange({})">
+          Clear Filters
+        </button>
+      </div>
+    }
+  }
+</div>

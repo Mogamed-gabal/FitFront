@@ -1,0 +1,107 @@
+@if (plan) {
+  <div class="diet-details">
+    <!-- Plan Description -->
+    @if (plan.description) {
+      <div class="description-section">
+        <h4>📝 Description</h4>
+        <p>{{ plan.description }}</p>
+      </div>
+    }
+
+    <!-- Weekly Plan -->
+    <div class="weekly-plan-section">
+      <h4>📅 Weekly Meal Plan</h4>
+      <div class="days-grid">
+        @for (day of getDaysOfWeek(); track day) {
+          @let dayPlan = getDayPlan(day);
+          <div class="day-card">
+            <div class="day-header">
+              <h5>{{ day }}</h5>
+              <div class="day-total-calories">
+                @if (dayPlan) {
+                  <span class="calories">
+                    {{ formatCalories(dayPlan.breakfast?.calories || 0 + dayPlan.lunch?.calories || 0 + dayPlan.dinner?.calories || 0) }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            @if (dayPlan) {
+              <div class="meals-container">
+                <!-- Breakfast -->
+                <div class="meal-card">
+                  <div class="meal-header">
+                    <i class="{{ getMealIcon('breakfast') }}"></i>
+                    <span class="meal-type">Breakfast</span>
+                    <span class="meal-calories">{{ formatCalories(dayPlan.breakfast?.calories || 0) }}</span>
+                  </div>
+                  <div class="meal-content">
+                    <p class="food-name">{{ dayPlan.breakfast?.food || 'No meal specified' }}</p>
+                    @if (dayPlan.breakfast?.protein) {
+                      <div class="nutrition-info">
+                        <span class="nutrition-item">P: {{ dayPlan.breakfast.protein }}g</span>
+                        @if (dayPlan.breakfast?.carbs) {
+                          <span class="nutrition-item">C: {{ dayPlan.breakfast.carbs }}g</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Lunch -->
+                <div class="meal-card">
+                  <div class="meal-header">
+                    <i class="{{ getMealIcon('lunch') }}"></i>
+                    <span class="meal-type">Lunch</span>
+                    <span class="meal-calories">{{ formatCalories(dayPlan.lunch?.calories || 0) }}</span>
+                  </div>
+                  <div class="meal-content">
+                    <p class="food-name">{{ dayPlan.lunch?.food || 'No meal specified' }}</p>
+                    @if (dayPlan.lunch?.protein) {
+                      <div class="nutrition-info">
+                        <span class="nutrition-item">P: {{ dayPlan.lunch.protein }}g</span>
+                        @if (dayPlan.lunch?.carbs) {
+                          <span class="nutrition-item">C: {{ dayPlan.lunch.carbs }}g</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Dinner -->
+                <div class="meal-card">
+                  <div class="meal-header">
+                    <i class="{{ getMealIcon('dinner') }}"></i>
+                    <span class="meal-type">Dinner</span>
+                    <span class="meal-calories">{{ formatCalories(dayPlan.dinner?.calories || 0) }}</span>
+                  </div>
+                  <div class="meal-content">
+                    <p class="food-name">{{ dayPlan.dinner?.food || 'No meal specified' }}</p>
+                    @if (dayPlan.dinner?.protein) {
+                      <div class="nutrition-info">
+                        <span class="nutrition-item">P: {{ dayPlan.dinner.protein }}g</span>
+                        @if (dayPlan.dinner?.carbs) {
+                          <span class="nutrition-item">C: {{ dayPlan.dinner.carbs }}g</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <div class="no-plan">
+                <i class="fa-solid fa-utensils"></i>
+                <p>No meal plan for {{ day }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="no-data">
+    <i class="fa-solid fa-info-circle"></i>
+    <p>No plan details available</p>
+  </div>
+}

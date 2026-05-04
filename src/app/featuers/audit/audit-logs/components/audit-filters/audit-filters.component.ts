@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject, signal, computed, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { debounceTime, Subject } from 'rxjs';
 import { ActionType, TargetType } from '../../../../../core/models/audit/audit-log.model';
 import { AuditFilters } from '../../../../../core/models/audit/audit-filters.model';
 
@@ -18,7 +17,6 @@ export class AuditFiltersComponent implements OnChanges {
   @Output() filtersChange = new EventEmitter<AuditFilters>();
 
   // Filter state
-  private searchSubject = new Subject<string>();
   protected filters = signal<AuditFilters>({
     page: 1,
     limit: 10
@@ -32,15 +30,6 @@ export class AuditFiltersComponent implements OnChanges {
   protected currentDateFrom = computed(() => this.filters().dateFrom || '');
   protected currentDateTo = computed(() => this.filters().dateTo || '');
 
-  constructor() {
-    // Setup debounced search
-    this.searchSubject
-      .pipe(debounceTime(500))
-      .subscribe(searchTerm => {
-        this.updateFilter({ search: searchTerm });
-      });
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['actionTypes']) {
       this.actionTypes = changes['actionTypes'].currentValue || [];
@@ -51,32 +40,48 @@ export class AuditFiltersComponent implements OnChanges {
   }
 
   protected onSearchChange(searchTerm: string): void {
-    this.searchSubject.next(searchTerm);
+    // Update local filter state without emitting
+    const currentFilters = this.filters();
+    this.filters.set({ ...currentFilters, search: searchTerm || undefined });
   }
 
   protected onActionChange(action: string): void {
-    this.updateFilter({ action: action || undefined });
+    // Update local filter state without emitting
+    const currentFilters = this.filters();
+    this.filters.set({ ...currentFilters, action: action || undefined });
   }
 
   protected onTargetChange(target: string): void {
-    this.updateFilter({ target: target || undefined });
+    // Update local filter state without emitting
+    const currentFilters = this.filters();
+    this.filters.set({ ...currentFilters, target: target || undefined });
   }
 
   protected onOutcomeChange(outcome: string): void {
-    this.updateFilter({ outcome: outcome as 'success' | 'failure' | 'error' || undefined });
+    // Update local filter state without emitting
+    const currentFilters = this.filters();
+    const outcomeValue = outcome === '' ? undefined : outcome as 'success' | 'failure' | 'error';
+    this.filters.set({ ...currentFilters, outcome: outcomeValue });
   }
 
   protected onDateFromChange(dateFrom: string): void {
-    this.updateFilter({ dateFrom: dateFrom || undefined });
+    // Update local filter state without emitting
+    const currentFilters = this.filters();
+    this.filters.set({ ...currentFilters, dateFrom: dateFrom || undefined });
   }
 
   protected onDateToChange(dateTo: string): void {
-    this.updateFilter({ dateTo: dateTo || undefined });
+    // Update local filter state without emitting
+    const currentFilters = this.filters();
+    this.filters.set({ ...currentFilters, dateTo: dateTo || undefined });
   }
 
   protected onApplyFilters(): void {
-    // Emit current filters
-    this.filtersChange.emit(this.filters());
+    // Emit filters with page reset to 1
+    const currentFilters = this.filters();
+    const filtersToApply = { ...currentFilters, page: 1 };
+    this.filters.set(filtersToApply);
+    this.filtersChange.emit(filtersToApply);
   }
 
   protected onResetFilters(): void {
@@ -111,5 +116,42 @@ export class AuditFiltersComponent implements OnChanges {
 
   protected getTargetTypesArray(): TargetType[] {
     return Array.isArray(this.targetTypes) ? this.targetTypes : [];
+  }
+
+  protected getActiveFiltersCount(): number {
+    const currentFilters = this.filters();
+    let count = 0;
+    
+    if (currentFilters.search) count++;
+    if (currentFilters.action) count++;
+    if (currentFilters.target) count++;
+    if (currentFilters.outcome) count++;
+    if (currentFilters.dateFrom) count++;
+    if (currentFilters.dateTo) count++;
+    
+    return count;
+  }
+
+  protected clearSearch(): void {
+    const currentFilters = this.filters();
+    this.filters.set({ ...currentFilters, search: undefined });
+  }
+
+  protected getOutcomeClass(outcome: string): string {
+    switch (outcome) {
+      case 'success': return 'outcome-success';
+      case 'failure': return 'outcome-failure';
+      case 'error': return 'outcome-error';
+      default: return 'outcome-default';
+    }
+  }
+
+  protected getOutcomeIcon(outcome: string): string {
+    switch (outcome) {
+      case 'success': return 'fa-check-circle';
+      case 'failure': return 'fa-times-circle';
+      case 'error': return 'fa-exclamation-triangle';
+      default: return 'fa-question-circle';
+    }
   }
 }

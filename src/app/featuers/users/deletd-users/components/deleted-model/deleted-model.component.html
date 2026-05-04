@@ -25,20 +25,29 @@
         }
 
         <div class="reason-section">
-          <label for="reason">Reason (optional)</label>
+          <label for="reason">Reason *</label>
           <textarea
             id="reason"
             [(ngModel)]="reason"
             placeholder="Enter reason for this action..."
             rows="3"
+            required
           ></textarea>
+          @if (!reason && reasonTouched) {
+            <div class="error-message">Reason is required</div>
+          }
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn-cancel" (click)="onCancel()">Cancel</button>
-        <button class="btn-confirm" [class]="confirmButtonClass" (click)="onConfirm()">
-          {{ confirmButtonText }}
+        <button class="btn-cancel" (click)="onCancel()" [disabled]="loading">Cancel</button>
+        <button class="btn-confirm" [class]="confirmButtonClass" (click)="onConfirm()" [disabled]="loading || !reason.trim()">
+          @if (loading) {
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Processing...
+          } @else {
+            {{ confirmButtonText }}
+          }
         </button>
       </div>
     </div>

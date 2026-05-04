@@ -11,8 +11,8 @@
           <i class="fa-solid fa-users"></i>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ stats.total || 0 }}</div>
-          <div class="stat-label">Total Deleted Users</div>
+          <div class="stat-number">{{ stats.totalRecords || 0 }}</div>
+          <div class="stat-label">Total Records</div>
         </div>
       </div>
       
@@ -21,7 +21,7 @@
           <i class="fa-solid fa-user"></i>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ stats.roleStatistics?.client || 0 }}</div>
+          <div class="stat-number">{{ getRoleCount(stats.roleStatistics, 'client') }}</div>
           <div class="stat-label">Clients</div>
         </div>
       </div>
@@ -31,7 +31,7 @@
           <i class="fa-solid fa-user-md"></i>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ stats.roleStatistics?.doctor || 0 }}</div>
+          <div class="stat-number">{{ getRoleCount(stats.roleStatistics, 'doctor') }}</div>
           <div class="stat-label">Doctors</div>
         </div>
       </div>
@@ -41,8 +41,8 @@
           <i class="fa-solid fa-user-shield"></i>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ stats.roleStatistics?.supervisor || 0 }}</div>
-          <div class="stat-label">Supervisors</div>
+          <div class="stat-number">{{ stats.deletedSupervisors || 0 }}</div>
+          <div class="stat-label">Deleted Supervisors</div>
         </div>
       </div>
     </div>

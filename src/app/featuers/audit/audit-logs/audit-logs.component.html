@@ -57,124 +57,188 @@
     }
   </div>
 
-  <!-- Log Details Modal -->
+  <!-- Enhanced Log Details Modal -->
   @if (showDetailsModal() && selectedLog()) {
     <div class="modal-overlay" (click)="closeDetailsModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h3>Audit Log Details</h3>
-          <button class="close-button" (click)="closeDetailsModal()">
+      <div class="modal-content enhanced-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header enhanced-header">
+          <div class="header-left">
+            <div class="modal-icon">
+              <i class="fa-solid fa-file-contract"></i>
+            </div>
+            <div class="header-text">
+              <h3>Audit Log Details</h3>
+              <p class="header-subtitle">{{ formatTimestamp(selectedLog()!.timestamp) }}</p>
+            </div>
+          </div>
+          <button class="close-button enhanced-close" (click)="closeDetailsModal()">
             <i class="fa-solid fa-times"></i>
           </button>
         </div>
 
-        <div class="modal-body">
+        <div class="modal-body enhanced-body">
           @if (selectedLog()) {
-            <div class="log-details">
-              <!-- Actor Information -->
-              <div class="detail-section">
-                <h4>Actor</h4>
-                <div class="detail-grid">
-                  <div class="detail-item">
-                    <span class="label">Name:</span>
-                    <span class="value">{{ selectedLog()!.actor.name }}</span>
+            <div class="log-details-enhanced">
+              <!-- Outcome Badge -->
+              <div class="outcome-section">
+                <div class="outcome-badge" [class]="getOutcomeClass(selectedLog()!.outcome)">
+                  <i class="fa-solid" [class]="selectedLog()!.outcome === 'success' ? 'fa-check-circle' : selectedLog()!.outcome === 'failure' ? 'fa-exclamation-circle' : 'fa-times-circle'"></i>
+                  <span>{{ selectedLog()!.outcome.toUpperCase() }}</span>
+                </div>
+                <div class="duration-info">
+                  <i class="fa-solid fa-clock"></i>
+                  <span>{{ formatDuration(selectedLog()!.duration) }}</span>
+                </div>
+              </div>
+
+              <!-- Main Content Grid -->
+              <div class="details-grid">
+                <!-- Actor Card -->
+                <div class="detail-card actor-card">
+                  <div class="card-header">
+                    <div class="card-icon">
+                      <i class="fa-solid fa-user"></i>
+                    </div>
+                    <h4>Actor Information</h4>
                   </div>
-                  <div class="detail-item">
-                    <span class="label">Email:</span>
-                    <span class="value">{{ selectedLog()!.actor.email }}</span>
+                  <div class="card-content">
+                    <div class="info-row">
+                      <div class="info-label">Name</div>
+                      <div class="info-value primary">{{ selectedLog()!.actor.name }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Email</div>
+                      <div class="info-value">{{ selectedLog()!.actor.email }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Role</div>
+                      <div class="info-value">
+                        <span class="role-badge">{{ selectedLog()!.actor.role }}</span>
+                      </div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">ID</div>
+                      <div class="info-value monospace">{{ selectedLog()!.actor.id }}</div>
+                    </div>
                   </div>
-                  <div class="detail-item">
-                    <span class="label">Role:</span>
-                    <span class="value">{{ selectedLog()!.actor.role }}</span>
+                </div>
+
+                <!-- Action Card -->
+                <div class="detail-card action-card">
+                  <div class="card-header">
+                    <div class="card-icon">
+                      <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h4>Action Details</h4>
+                  </div>
+                  <div class="card-content">
+                    <div class="info-row">
+                      <div class="info-label">Type</div>
+                      <div class="info-value primary">{{ selectedLog()!.action.type }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Name</div>
+                      <div class="info-value">{{ selectedLog()!.action.name }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Description</div>
+                      <div class="info-value">{{ selectedLog()!.action.description }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Module</div>
+                      <div class="info-value">
+                        <span class="module-badge">{{ selectedLog()!.module }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Target Card -->
+                <div class="detail-card target-card">
+                  <div class="card-header">
+                    <div class="card-icon">
+                      <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h4>Target Information</h4>
+                  </div>
+                  <div class="card-content">
+                    <div class="info-row">
+                      <div class="info-label">Type</div>
+                      <div class="info-value primary">{{ selectedLog()!.target.type }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Name/ID</div>
+                      <div class="info-value">{{ selectedLog()!.target.name || selectedLog()!.target.id }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Target ID</div>
+                      <div class="info-value monospace">{{ selectedLog()!.target.id }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Technical Details Card -->
+                <div class="detail-card technical-card">
+                  <div class="card-header">
+                    <div class="card-icon">
+                      <i class="fa-solid fa-cog"></i>
+                    </div>
+                    <h4>Technical Details</h4>
+                  </div>
+                  <div class="card-content">
+                    <div class="info-row">
+                      <div class="info-label">IP Address</div>
+                      <div class="info-value">
+                        <span class="ip-badge">{{ selectedLog()!.context.ip }}</span>
+                      </div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">User Agent</div>
+                      <div class="info-value user-agent">{{ selectedLog()!.context.userAgent }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Session ID</div>
+                      <div class="info-value monospace">{{ selectedLog()!.context.sessionId || 'N/A' }}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Log ID</div>
+                      <div class="info-value monospace">{{ selectedLog()!._id }}</div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Action Information -->
-              <div class="detail-section">
-                <h4>Action</h4>
-                <div class="detail-grid">
-                  <div class="detail-item">
-                    <span class="label">Type:</span>
-                    <span class="value">{{ selectedLog()!.action.type }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">Name:</span>
-                    <span class="value">{{ selectedLog()!.action.name }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">Description:</span>
-                    <span class="value">{{ selectedLog()!.action.description }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Target Information -->
-              <div class="detail-section">
-                <h4>Target</h4>
-                <div class="detail-grid">
-                  <div class="detail-item">
-                    <span class="label">Type:</span>
-                    <span class="value">{{ selectedLog()!.target.type }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">Name:</span>
-                    <span class="value">{{ selectedLog()!.target.name }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">ID:</span>
-                    <span class="value">{{ selectedLog()!.target.id }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Additional Information -->
-              <div class="detail-section">
-                <h4>Additional Information</h4>
-                <div class="detail-grid">
-                  <div class="detail-item">
-                    <span class="label">Module:</span>
-                    <span class="value">{{ selectedLog()!.module }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">Outcome:</span>
-                    <span class="value" [class]="getOutcomeClass(selectedLog()!.outcome)">
-                      {{ selectedLog()!.outcome }}
-                    </span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">Duration:</span>
-                    <span class="value">{{ formatDuration(selectedLog()!.duration) }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">Timestamp:</span>
-                    <span class="value">{{ formatTimestamp(selectedLog()!.timestamp) }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">IP Address:</span>
-                    <span class="value">{{ selectedLog()!.context.ip }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="label">Session ID:</span>
-                    <span class="value">{{ selectedLog()!.context.sessionId }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Details/Reason -->
+              <!-- Additional Details Section -->
               @if (selectedLog()!.details.reason || selectedLog()!.details.previousData) {
-                <div class="detail-section">
-                  <h4>Details</h4>
+                <div class="additional-details">
+                  <div class="section-header">
+                    <div class="section-icon">
+                      <i class="fa-solid fa-info-circle"></i>
+                    </div>
+                    <h4>Additional Details</h4>
+                  </div>
+                  
                   @if (selectedLog()!.details.reason) {
                     <div class="detail-item">
-                      <span class="label">Reason:</span>
-                      <span class="value">{{ selectedLog()!.details.reason }}</span>
+                      <div class="detail-label">
+                        <i class="fa-solid fa-comment"></i>
+                        Reason
+                      </div>
+                      <div class="detail-value reason-box">
+                        {{ selectedLog()!.details.reason }}
+                      </div>
                     </div>
                   }
+                  
                   @if (selectedLog()!.details.previousData) {
                     <div class="detail-item">
-                      <span class="label">Previous Data:</span>
-                      <pre class="json-data">{{ selectedLog()!.details.previousData | json }}</pre>
+                      <div class="detail-label">
+                        <i class="fa-solid fa-history"></i>
+                        Previous Data
+                      </div>
+                      <div class="detail-value">
+                        <pre class="json-data-enhanced">{{ selectedLog()!.details.previousData | json }}</pre>
+                      </div>
                     </div>
                   }
                 </div>
@@ -183,8 +247,19 @@
           }
         </div>
 
-        <div class="modal-footer">
-          <button class="btn-close" (click)="closeDetailsModal()">Close</button>
+        <div class="modal-footer enhanced-footer">
+          <div class="footer-left">
+            <span class="footer-info">
+              <i class="fa-solid fa-info-circle"></i>
+              Detailed audit log information
+            </span>
+          </div>
+          <div class="footer-actions">
+            <button class="btn btn-secondary" (click)="closeDetailsModal()">
+              <i class="fa-solid fa-times"></i>
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

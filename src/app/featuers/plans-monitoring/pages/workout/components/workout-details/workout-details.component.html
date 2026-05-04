@@ -1,0 +1,62 @@
+@if (plan) {
+  <div class="workout-details">
+    <!-- Description Section -->
+    @if (plan.description) {
+      <div class="description-section">
+        <h4>📋 Plan Description</h4>
+        <p>{{ plan.description }}</p>
+      </div>
+    }
+
+    <!-- Weekly Plan Section -->
+    <div class="weekly-plan-section">
+      <h4>📅 Weekly Workout Plan</h4>
+      <div class="days-grid">
+        @for (day of getDaysOfWeek(); track day) {
+          <div class="day-card">
+            <div class="day-header">
+              <h5>{{ day }}</h5>
+            </div>
+            <div class="exercises-container">
+              @let dayPlan = getDayPlan(day);
+              @if (dayPlan && dayPlan.exercises && dayPlan.exercises.length > 0) {
+                @for (exercise of dayPlan.exercises; track $index) {
+                  <div class="exercise-card">
+                    <div class="exercise-header">
+                      <i class="{{ getExerciseIcon($index) }}"></i>
+                      <span class="exercise-name">{{ exercise.name }}</span>
+                      @if (exercise.completed) {
+                        <span class="completed-badge">
+                          <i class="fa-solid fa-check"></i>
+                        </span>
+                      }
+                    </div>
+                    <div class="exercise-details">
+                      <div class="exercise-main">
+                        {{ formatSetsRepsWeight(exercise.sets, exercise.reps, exercise.weight) }}
+                      </div>
+                      <div class="exercise-rest">
+                        <i class="fa-solid fa-clock"></i>
+                        {{ formatRestTime(exercise.restTime) }}
+                      </div>
+                    </div>
+                  </div>
+                }
+              } @else {
+                <div class="no-plan">
+                  <i class="fa-solid fa-dumbbell"></i>
+                  <p>Rest day</p>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="no-data">
+    <i class="fa-solid fa-dumbbell"></i>
+    <p>No workout plan data available</p>
+  </div>
+}

@@ -136,8 +136,9 @@ export class DoctorService {
     return this.http.post<{ success: boolean; message: string; data: Doctor }>(`${this.baseUrl}/api/admin/users/${id}/unblock`, {});
   }
 
-  deleteDoctor(id: string): Observable<{ success: boolean; message: string; data: Doctor }> {
-    return this.http.delete<{ success: boolean; message: string; data: Doctor }>(`${this.baseUrl}/api/admin/users/${id}`);
+  deleteDoctor(id: string, reason?: string): Observable<{ success: boolean; message: string; data: Doctor }> {
+    const options = reason ? { body: { reason } } : {};
+    return this.http.delete<{ success: boolean; message: string; data: Doctor }>(`${this.baseUrl}/api/admin/users/${id}`, options);
   }
 
   approveDoctor(userId: string): Observable<ApproveDoctorResponse> {

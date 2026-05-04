@@ -139,9 +139,22 @@ export class BlockedUsersComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
+          console.log('🔍 Blocked Users API Response:', response);
           if (response.success && response.data) {
-            this.blockedUsers.set(response.data.blockedUsers);
-            this.pagination.set(response.data.pagination);
+            this.blockedUsers.set(response.data.users);
+            
+            // Map API pagination to component pagination structure
+            const apiPagination = response.data.pagination;
+            this.pagination.set({
+              currentPage: apiPagination.page,
+              totalPages: apiPagination.pages,
+              totalBlockedUsers: apiPagination.total,
+              hasNext: apiPagination.page < apiPagination.pages,
+              hasPrev: apiPagination.page > 1,
+            });
+            
+            console.log('🔍 Blocked Users loaded:', response.data.users?.length || 0);
+            console.log('🔍 Pagination:', apiPagination);
           } else {
             this.errorMessage.set('Could not load blocked users.');
           }

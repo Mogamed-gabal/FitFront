@@ -17,13 +17,12 @@ export interface BlockedUser {
 export interface GetBlockedUsersResponse {
   success: boolean;
   data: {
-    blockedUsers: BlockedUser[];
+    users: BlockedUser[];
     pagination: {
-      currentPage: number;
-      totalPages: number;
-      totalBlockedUsers: number;
-      hasNext: boolean;
-      hasPrev: boolean;
+      page: number;
+      limit: number;
+      total: number;
+      pages: number;
     };
   };
 }

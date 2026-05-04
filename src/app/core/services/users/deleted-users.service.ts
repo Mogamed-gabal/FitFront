@@ -23,7 +23,7 @@ export class DeletedUsersService {
   }
 
   restoreUser(userId: string, reason?: string): Observable<RestoreUserResponse> {
-    return this.http.patch<RestoreUserResponse>(`${this.baseUrl}/api/users/${userId}/restore`, { reason });
+    return this.http.post<RestoreUserResponse>(`${this.baseUrl}/api/users/${userId}/restore`, { reason });
   }
 
   permanentDelete(userId: string, reason?: string): Observable<PermanentDeleteResponse> {

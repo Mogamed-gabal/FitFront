@@ -1,0 +1,66 @@
+<div class="workout-filter">
+  <div class="filter-container">
+    <!-- Search Input -->
+    <div class="search-section">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          class="search-input"
+          placeholder="Search by plan name or client..."
+          [value]="searchQuery"
+          (input)="onSearchChange($event)"
+        />
+        @if (searchQuery) {
+          <button class="clear-search" (click)="clearFilters()">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="status-section">
+      <div class="status-buttons">
+        <button 
+          class="status-btn"
+          [class.active]="selectedStatus === 'all'"
+          (click)="onStatusChange('all')"
+        >
+          All
+        </button>
+        <button 
+          class="status-btn"
+          [class.active]="selectedStatus === 'active'"
+          (click)="onStatusChange('active')"
+        >
+          Active
+        </button>
+        <button 
+          class="status-btn"
+          [class.active]="selectedStatus === 'completed'"
+          (click)="onStatusChange('completed')"
+        >
+          Completed
+        </button>
+        <button 
+          class="status-btn"
+          [class.active]="selectedStatus === 'paused'"
+          (click)="onStatusChange('paused')"
+        >
+          Paused
+        </button>
+      </div>
+    </div>
+
+    <!-- Clear Filters -->
+    @if (hasActiveFilters) {
+      <div class="clear-section">
+        <button class="clear-filters-btn" (click)="clearFilters()">
+          <i class="fa-solid fa-filter-circle-xmark"></i>
+          Clear Filters
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,148 @@
+@if (progress) {
+  <div class="workout-progress">
+    <!-- Summary Cards -->
+    <div class="summary-section">
+      <h4>📊 Progress Overview</h4>
+      <div class="summary-grid">
+        <!-- Completion Rate -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-percentage"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ progress.overallProgress.completionRate }}%</div>
+            <div class="card-label">Completion Rate</div>
+          </div>
+        </div>
+
+        <!-- Completed Workouts -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ progress.overallProgress.completedWorkouts }}</div>
+            <div class="card-label">Completed Workouts</div>
+            <div class="card-sublabel">of {{ progress.overallProgress.totalWorkouts }} total</div>
+          </div>
+        </div>
+
+        <!-- Remaining Workouts -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ progress.overallProgress.totalWorkouts - progress.overallProgress.completedWorkouts }}</div>
+            <div class="card-label">Remaining Workouts</div>
+            <div class="card-sublabel">to complete plan</div>
+          </div>
+        </div>
+
+        <!-- Workout Frequency -->
+        <div class="summary-card">
+          <div class="card-icon">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+          <div class="card-content">
+            <div class="card-value">{{ roundNumber(progress.performanceMetrics.averageWorkoutFrequency) }}</div>
+            <div class="card-label">Weekly Frequency</div>
+            <div class="card-sublabel">workouts per week</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Progress Bar -->
+    <div class="main-progress-section">
+      <h4>🎯 Overall Progress</h4>
+      <div class="progress-container">
+        <div class="progress-bar-large">
+          <div 
+            class="progress-fill {{ getProgressClass(progress.overallProgress.completionRate) }}"
+            [style.width.%]="progress.overallProgress.completionRate"
+          ></div>
+        </div>
+        <div class="progress-label">
+          <span>{{ progress.overallProgress.completedWorkouts }} of {{ progress.overallProgress.totalWorkouts }} workouts completed</span>
+          <span class="progress-percentage">{{ progress.overallProgress.completionRate }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Progress -->
+    <div class="weekly-progress-section">
+      <h4>📈 Weekly Breakdown</h4>
+      <div class="weekly-grid">
+        @for (week of progress.weeklyProgress; track week.week) {
+          <div class="week-card">
+            <div class="week-header">
+              <span class="week-title">Week {{ week.week }}</span>
+              <span class="week-percentage">{{ week.completionRate }}%</span>
+            </div>
+            <div class="week-progress-bar">
+              <div 
+                class="week-progress-fill {{ getProgressClass(week.completionRate) }}"
+                [style.width.%]="week.completionRate"
+              ></div>
+            </div>
+            <div class="week-details">
+              <span>{{ week.completedWorkouts }}/{{ week.totalWorkouts }} workouts</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="performance-section">
+      <h4>⚡ Performance Metrics</h4>
+      <div class="performance-grid">
+        <!-- Session Duration -->
+        <div class="performance-card">
+          <div class="performance-header">
+            <div class="performance-icon">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="performance-title">
+              <span class="performance-name">Avg Session Duration</span>
+              <span class="performance-status status-perfect">
+                <i class="fa-solid fa-check-circle"></i>
+                On target
+              </span>
+            </div>
+          </div>
+          <div class="performance-values">
+            <div class="performance-actual">{{ roundNumber(progress.performanceMetrics.averageSessionDuration) }} min</div>
+            <div class="performance-target">Target: 45-60 min</div>
+          </div>
+        </div>
+
+        <!-- Workout Frequency -->
+        <div class="performance-card">
+          <div class="performance-header">
+            <div class="performance-icon">
+              <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div class="performance-title">
+              <span class="performance-name">Workout Frequency</span>
+              <span class="performance-status status-perfect">
+                <i class="fa-solid fa-check-circle"></i>
+                On target
+              </span>
+            </div>
+          </div>
+          <div class="performance-values">
+            <div class="performance-actual">{{ roundNumber(progress.performanceMetrics.averageWorkoutFrequency) }} days/week</div>
+            <div class="performance-target">Target: 3-5 days/week</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="no-data">
+    <i class="fa-solid fa-chart-line"></i>
+    <p>No progress data available</p>
+  </div>
+}

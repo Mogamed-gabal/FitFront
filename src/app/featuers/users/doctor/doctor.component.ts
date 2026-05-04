@@ -200,14 +200,23 @@ export class DoctorComponent implements OnInit {
       title: 'Delete Doctor',
       text: `Are you sure you want to delete ${doctor.name}? This action cannot be undone.`,
       icon: 'warning',
+      input: 'text',
+      inputLabel: 'Reason for deletion',
+      inputPlaceholder: 'Enter reason...',
+      inputValidator: (value: string) => {
+        if (!value) {
+          return 'Reason is required!';
+        }
+        return null;
+      },
       showCancelButton: true,
       confirmButtonColor: '#dc3545',
       cancelButtonColor: '#6c757d',
       confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel',
     }).then((result: any) => {
-      if (result.isConfirmed) {
-        this.doctorService.deleteDoctor(doctor.id).subscribe({
+      if (result.isConfirmed && result.value) {
+        this.doctorService.deleteDoctor(doctor.id, result.value).subscribe({
           next: () => {
             Swal.fire('Deleted!', `${doctor.name} has been deleted.`, 'success');
             this.loadDoctors();
@@ -221,6 +230,8 @@ export class DoctorComponent implements OnInit {
   }
 
   protected onRecommendDoctor(doctor: DoctorTableRow): void {
+    console.log('🔍 Before recommend - Doctor:', doctor.name, 'isRecommended:', doctor.isRecommended);
+    
     Swal.fire({
       title: 'Recommend Doctor',
       text: `Do you want to recommend ${doctor.name}?`,
@@ -236,12 +247,18 @@ export class DoctorComponent implements OnInit {
     }).then((result: any) => {
       if (result.isConfirmed) {
         const reason = result.value || '';
+        console.log('🔍 Sending recommend request for:', doctor.id, 'reason:', reason);
+        
         this.doctorService.recommendDoctor(doctor.id, reason).subscribe({
           next: (response) => {
+            console.log('🔍 Recommend response:', response);
+            console.log('🔍 Updated doctor isRecommended:', response.data.isRecommended);
+            
             Swal.fire('Recommended!', `${doctor.name} has been recommended.`, 'success');
             this.updateDoctorInList(response.data);
           },
           error: (err: unknown) => {
+            console.error('🔍 Recommend error:', err);
             this.errorMessage.set(this.extractErrorMessage(err));
           }
         });
@@ -250,6 +267,8 @@ export class DoctorComponent implements OnInit {
   }
 
   protected onUnrecommendDoctor(doctor: DoctorTableRow): void {
+    console.log('🔍 Before unrecommend - Doctor:', doctor.name, 'isRecommended:', doctor.isRecommended);
+    
     Swal.fire({
       title: 'Remove Recommendation',
       text: `Are you sure you want to remove recommendation for ${doctor.name}?`,
@@ -265,12 +284,18 @@ export class DoctorComponent implements OnInit {
     }).then((result: any) => {
       if (result.isConfirmed) {
         const reason = result.value || '';
+        console.log('🔍 Sending unrecommend request for:', doctor.id, 'reason:', reason);
+        
         this.doctorService.unrecommendDoctor(doctor.id, reason).subscribe({
           next: (response) => {
+            console.log('🔍 Unrecommend response:', response);
+            console.log('🔍 Updated doctor isRecommended:', response.data.isRecommended);
+            
             Swal.fire('Removed!', `Recommendation for ${doctor.name} has been removed.`, 'success');
             this.updateDoctorInList(response.data);
           },
           error: (err: unknown) => {
+            console.error('🔍 Unrecommend error:', err);
             this.errorMessage.set(this.extractErrorMessage(err));
           }
         });
@@ -281,9 +306,21 @@ export class DoctorComponent implements OnInit {
   private updateDoctorInList(updatedDoctor: Doctor): void {
     const currentDoctors = this.doctors();
     const index = currentDoctors.findIndex(d => d._id === updatedDoctor._id);
+    
+    console.log('🔍 Update Doctor In List:');
+    console.log('  - Doctor ID:', updatedDoctor._id);
+    console.log('  - Doctor Name:', updatedDoctor.name);
+    console.log('  - New isRecommended:', updatedDoctor.isRecommended);
+    console.log('  - Found index:', index);
+    console.log('  - Current doctors count:', currentDoctors.length);
+    
     if (index !== -1) {
+      console.log('  - Old isRecommended:', currentDoctors[index].isRecommended);
       currentDoctors[index] = updatedDoctor;
       this.doctors.set([...currentDoctors]);
+      console.log('  - ✅ Doctor updated successfully');
+    } else {
+      console.log('  - ❌ Doctor not found in list');
     }
   }
 

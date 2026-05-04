@@ -1,0 +1,230 @@
+<div class="chat-dashboard">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-comments"></i>
+        Chat Monitoring Dashboard
+      </h1>
+      <div class="connection-status">
+        <span class="status-indicator" [class.connected]="socketConnected()">
+          <i class="fas fa-circle"></i>
+          {{ socketConnected() ? 'Connected' : 'Disconnected' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-state">
+      <div class="error-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>{{ error() }}</h3>
+        <button class="btn btn-primary" (click)="onRetry()">
+          <i class="fas fa-redo"></i>
+          Retry
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @if (!error()) {
+    <!-- Stats Cards -->
+    <div class="stats-section">
+      @if (isLoading()) {
+        <div class="stats-grid">
+          @for (i of [1,2,3,4,5,6]; track i) {
+            <div class="stat-card skeleton">
+              <div class="skeleton-icon"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-value"></div>
+                <div class="skeleton-label"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon total-chats">
+              <i class="fas fa-comments"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ stats().totalChats }}</div>
+              <div class="stat-label">Total Chats</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon active-chats">
+              <i class="fas fa-circle"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ stats().activeChats }}</div>
+              <div class="stat-label">Active Chats</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon closed-chats">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ stats().closedChats }}</div>
+              <div class="stat-label">Closed Chats</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon total-messages">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ stats().totalMessages }}</div>
+              <div class="stat-label">Total Messages</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon online-users">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ stats().onlineUsers }}</div>
+              <div class="stat-label">Online Users</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon response-time">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ stats().averageResponseTime }}s</div>
+              <div class="stat-label">Avg Response Time</div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <app-chats-filters (filtersChange)="onFiltersChange($event)" />
+    </div>
+
+    <!-- Recent Chats Table -->
+    <div class="chats-section">
+      <div class="section-header">
+        <h2>Recent Chats</h2>
+        <div class="pagination-info">
+          <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (isLoading()) {
+        <div class="table-loading">
+          @for (i of [1,2,3,4,5]; track i) {
+            <div class="skeleton-row">
+              <div class="skeleton-cell"></div>
+              <div class="skeleton-cell"></div>
+              <div class="skeleton-cell"></div>
+              <div class="skeleton-cell"></div>
+              <div class="skeleton-cell"></div>
+            </div>
+          }
+        </div>
+      } @else if (!hasChats()) {
+        <div class="empty-state">
+          <i class="fas fa-comments"></i>
+          <h3>No chats found</h3>
+          <p>Try adjusting your filters or search criteria</p>
+        </div>
+      } @else {
+        <div class="chats-table">
+          <div class="table-header">
+            <div class="header-cell">Chat Title</div>
+            <div class="header-cell">Participants</div>
+            <div class="header-cell">Status</div>
+            <div class="header-cell">Last Activity</div>
+            <div class="header-cell">Messages</div>
+          </div>
+
+          @for (chat of chats(); track chat.chatId) {
+            <div class="table-row">
+              <div class="table-cell">
+                <div class="chat-title">
+                  <span class="chat-type">{{ chat.type }}</span>
+                  {{ chat.chatId }}
+                </div>
+              </div>
+              <div class="table-cell">
+                <div class="participants">
+                  @for (participant of chat.participants.slice(0, 2); track participant.userId) {
+                    <span class="participant" [class]="getRoleClass(participant.user.role)">
+                      {{ participant.user.name }}
+                    </span>
+                  }
+                  @if (chat.participants.length > 2) {
+                    <span class="participant-more">+{{ chat.participants.length - 2 }}</span>
+                  }
+                </div>
+              </div>
+              <div class="table-cell">
+                <span class="status-badge" [class]="getStatusClass(chat.status)">
+                  {{ chat.status }}
+                </span>
+              </div>
+              <div class="table-cell">
+                <div class="last-activity">
+                  {{ formatTimestamp(chat.updatedAt) }}
+                </div>
+              </div>
+              <div class="table-cell">
+                <div class="message-count">{{ chat.messageCount }}</div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="pagination">
+            <button 
+              class="btn btn-outline" 
+              [disabled]="!hasPrev()"
+              (click)="onPageChange(currentPage() - 1)"
+            >
+              <i class="fas fa-chevron-left"></i>
+              Previous
+            </button>
+            
+            <div class="page-numbers">
+              @for (page of getVisiblePages(); track page) {
+                <button 
+                  class="btn btn-outline"
+                  [class.active]="page === currentPage()"
+                  (click)="onPageChange(page)"
+                >
+                  {{ page }}
+                </button>
+              }
+            </div>
+            
+            <button 
+              class="btn btn-outline"
+              [disabled]="!hasNext()"
+              (click)="onPageChange(currentPage() + 1)"
+            >
+              Next
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

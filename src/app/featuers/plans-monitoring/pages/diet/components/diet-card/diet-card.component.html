@@ -1,0 +1,67 @@
+<div class="diet-card" [class.expanded]="isExpanded">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="plan-info">
+      <h3 class="plan-name">{{ plan.name }}</h3>
+      <div class="plan-meta">
+        <span class="client-name">{{ plan.clientName }}</span>
+        <span class="separator">•</span>
+        <span class="doctor-name">Dr. {{ plan.doctorName }}</span>
+      </div>
+    </div>
+    <div class="status-badge {{ getStatusClass(plan.status) }}">
+      {{ plan.status }}
+    </div>
+  </div>
+
+  <!-- Card Content -->
+  <div class="card-content">
+    <div class="dates-info">
+      <div class="date-item">
+        <span class="date-label">Start:</span>
+        <span class="date-value">{{ formatDate(plan.startDate) }}</span>
+      </div>
+      <div class="date-item">
+        <span class="date-label">End:</span>
+        <span class="date-value">{{ formatDate(plan.endDate) }}</span>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">Progress</span>
+        <span class="progress-value">{{ plan.progress.completionRate }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div 
+          class="progress-fill {{ getProgressClass(plan.progress.completionRate) }}"
+          [style.width.%]="plan.progress.completionRate"
+        ></div>
+      </div>
+      <div class="progress-details">
+        <span class="days-completed">{{ plan.progress.completedDays }}/{{ plan.progress.totalDays }} days</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Actions -->
+  <div class="card-actions">
+    <button 
+      class="action-btn details-btn"
+      [class.active]="isExpanded && expandedType === 'details'"
+      (click)="onViewDetailsClick()"
+    >
+      <i class="fa-solid fa-info-circle"></i>
+      View Details
+    </button>
+    <button 
+      class="action-btn progress-btn"
+      [class.active]="isExpanded && expandedType === 'progress'"
+      (click)="onViewProgressClick()"
+    >
+      <i class="fa-solid fa-chart-line"></i>
+      View Progress
+    </button>
+  </div>
+</div>

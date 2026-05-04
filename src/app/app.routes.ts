@@ -80,9 +80,19 @@ export const routes: Routes = [
         ]
       },
       {
+        path: 'plans-monitoring',
+        loadComponent: () =>
+          import('./featuers/plans-monitoring/plans-monitoring.component').then((m) => m.PlansMonitoringComponent),
+      },
+      {
         path: 'audit',
         loadComponent: () =>
           import('./featuers/audit/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),
+      },
+      {
+        path: 'admin-chat',
+        loadComponent: () =>
+          import('./featuers/admin-chat/pages/chat-dashboard/chat-dashboard.component').then((m) => m.ChatDashboardComponent),
       },
       {
         path: 'subscription',

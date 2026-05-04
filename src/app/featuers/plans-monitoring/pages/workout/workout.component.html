@@ -1,0 +1,72 @@
+<div class="workout-page">
+  <!-- Header Section -->
+  <div class="workout-header">
+    <div class="header-content">
+      <button class="back-button" (click)="back.emit()">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Plans
+      </button>
+      <div class="header-info">
+        <h1>Workout Plans Monitoring</h1>
+        <p>View and monitor all workout plans in the system</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <app-workout-filter (filtersChange)="onFiltersChange($event)"></app-workout-filter>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading workout plans...</p>
+    </div>
+  }
+
+  <!-- Workout Plans Grid -->
+  @else {
+    <div class="workout-plans-grid">
+      @for (plan of filteredPlans(); track plan._id) {
+        <div class="workout-plan-wrapper">
+          <!-- Workout Card -->
+          <app-workout-card 
+            [plan]="plan"
+            [isExpanded]="selectedPlanId() === plan._id"
+            [expandedType]="expandedType()"
+            (viewDetails)="onViewDetails(plan._id)"
+            (viewProgress)="onViewProgress(plan._id)"
+          ></app-workout-card>
+
+          <!-- Expanded Content -->
+          @if (selectedPlanId() === plan._id && expandedType()) {
+            <div class="expanded-content">
+              @if (expandedType() === 'details') {
+                <app-workout-details [plan]="getSelectedPlan()"></app-workout-details>
+              }
+              @if (expandedType() === 'progress') {
+                <app-workout-progress [progress]="selectedPlanProgress()"></app-workout-progress>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Empty State -->
+    @if (filteredPlans().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-dumbbell"></i>
+        </div>
+        <h3>No Workout Plans Found</h3>
+        <p>No workout plans match your current filters.</p>
+        <button class="reset-filters-btn" (click)="clearFilters()">
+          Clear Filters
+        </button>
+      </div>
+    }
+  }
+</div>

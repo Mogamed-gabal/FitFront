@@ -1,0 +1,79 @@
+<div class="chats-filters">
+  <div class="filter-header">
+    <h3>Filter Chats</h3>
+  </div>
+  
+  <div class="filter-body">
+    <div class="filter-grid">
+      <!-- Search Input -->
+      <div class="filter-field">
+        <label for="search">Search</label>
+        <div class="search-input">
+          <i class="fas fa-search"></i>
+          <input
+            id="search"
+            type="text"
+            [(ngModel)]="currentSearch"
+            (ngModelChange)="onSearchChange($event)"
+            placeholder="Search by doctor or client name..."
+          />
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="filter-field">
+        <label for="status">Status</label>
+        <select id="status" [(ngModel)]="currentStatus" (ngModelChange)="onStatusChange($event)">
+          <option value="">All Status</option>
+          <option value="ACTIVE">Active</option>
+          <option value="SUSPENDED">Suspended</option>
+          <option value="CLOSED">Closed</option>
+        </select>
+      </div>
+
+      <!-- Role Filter -->
+      <div class="filter-field">
+        <label for="role">Participant Role</label>
+        <select id="role" [(ngModel)]="currentRole" (ngModelChange)="onRoleChange($event)">
+          <option value="">All Roles</option>
+          <option value="client">Client</option>
+          <option value="doctor">Doctor</option>
+        </select>
+      </div>
+
+      <!-- Specialization Filter -->
+      <div class="filter-field">
+        <label for="specialization">Specialization</label>
+        <input
+          id="specialization"
+          type="text"
+          [(ngModel)]="currentSpecialization"
+          (ngModelChange)="onSpecializationChange($event)"
+          placeholder="e.g., Cardiology, Neurology"
+        />
+      </div>
+
+      <!-- Chat Type Filter -->
+      <div class="filter-field">
+        <label for="chatType">Chat Type</label>
+        <select id="chatType" [(ngModel)]="currentChatType" (ngModelChange)="onChatTypeChange($event)">
+          <option value="">All Types</option>
+          <option value="ONE_TO_ONE">One to One</option>
+          <option value="GROUP">Group</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="filter-actions">
+      <button class="btn-apply" (click)="onApplyFilters()">
+        <i class="fas fa-filter"></i>
+        Apply Filters
+      </button>
+      <button class="btn-reset" (click)="onResetFilters()">
+        <i class="fas fa-undo"></i>
+        Reset
+      </button>
+    </div>
+  </div>
+</div>

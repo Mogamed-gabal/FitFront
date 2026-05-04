@@ -18,6 +18,8 @@ export class DeletedModelComponent {
   @Output() cancel = new EventEmitter<void>();
 
   protected reason = '';
+  protected reasonTouched = false;
+  protected loading = false;
 
   protected get modalTitle(): string {
     return this.type === 'restore' ? 'Restore User' : 'Delete Permanently';
@@ -39,12 +41,26 @@ export class DeletedModelComponent {
   }
 
   protected onConfirm(): void {
-    this.confirm.emit(this.reason);
+    this.reasonTouched = true;
+    
+    if (!this.reason.trim()) {
+      return; // Don't proceed if reason is empty
+    }
+    
+    this.loading = true;
+    this.confirm.emit(this.reason.trim());
   }
 
   protected onCancel(): void {
     this.cancel.emit();
     this.reason = '';
+    this.reasonTouched = false;
+    this.loading = false;
+  }
+
+  // Method to reset loading state (called by parent component)
+  setLoading(loading: boolean): void {
+    this.loading = loading;
   }
 
   protected onOverlayClick(event: MouseEvent): void {

@@ -19,6 +19,8 @@ export class SidebarComponent {
     { label: 'Users', icon: 'fa-solid fa-users', route: '/users' },
     { label: 'Requests', icon: 'fa-solid fa-file-contract', route: '/requests' },
     { label: 'Supervisors', icon: 'fa-solid fa-user-tie', route: '/supervisor' },
+    { label: 'Plans Monitoring', icon: 'fa-solid fa-clipboard-list', route: '/plans-monitoring' },
+    { label: 'Chat Monitoring', icon: 'fa-solid fa-comments', route: '/admin-chat' },
     { label: 'Audit Logs', icon: 'fa-solid fa-history', route: '/audit' },
     { label: 'Subscription', icon: 'fa-solid fa-credit-card', route: '/subscription' },
   ];

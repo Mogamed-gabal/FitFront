@@ -1,0 +1,45 @@
+<div class="plans-monitoring">
+  @switch (selectedView()) {
+    @case (null) {
+      <!-- Selection View -->
+      <div class="selection-container">
+        <div class="selection-header">
+          <h2>Plans Monitoring</h2>
+          <p>Select a plan type to monitor</p>
+        </div>
+
+        <div class="selection-grid">
+          <div class="selection-card" (click)="selectDiet()">
+            <div class="selection-icon">
+              <i class="fa-solid fa-utensils"></i>
+            </div>
+            <div class="selection-content">
+              <h3>Diet Plans</h3>
+              <p>Monitor diet plans and nutrition progress</p>
+            </div>
+          </div>
+
+          <div class="selection-card" (click)="selectWorkout()">
+            <div class="selection-icon">
+              <i class="fa-solid fa-dumbbell"></i>
+            </div>
+            <div class="selection-content">
+              <h3>Workout Plans</h3>
+              <p>Monitor workout plans and fitness progress</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @case ('diet') {
+      <!-- Diet Plans View -->
+      <app-diet (back)="backToSelection()"></app-diet>
+    }
+
+    @case ('workout') {
+      <!-- Workout Plans View -->
+      <app-workout (back)="backToSelection()"></app-workout>
+    }
+  }
+</div>

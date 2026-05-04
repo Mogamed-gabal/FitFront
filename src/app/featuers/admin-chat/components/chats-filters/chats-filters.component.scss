@@ -1,0 +1,132 @@
+.chats-filters {
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.filter-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid #f1f3f4;
+  
+  h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.filter-body {
+  padding: 20px 25px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  input,
+  select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+  }
+  
+  .search-input {
+    position: relative;
+    
+    i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      font-size: 13px;
+    }
+    
+    input {
+      padding-left: 35px;
+    }
+  }
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    i {
+      font-size: 12px;
+    }
+  }
+  
+  .btn-apply {
+    background: #3498db;
+    color: white;
+    
+    &:hover {
+      background: #2980b9;
+    }
+  }
+  
+  .btn-reset {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    
+    &:hover {
+      background: #e9ecef;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .filter-body {
+    padding: 15px 20px;
+  }
+  
+  .filter-actions {
+    flex-direction: column;
+    
+    button {
+      justify-content: center;
+    }
+  }
+}

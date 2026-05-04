@@ -1,91 +1,151 @@
-<div class="filter-card">
+<div class="enhanced-filter-card">
   <div class="filter-header">
-    <h3>Filters</h3>
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fa-solid fa-filter"></i>
+      </div>
+      <div class="header-text">
+        <h3>Filter Audit Logs</h3>
+        <p>Refine your audit log search with specific criteria</p>
+      </div>
+    </div>
+    <div class="active-filters-count">
+      <span class="count-badge">{{ getActiveFiltersCount() }}</span>
+      <span class="count-label">Active</span>
+    </div>
   </div>
   
   <div class="filter-body">
-    <div class="filter-grid">
-      <!-- Search Input -->
-      <div class="filter-field">
-        <label for="search">Search</label>
-        <div class="search-input">
-          <i class="fa-solid fa-search"></i>
+    <div class="filter-section">
+      <div class="section-title">
+        <i class="fa-solid fa-search"></i>
+        <span>Quick Search</span>
+      </div>
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <i class="fa-solid fa-search search-icon"></i>
           <input
             id="search"
             type="text"
             [(ngModel)]="currentSearch"
             (ngModelChange)="onSearchChange($event)"
-            placeholder="Search by actor, action, or target..."
+            placeholder="Search by actor name, action, target, or details..."
+            class="search-field"
           />
+          @if (currentSearch()) {
+            <button class="clear-search" (click)="clearSearch()">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          }
         </div>
       </div>
+    </div>
 
-      <!-- Action Types Dropdown -->
-      <div class="filter-field">
-        <label for="action">Action Type</label>
-        <select id="action" [(ngModel)]="currentAction" (ngModelChange)="onActionChange($event)">
-          <option value="">All Actions</option>
-          @for (actionType of getActionTypesArray(); track actionType.type) {
-            <option [value]="actionType.type">{{ actionType.name }}</option>
-          }
-        </select>
+    <div class="filter-section">
+      <div class="section-title">
+        <i class="fa-solid fa-sliders"></i>
+        <span>Filter Options</span>
       </div>
+      
+      <div class="filter-grid">
+        <!-- Action Types Dropdown -->
+        <div class="filter-field enhanced">
+          <label for="action" class="field-label">
+            <i class="fa-solid fa-bolt"></i>
+            Action Type
+          </label>
+          <select id="action" [(ngModel)]="currentAction" (ngModelChange)="onActionChange($event)" class="enhanced-select">
+            <option value="">All Actions</option>
+            @for (actionType of getActionTypesArray(); track actionType.type) {
+              <option [value]="actionType.type">{{ actionType.name }}</option>
+            }
+          </select>
+        </div>
 
-      <!-- Target Types Dropdown -->
-      <div class="filter-field">
-        <label for="target">Target Type</label>
-        <select id="target" [(ngModel)]="currentTarget" (ngModelChange)="onTargetChange($event)">
-          <option value="">All Targets</option>
-          @for (targetType of getTargetTypesArray(); track targetType.type) {
-            <option [value]="targetType.type">{{ targetType.name }}</option>
-          }
-        </select>
-      </div>
+        <!-- Target Types Dropdown -->
+        <div class="filter-field enhanced">
+          <label for="target" class="field-label">
+            <i class="fa-solid fa-bullseye"></i>
+            Target Type
+          </label>
+          <select id="target" [(ngModel)]="currentTarget" (ngModelChange)="onTargetChange($event)" class="enhanced-select">
+            <option value="">All Targets</option>
+            @for (targetType of getTargetTypesArray(); track targetType.type) {
+              <option [value]="targetType.type">{{ targetType.name }}</option>
+            }
+          </select>
+        </div>
 
-      <!-- Outcome Dropdown -->
-      <div class="filter-field">
-        <label for="outcome">Outcome</label>
-        <select id="outcome" [(ngModel)]="currentOutcome" (ngModelChange)="onOutcomeChange($event)">
-          <option value="">All Outcomes</option>
-          <option value="success">Success</option>
-          <option value="failure">Failure</option>
-          <option value="error">Error</option>
-        </select>
-      </div>
+        <!-- Outcome Dropdown -->
+        <div class="filter-field enhanced outcome-field">
+          <label for="outcome" class="field-label">
+            <i class="fa-solid fa-flag"></i>
+            Outcome
+          </label>
+          <div class="outcome-selector">
+            <select id="outcome" [(ngModel)]="currentOutcome" (ngModelChange)="onOutcomeChange($event)" class="enhanced-select outcome-select">
+              <option value="">All Outcomes</option>
+              <option value="success">✓ Success</option>
+              <option value="failure">✗ Failure</option>
+              <option value="error">⚠ Error</option>
+            </select>
+            <div class="outcome-indicator" [class]="getOutcomeClass(currentOutcome())">
+              <i class="fa-solid" [class]="getOutcomeIcon(currentOutcome())"></i>
+            </div>
+          </div>
+        </div>
 
-      <!-- Date From -->
-      <div class="filter-field">
-        <label for="dateFrom">Date From</label>
-        <input
-          id="dateFrom"
-          type="date"
-          [(ngModel)]="currentDateFrom"
-          (ngModelChange)="onDateFromChange($event)"
-        />
-      </div>
-
-      <!-- Date To -->
-      <div class="filter-field">
-        <label for="dateTo">Date To</label>
-        <input
-          id="dateTo"
-          type="date"
-          [(ngModel)]="currentDateTo"
-          (ngModelChange)="onDateToChange($event)"
-        />
+        <!-- Date Range -->
+        <div class="filter-field enhanced date-range">
+          <label class="field-label">
+            <i class="fa-solid fa-calendar"></i>
+            Date Range
+          </label>
+          <div class="date-inputs">
+            <div class="date-input-group">
+              <input
+                id="dateFrom"
+                type="date"
+                [(ngModel)]="currentDateFrom"
+                (ngModelChange)="onDateFromChange($event)"
+                class="date-input"
+                placeholder="From"
+              />
+              <label for="dateFrom" class="date-label">From</label>
+            </div>
+            <div class="date-separator">
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="date-input-group">
+              <input
+                id="dateTo"
+                type="date"
+                [(ngModel)]="currentDateTo"
+                (ngModelChange)="onDateToChange($event)"
+                class="date-input"
+                placeholder="To"
+              />
+              <label for="dateTo" class="date-label">To</label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Action Buttons -->
     <div class="filter-actions">
-      <button class="btn-apply" (click)="onApplyFilters()">
-        <i class="fa-solid fa-filter"></i>
-        Apply Filters
-      </button>
-      <button class="btn-reset" (click)="onResetFilters()">
-        <i class="fa-solid fa-undo"></i>
-        Reset
-      </button>
+      <div class="actions-left">
+        <button class="btn-reset enhanced" (click)="onResetFilters()">
+          <i class="fa-solid fa-undo"></i>
+          <span>Clear All</span>
+        </button>
+      </div>
+      <div class="actions-right">
+        <button class="btn-apply enhanced" (click)="onApplyFilters()">
+          <i class="fa-solid fa-search"></i>
+          <span>Apply Filters</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -29,9 +29,16 @@ export class DeletdUsersComponent implements OnInit {
   selectedUser = signal<DeletedUser | null>(null);
   modalVisible = signal(false);
   modalType = signal<'restore' | 'delete'>('restore');
+  modalComponent = signal<any>(null);
 
   // Computed
   paginatedUsers = computed(() => this.users());
+
+  // Helper methods
+  getRoleCount(roleStatistics: any[], role: string): number {
+    const roleStat = roleStatistics?.find(stat => stat._id === role);
+    return roleStat?.count || 0;
+  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -48,9 +55,19 @@ export class DeletdUsersComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          this.users.set(response.data.users);
-          this.pagination.set(response.data.pagination);
-          this.statistics.set(response.data.statistics);
+          console.log('🔍 Deleted Users API Response:', response);
+          
+          if (response.success && response.data) {
+            this.users.set(response.data.users);
+            this.pagination.set(response.data.pagination);
+            this.statistics.set(response.data.statistics);
+            
+            console.log('🔍 Deleted Users loaded:', response.data.users?.length || 0);
+            console.log('🔍 Pagination:', response.data.pagination);
+            console.log('🔍 Statistics:', response.data.statistics);
+          } else {
+            Swal.fire('Error', 'Invalid response format', 'error');
+          }
         },
         error: (error) => {
           Swal.fire('Error', error.error?.message || 'Failed to load deleted users', 'error');
@@ -90,16 +107,26 @@ export class DeletdUsersComponent implements OnInit {
 
     action$
       .pipe(
-        finalize(() => this.modalVisible.set(false)),
+        finalize(() => {
+          this.modalVisible.set(false);
+          // Reset modal loading state
+          const modal = this.modalComponent();
+          if (modal) {
+            modal.setLoading(false);
+          }
+        }),
         takeUntil(this.destroy$)
       )
       .subscribe({
         next: (response) => {
+          console.log('🔍 Restore/Delete Response:', response);
           const action = this.modalType() === 'restore' ? 'restored' : 'permanently deleted';
           Swal.fire('Success', `User ${action} successfully`, 'success');
           this.loadUsers();
         },
         error: (error) => {
+          console.error('🔍 Restore/Delete Error:', error);
+          console.error('🔍 Error Details:', error.error);
           Swal.fire('Error', error.error?.message || `Failed to ${this.modalType()} user`, 'error');
         }
       });

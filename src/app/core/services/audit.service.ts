@@ -53,7 +53,11 @@ export class AuditService {
       params = params.set('search', filters.search);
     }
 
-    return this.http.get<GetAuditLogsResponse>(`${this.baseUrl}/api/audit/logs`, { params });
+    const url = `${this.baseUrl}/api/audit/logs`;
+    console.log('Making API call to:', url);
+    console.log('Query params:', params.toString());
+    
+    return this.http.get<GetAuditLogsResponse>(url, { params });
   }
 
   getActionTypes(): Observable<ActionType[]> {
@@ -78,5 +82,9 @@ export class AuditService {
     }
 
     return this.http.get<ActivitySummary>(`${this.baseUrl}/api/audit/activity-summary`, { params });
+  }
+
+  getStatistics(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/audit/statistics`);
   }
 }

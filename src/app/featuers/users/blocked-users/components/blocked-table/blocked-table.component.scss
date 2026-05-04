@@ -182,6 +182,10 @@
   100% { transform: rotate(360deg); }
 }
 
+.mobile-cards {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .table-container {
     overflow-x: hidden;

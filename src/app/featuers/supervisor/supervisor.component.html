@@ -49,6 +49,7 @@
   ></app-supervisor-modal>
 
   <app-creat-supervisor-modal
+    #createModal
     [isOpen]="isCreateModalOpen"
     (create)="onCreateSupervisor($event)"
     (close)="isCreateModalOpen = false"

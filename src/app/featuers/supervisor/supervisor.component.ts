@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SupervisorService, Supervisor, GetSupervisorsResponse } from '../../core/services/supervisor.service';
@@ -21,6 +21,8 @@ export class SupervisorComponent implements OnInit {
   isCreateModalOpen = false;
   currentPage = 1;
   limit = 10;
+
+  createModal: CreatSupervisorModalComponent | undefined;
 
   constructor(private supervisorService: SupervisorService, private router: Router) {}
 
@@ -67,12 +69,23 @@ export class SupervisorComponent implements OnInit {
 
   onCreateSupervisor(data: any): void {
     this.supervisorService.createSupervisor(data).subscribe({
-      next: () => {
-        this.isCreateModalOpen = false;
-        this.loadSupervisors();
+      next: (response) => {
+        // Check if the response indicates success
+        if (response && response.success !== false) {
+          // Success - call the success method on modal
+          this.createModal?.onCreateSuccess();
+          this.loadSupervisors();
+        } else {
+          // API returned false or error response
+          const errorMessage = response?.message || response?.error || 'Failed to create supervisor. Please check your input and try again.';
+          this.createModal?.onCreateError(errorMessage);
+        }
       },
       error: (error) => {
         console.error('Error creating supervisor:', error);
+        // Handle API error
+        const errorMessage = error?.error?.message || error?.message || 'Network error. Please check your connection and try again.';
+        this.createModal?.onCreateError(errorMessage);
       }
     });
   }

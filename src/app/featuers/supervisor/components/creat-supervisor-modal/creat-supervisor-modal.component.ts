@@ -14,6 +14,9 @@ export class CreatSupervisorModalComponent {
   @Output() create = new EventEmitter<any>();
 
   supervisorForm: FormGroup;
+  isLoading = false;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(private fb: FormBuilder) {
     this.supervisorForm = this.fb.group({
@@ -27,7 +30,8 @@ export class CreatSupervisorModalComponent {
 
   onSubmit(): void {
     if (this.supervisorForm.valid) {
-      console.log('Form is valid, submitting data:', this.supervisorForm.value);
+      this.isLoading = true;
+      this.clearMessages();
       
       const formData = {
         name: this.supervisorForm.get('name')?.value,
@@ -37,10 +41,18 @@ export class CreatSupervisorModalComponent {
         address: this.supervisorForm.get('address')?.value
       };
       
-      console.log('Prepared form data for API:', formData);
+      // Emit the create event and wait for parent response
       this.create.emit(formData);
+      
+      // The parent component should handle the API call and call the appropriate method
+      // For now, we'll simulate the response handling
+      setTimeout(() => {
+        // This will be replaced by actual response handling from parent
+        // The parent component will call either onCreateSuccess() or onCreateError()
+        this.isLoading = false;
+      }, 1500);
     } else {
-      console.log('Form is invalid:', this.supervisorForm.errors);
+      this.errorMessage = 'Please fill in all required fields correctly.';
       
       // Mark all fields as touched to show validation errors
       Object.keys(this.supervisorForm.controls).forEach(key => {
@@ -49,15 +61,43 @@ export class CreatSupervisorModalComponent {
     }
   }
 
+  // Method to be called by parent component on successful creation
+  onCreateSuccess(): void {
+    this.isLoading = false;
+    this.successMessage = 'Supervisor created successfully!';
+    setTimeout(() => {
+      this.onClose();
+    }, 2000);
+  }
+
+  // Method to be called by parent component on creation failure
+  onCreateError(error: string = 'Failed to create supervisor. Please try again.'): void {
+    this.isLoading = false;
+    this.errorMessage = error;
+  }
+
   onClose(): void {
-    console.log('Modal close requested');
     this.resetForm();
+    this.clearMessages();
     this.close.emit();
   }
 
   resetForm(): void {
-    console.log('Resetting form');
     this.supervisorForm.reset();
+    this.isLoading = false;
+  }
+
+  clearMessages(): void {
+    this.errorMessage = null;
+    this.successMessage = null;
+  }
+
+  clearError(): void {
+    this.errorMessage = null;
+  }
+
+  clearSuccess(): void {
+    this.successMessage = null;
   }
 }
 

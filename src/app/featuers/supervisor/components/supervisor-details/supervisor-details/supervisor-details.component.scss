@@ -5,6 +5,7 @@
   padding: 2rem;
   background: #f8fafc;
   min-height: 100vh;
+  margin-top: 100px; // Increased clearance from navbar
 }
 
 // SECTION 1: Supervisor Header
@@ -1247,5 +1248,376 @@
     opacity: 1;
     transform: scale(1) translateY(0);
   }
-}}
 }
+
+// ========================================
+// COMPREHENSIVE RESPONSIVE DESIGN
+// ========================================
+
+// Desktop - Account for sidebar
+@media (min-width: 769px) {
+  .supervisor-management {
+    margin-left: 250px; // Account for sidebar width
+    max-width: calc(100% - 250px);
+  }
+}
+
+// Mobile First Approach
+@media (max-width: 768px) {
+  // Main container
+  .supervisor-management {
+    padding: 1rem;
+    min-height: auto;
+    margin-top: 100px; // Increased clearance from navbar on mobile too
+    margin-left: 0; // Full width on mobile
+    max-width: 100%;
+  }
+
+  // Header Section
+  .supervisor-header {
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+
+    .supervisor-info {
+      .supervisor-name {
+        font-size: 1.75rem;
+        margin-bottom: 0.375rem;
+      }
+
+      .supervisor-email {
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  // Content Section
+  .supervisor-content {
+    gap: 1.5rem;
+  }
+
+  // Info Card
+  .info-card {
+    .card-header {
+      padding: 1rem 1.5rem;
+
+      h2 {
+        font-size: 1.125rem;
+      }
+    }
+
+    .card-body {
+      padding: 1.5rem;
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+
+        .info-item {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.5rem;
+
+          label {
+            font-size: 0.75rem;
+            min-width: 80px;
+            font-weight: 600;
+          }
+
+          span {
+            font-size: 0.875rem;
+            text-align: right;
+            word-break: break-all;
+            flex: 1;
+
+            &.status-badge {
+              font-size: 0.75rem;
+              padding: 0.375rem 0.75rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Permissions Section
+  .permissions-section {
+    .permissions-actions-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.5rem;
+
+      .quick-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .action-btn {
+          width: 100%;
+          justify-content: center;
+          padding: 0.875rem;
+          font-size: 0.875rem;
+        }
+      }
+    }
+
+    .permissions-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .assigned-permissions,
+    .all-permissions {
+      .permissions-content {
+        .permission-chips {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+
+          .permission-chip {
+            padding: 0.75rem;
+            border-radius: 8px;
+
+            .chip-content {
+              flex: 1;
+
+              .permission-name {
+                font-size: 0.875rem;
+                margin-bottom: 0.25rem;
+                display: block;
+              }
+
+              .permission-info {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+
+                .permission-level,
+                .permission-category,
+                .permission-expiry {
+                  font-size: 0.7rem;
+                }
+              }
+            }
+
+            .chip-actions {
+              .remove-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.75rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Small Mobile
+@media (max-width: 480px) {
+  .supervisor-management {
+    padding: 0.75rem;
+  }
+
+  .supervisor-header {
+    padding: 1.5rem 1rem;
+    margin-bottom: 1rem;
+
+    .supervisor-info {
+      .supervisor-name {
+        font-size: 1.5rem;
+      }
+
+      .supervisor-email {
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  .supervisor-content {
+    gap: 1rem;
+  }
+
+  .info-card {
+    .card-header {
+      padding: 0.75rem 1rem;
+
+      h2 {
+        font-size: 1rem;
+      }
+    }
+
+    .card-body {
+      padding: 1rem;
+
+      .info-grid {
+        gap: 0.75rem;
+
+        .info-item {
+          label {
+            font-size: 0.7rem;
+          }
+
+          span {
+            font-size: 0.8rem;
+
+            &.status-badge {
+              font-size: 0.7rem;
+              padding: 0.25rem 0.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .permissions-section {
+    .permissions-actions-header {
+      padding: 1rem;
+
+      .quick-actions .action-btn {
+        padding: 0.75rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    .permissions-grid {
+      gap: 1rem;
+    }
+
+    .assigned-permissions,
+    .all-permissions {
+      .permissions-content {
+        .permission-chips {
+          gap: 0.5rem;
+
+          .permission-chip {
+            padding: 0.625rem;
+
+            .chip-content {
+              .permission-name {
+                font-size: 0.8rem;
+              }
+
+              .permission-info {
+                .permission-level,
+                .permission-category,
+                .permission-expiry {
+                  font-size: 0.65rem;
+                }
+              }
+            }
+
+            .chip-actions .remove-btn {
+              width: 28px;
+              height: 28px;
+              font-size: 0.7rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Ultra Small Mobile
+@media (max-width: 360px) {
+  .supervisor-management {
+    padding: 0.5rem;
+  }
+
+  .supervisor-header {
+    padding: 1rem 0.75rem;
+
+    .supervisor-info {
+      .supervisor-name {
+        font-size: 1.375rem;
+      }
+
+      .supervisor-email {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .info-card {
+    .card-header {
+      padding: 0.625rem 0.75rem;
+
+      h2 {
+        font-size: 0.9rem;
+      }
+    }
+
+    .card-body {
+      padding: 0.75rem;
+
+      .info-grid {
+        gap: 0.625rem;
+
+        .info-item {
+          label {
+            font-size: 0.65rem;
+          }
+
+          span {
+            font-size: 0.75rem;
+
+            &.status-badge {
+              font-size: 0.65rem;
+              padding: 0.25rem 0.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .permissions-section {
+    .permissions-actions-header {
+      padding: 0.75rem;
+
+      .quick-actions .action-btn {
+        padding: 0.625rem;
+        font-size: 0.75rem;
+      }
+    }
+
+    .assigned-permissions,
+    .all-permissions {
+      .permissions-content {
+        .permission-chips {
+          gap: 0.5rem;
+
+          .permission-chip {
+            padding: 0.5rem;
+
+            .chip-content {
+              .permission-name {
+                font-size: 0.75rem;
+              }
+
+              .permission-info {
+                .permission-level,
+                .permission-category,
+                .permission-expiry {
+                  font-size: 0.6rem;
+                }
+              }
+            }
+
+            .chip-actions .remove-btn {
+              width: 24px;
+              height: 24px;
+              font-size: 0.65rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}}}

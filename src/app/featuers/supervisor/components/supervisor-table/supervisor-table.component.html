@@ -54,20 +54,21 @@
           } @else if (supervisors && supervisors.length > 0) {
             @for (supervisor of supervisors; track supervisor._id) {
               <tr class="supervisor-row">
-                <td class="td-name">
+                <td class="td-name" data-label="Name">
                   <div class="user-cell">
                     <div class="user-avatar">
                       <i class="fa-solid fa-user-tie"></i>
                     </div>
                     <div class="user-details">
                       <div class="user-name">{{ supervisor.name }}</div>
+                      <div class="user-email">{{ supervisor.email }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="td-email">{{ supervisor.email }}</td>
-                <td class="td-phone">{{ supervisor.phone }}</td>
-                <td class="td-date">{{ formatDate(supervisor.createdAt) }}</td>
-                <td class="td-actions">
+                <td class="td-email" data-label="Email">{{ supervisor.email }}</td>
+                <td class="td-phone" data-label="Phone">{{ supervisor.phone }}</td>
+                <td class="td-date" data-label="Created">{{ formatDate(supervisor.createdAt) }}</td>
+                <td class="td-actions" data-label="Actions">
                   <div class="action-buttons">
                     <button class="view-btn" (click)="onView(supervisor._id)">
                       <i class="fa-solid fa-eye"></i>

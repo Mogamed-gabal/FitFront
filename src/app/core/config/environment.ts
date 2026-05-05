@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5000',
+  // apiBaseUrl: 'http://localhost:5000',
  
-    // apiBaseUrl: 'https://vercel.com/mogamedgabals-projects/fit-proo/FY95Xgdzpk9S2iUzmzShu32oPc5i',
+  apiBaseUrl: 'https://fit-proo.vercel.app',
   authEndpoint: '/api/auth',
   supervisorEndpoint: '/api/admin/supervisors',
   permissionsEndpoint: '/api/permissions',

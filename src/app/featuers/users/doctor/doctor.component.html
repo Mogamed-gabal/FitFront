@@ -1,6 +1,22 @@
 <section class="doctor-page">
   <div class="page-header">
-    <h2>Doctors</h2>
+    <div class="header-content">
+      <h2>Doctors</h2>
+      @if (!bundleMode()) {
+        <button class="btn-create-bundle" (click)="toggleBundleMode()">
+          <i class="fa-solid fa-box"></i>
+          Create Bundle
+        </button>
+      } @else {
+        <div class="bundle-mode-header">
+          <span class="bundle-mode-text">Bundle Creation Mode</span>
+          <button class="btn-cancel-bundle" (click)="cancelBundleMode()">
+            <i class="fa-solid fa-times"></i>
+            Cancel
+          </button>
+        </div>
+      }
+    </div>
     <div class="filters">
       <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass"></i>
@@ -25,6 +41,24 @@
     </div>
   </div>
 
+  @if (bundleMode() && selectedDoctors().length > 0) {
+    <div class="bundle-info-bar">
+      <div class="selection-info">
+        <i class="fa-solid fa-info-circle"></i>
+        <span>Selected: {{ selectedDoctors().length }}/2 doctors</span>
+        @if (selectedDoctorsNames().length > 0) {
+          <span class="selected-names">({{ selectedDoctorsNames().join(' + ') }})</span>
+        }
+      </div>
+      @if (selectedDoctors().length === 2) {
+        <button class="btn-clear-selection" (click)="resetBundleForm()">
+          <i class="fa-solid fa-redo"></i>
+          Clear Selection
+        </button>
+      }
+    </div>
+  }
+
   @if (loading()) {
     <div class="loader-container">
       <div class="spinner"></div>
@@ -38,12 +72,15 @@
   } @else {
     <app-doctor-table
       [doctors]="paginatedDoctors()"
+      [bundleMode]="bundleMode()"
+      [selectedDoctors]="selectedDoctors()"
       (viewDoctor)="openDoctorDetails($event)"
       (blockDoctor)="onBlockDoctor($event)"
       (unblockDoctor)="onUnblockDoctor($event)"
       (deleteDoctor)="onDeleteDoctor($event)"
       (recommendDoctor)="onRecommendDoctor($event)"
       (unrecommendDoctor)="onUnrecommendDoctor($event)"
+      (doctorSelect)="onDoctorSelect($event)"
     />
   }
 
@@ -56,6 +93,116 @@
       <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()">Next</button>
     </div>
   </div>
+
+  @if (bundleMode() && selectedDoctors().length === 2) {
+    <div class="bundle-form-card">
+      <div class="bundle-form-header">
+        <h3>
+          <i class="fa-solid fa-box"></i>
+          Create Bundle
+        </h3>
+        <div class="bundle-preview">
+          <span class="preview-label">Bundle will include:</span>
+          <span class="preview-doctors">{{ selectedDoctorsNames().join(' + ') }}</span>
+        </div>
+      </div>
+
+      @if (bundleError()) {
+        <div class="bundle-error">
+          <i class="fa-solid fa-exclamation-triangle"></i>
+          <span>{{ bundleError() }}</span>
+        </div>
+      }
+
+      <div class="bundle-form-body">
+        <div class="form-field">
+          <label for="bundle-name">Bundle Name</label>
+          <input
+            id="bundle-name"
+            type="text"
+            [ngModel]="bundleName()"
+            (ngModelChange)="updateBundleName($event)"
+            placeholder="Enter bundle name..."
+            maxlength="100"
+            [disabled]="bundleLoading()"
+          />
+          <small class="field-hint">{{ bundleName().length }}/100 characters</small>
+        </div>
+
+        <div class="pricing-section">
+          <h4>
+            <i class="fa-solid fa-dollar-sign"></i>
+            Pricing
+          </h4>
+          <div class="pricing-grid">
+            <div class="pricing-field">
+              <label for="pricing-1month">1 Month</label>
+              <input
+                id="pricing-1month"
+                type="number"
+                [ngModel]="bundlePricing().oneMonth"
+                (ngModelChange)="updateBundleOneMonth($event)"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                [disabled]="bundleLoading()"
+              />
+            </div>
+            <div class="pricing-field">
+              <label for="pricing-3months">3 Months</label>
+              <input
+                id="pricing-3months"
+                type="number"
+                [ngModel]="bundlePricing().threeMonths"
+                (ngModelChange)="updateBundleThreeMonths($event)"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                [disabled]="bundleLoading()"
+              />
+            </div>
+            <div class="pricing-field">
+              <label for="pricing-6months">6 Months</label>
+              <input
+                id="pricing-6months"
+                type="number"
+                [ngModel]="bundlePricing().sixMonths"
+                (ngModelChange)="updateBundleSixMonths($event)"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                [disabled]="bundleLoading()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bundle-form-actions">
+        <button
+          class="btn-cancel"
+          (click)="resetBundleForm()"
+          [disabled]="bundleLoading()"
+        >
+          <i class="fa-solid fa-times"></i>
+          Clear Form
+        </button>
+        <button
+          class="btn-create"
+          (click)="onCreateBundle()"
+          [disabled]="!canCreateBundle() || bundleLoading()"
+        >
+          @if (bundleLoading()) {
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Creating...
+          } @else {
+            <i class="fa-solid fa-check"></i>
+            Create Bundle
+          }
+        </button>
+      </div>
+    </div>
+  }
 
   @if (detailLoading()) {
     <div class="view-loading-overlay">

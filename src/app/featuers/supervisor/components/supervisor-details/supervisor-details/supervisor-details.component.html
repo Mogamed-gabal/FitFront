@@ -1,39 +1,378 @@
-<div class="card-container">
-  <div class="card">
-    <div class="card-header">
-      <h2>Supervisor Details</h2>
-    </div>
+<!-- Supervisor Management Page -->
+<div class="supervisor-management">
+  
+  <!-- SECTION 1: Supervisor Header -->
+  <div class="supervisor-header">
+    @if (isLoadingSupervisor) {
+      <div class="loading-placeholder">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-subtitle"></div>
+      </div>
+    } @else if (supervisor) {
+      <div class="supervisor-info">
+        <h1 class="supervisor-name">{{ supervisor.name }}</h1>
+        <p class="supervisor-email">{{ supervisor.email }}</p>
+      </div>
+    }
+  </div>
+
+  <!-- SECTION 2: Main Content -->
+  <div class="supervisor-content">
     
-    <div class="card-body">
-      <div class="info-section">
-        <div class="info-grid">
-          <div class="info-item">
-            <strong>Supervisor ID:</strong> {{ supervisorId }}
+    <!-- Supervisor Info Card -->
+    <div class="info-card">
+      <div class="card-header">
+        <h2>Supervisor Information</h2>
+      </div>
+      <div class="card-body">
+        @if (isLoadingSupervisor) {
+          <div class="info-grid">
+            <div class="skeleton skeleton-field"></div>
+            <div class="skeleton skeleton-field"></div>
+            <div class="skeleton skeleton-field"></div>
           </div>
-          <div class="info-item">
-            <strong>Status:</strong> Active
+        } @else if (supervisor) {
+          <div class="info-grid">
+            <div class="info-item">
+              <label>ID</label>
+              <span>{{ supervisor._id }}</span>
+            </div>
+            <div class="info-item">
+              <label>Name</label>
+              <span>{{ supervisor.name }}</span>
+            </div>
+            <div class="info-item">
+              <label>Email</label>
+              <span>{{ supervisor.email }}</span>
+            </div>
+            <div class="info-item">
+              <label>Phone</label>
+              <span>{{ supervisor.phone }}</span>
+            </div>
+            <div class="info-item">
+              <label>Status</label>
+              <span class="status-badge active">Active</span>
+            </div>
+            <div class="info-item">
+              <label>Role</label>
+              <span>Supervisor</span>
+            </div>
           </div>
-          <div class="info-item">
-            <strong>Role:</strong> Supervisor
-          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Permissions Management -->
+    <div class="permissions-section">
+      <!-- Permission Actions Header -->
+      <div class="permissions-actions-header">
+        <div class="actions-title">
+          <h2>
+            <i class="fas fa-user-shield"></i>
+            Permission Management
+          </h2>
+          <p class="actions-subtitle">Manage supervisor access permissions</p>
+        </div>
+        <div class="quick-actions">
+          <button 
+            class="action-btn primary"
+            (click)="openGrantModal()"
+            [disabled]="isLoadingPermissions || isUpdatingPermission"
+          >
+            <i class="fas fa-plus-circle"></i>
+            Grant Permission
+          </button>
+          <button 
+            class="action-btn secondary"
+            (click)="openRevokeModal()"
+            [disabled]="assignedPermissions.length === 0 || isUpdatingPermission"
+          >
+            <i class="fas fa-minus-circle"></i>
+            Revoke Permission
+          </button>
         </div>
       </div>
 
+      <div class="permissions-grid">
+        <!-- Assigned Permissions -->
+        <div class="assigned-permissions">
+          <div class="permissions-header">
+            <h3>
+              <i class="fas fa-shield-alt"></i>
+              Assigned Permissions
+            </h3>
+            <span class="permission-count">{{ assignedPermissions.length }}</span>
+          </div>
+          <div class="permissions-content">
+            <div *ngIf="isLoadingPermissions" class="permission-chips">
+              <div class="skeleton-chip" *ngFor="let i of [1,2,3]"></div>
+            </div>
+            <div *ngIf="!isLoadingPermissions && assignedPermissions.length > 0" class="permission-chips">
+              <div 
+                *ngFor="let permission of assignedPermissions" 
+                class="permission-chip assigned"
+                [class.expired]="!permission.isActive"
+              >
+                <div class="chip-content">
+                  <span class="permission-name">{{ permission.name }}</span>
+                  <span class="permission-info">
+                    <span class="permission-level">ASSIGNED</span>
+                    <span *ngIf="permission.expiresAt" class="permission-expiry">
+                      Expires: {{ permission.expiresAt | date:'shortDate' }}
+                    </span>
+                  </span>
+                </div>
+                <div class="chip-actions">
+                  <button 
+                    class="remove-btn" 
+                    (click)="quickRevokePermission(permission)"
+                    [disabled]="isUpdatingPermission"
+                    title="Quick revoke permission"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!isLoadingPermissions && assignedPermissions.length === 0" class="empty-state">
+              <i class="fas fa-lock-open"></i>
+              <p>No permissions assigned yet</p>
+              <button class="empty-action-btn" (click)="openGrantModal()">
+                <i class="fas fa-plus"></i>
+                Grant First Permission
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- All Available Permissions -->
+        <div class="all-permissions">
+          <div class="permissions-header">
+            <h3>
+              <i class="fas fa-list"></i>
+              Available Permissions
+            </h3>
+            <span class="permission-count">{{ getUnassignedPermissions().length }}</span>
+          </div>
+          <div class="permissions-content">
+            <div *ngIf="isLoadingPermissions" class="permission-chips">
+              <div class="skeleton-chip" *ngFor="let i of [1,2,3,4,5]"></div>
+            </div>
+            <div *ngIf="!isLoadingPermissions && getUnassignedPermissions().length > 0" class="permission-chips">
+              <div 
+                *ngFor="let permission of getUnassignedPermissions()" 
+                class="permission-chip available"
+                (click)="quickAssignPermission(permission)"
+                [class.disabled]="isUpdatingPermission"
+                title="Click to assign this permission"
+              >
+                <div class="chip-content">
+                  <span class="permission-name">{{ permission.name }}</span>
+                  <span class="permission-info">
+                    <span class="permission-level">{{ permission.level }}</span>
+                    <span class="permission-category">{{ permission.category }}</span>
+                  </span>
+                </div>
+                <div class="chip-actions">
+                  <i class="fas fa-plus"></i>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!isLoadingPermissions && getUnassignedPermissions().length === 0" class="empty-state">
+              <i class="fas fa-check-circle"></i>
+              <p>All permissions assigned</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grant Permission Modal -->
+    <div *ngIf="showGrantModal" class="modal-overlay" (click)="closeGrantModal()">
+      <!-- Debug: showGrantModal = {{ showGrantModal }} -->
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>
+            <i class="fas fa-plus-circle"></i>
+            Grant Permission
+          </h3>
+          <button class="close-btn" (click)="closeGrantModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="permission-selector">
+            <label for="permissionSelect">Select Permission:</label>
+            <select 
+              id="permissionSelect" 
+              [(ngModel)]="selectedPermission" 
+              class="form-control"
+            >
+              <option value="">Choose a permission...</option>
+              <option 
+                *ngFor="let permission of getUnassignedPermissions()" 
+                [value]="permission.name"
+              >
+                {{ permission.name }} - {{ permission.description }} ({{ permission.level }})
+              </option>
+            </select>
+          </div>
+          
+          <div class="permission-details" *ngIf="selectedPermission">
+            <div class="detail-item">
+              <strong>Description:</strong>
+              <span>{{ getSelectedPermissionDetails()?.description }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Category:</strong>
+              <span>{{ getSelectedPermissionDetails()?.category }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Level:</strong>
+              <span class="level-badge" [class]="'level-' + getSelectedPermissionDetails()?.level?.toLowerCase()">
+                {{ getSelectedPermissionDetails()?.level }}
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reasonInput">Reason (Optional):</label>
+            <textarea 
+              id="reasonInput" 
+              [(ngModel)]="grantReason" 
+              class="form-control"
+              placeholder="Why are you granting this permission?"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="expiryInput">Expiration Date (Optional):</label>
+            <input 
+              id="expiryInput" 
+              type="datetime-local" 
+              [(ngModel)]="grantExpiry" 
+              class="form-control"
+              [min]="getMinExpiryDate()"
+            >
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeGrantModal()">Cancel</button>
+          <button 
+            class="btn btn-primary" 
+            (click)="confirmGrantPermission()"
+            [disabled]="!selectedPermission || isUpdatingPermission"
+          >
+            <i class="fas fa-check" *ngIf="!isUpdatingPermission"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isUpdatingPermission"></i>
+            {{ isUpdatingPermission ? 'Granting...' : 'Grant Permission' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revoke Permission Modal -->
+    <div *ngIf="showRevokeModal" class="modal-overlay" (click)="closeRevokeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>
+            <i class="fas fa-minus-circle"></i>
+            Revoke Permission
+          </h3>
+          <button class="close-btn" (click)="closeRevokeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="permission-selector">
+            <label for="revokeSelect">Select Permission to Revoke:</label>
+            <select 
+              id="revokeSelect" 
+              [(ngModel)]="selectedRevokePermission" 
+              class="form-control"
+            >
+              <option value="">Choose a permission...</option>
+              <option 
+                *ngFor="let permission of assignedPermissions" 
+                [value]="permission.name"
+              >
+                {{ permission.name }} 
+                <span *ngIf="!permission.isActive">(Inactive)</span>
+                <span *ngIf="permission.expiresAt">(Expires: {{ permission.expiresAt | date:'shortDate' }})</span>
+              </option>
+            </select>
+          </div>
+
+          <div class="permission-details" *ngIf="selectedRevokePermission">
+            <div class="detail-item">
+              <strong>Assigned:</strong>
+              <span>{{ getSelectedRevokePermissionDetails()?.assignedAt | date:'medium' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Status:</strong>
+              <span class="status-badge" [class]="'status-' + (getSelectedRevokePermissionDetails()?.isActive ? 'active' : 'inactive')">
+                {{ getSelectedRevokePermissionDetails()?.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+            <div *ngIf="getSelectedRevokePermissionDetails()?.expiresAt" class="detail-item">
+              <strong>Expires:</strong>
+              <span>{{ getSelectedRevokePermissionDetails()?.expiresAt | date:'medium' }}</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="revokeReasonInput">Reason for Revoking:</label>
+            <textarea 
+              id="revokeReasonInput" 
+              [(ngModel)]="revokeReason" 
+              class="form-control"
+              placeholder="Why are you revoking this permission?"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="warning-message" *ngIf="selectedRevokePermission">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Revoking this permission will immediately remove the supervisor's access to related features. This action cannot be undone.</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeRevokeModal()">Cancel</button>
+          <button 
+            class="btn btn-danger" 
+            (click)="confirmRevokePermission()"
+            [disabled]="!selectedRevokePermission || isUpdatingPermission"
+          >
+            <i class="fas fa-trash" *ngIf="!isUpdatingPermission"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isUpdatingPermission"></i>
+            {{ isUpdatingPermission ? 'Revoking...' : 'Revoke Permission' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success/Error Notifications -->
+    <div *ngIf="notification" class="notification" [class]="notification.type">
+      <div class="notification-content">
+        <i class="fas" [class]="notification.icon"></i>
+        <span>{{ notification.message }}</span>
+      </div>
+      <button class="notification-close" (click)="clearNotification()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Tabs for Logs (keeping existing functionality) -->
+    <div class="tabs-section">
       <div class="tabs">
-        <button class="tab-button" [class.active]="activeTab === 'permissions'" (click)="activeTab = 'permissions'">
-          Permissions
-        </button>
         <button class="tab-button" [class.active]="activeTab === 'logs'" (click)="activeTab = 'logs'">
-          Logs
+          <i class="fa-solid fa-file-alt"></i>
+          Activity Logs
         </button>
       </div>
 
       <div class="tab-content">
-        <!-- Permissions Tab -->
-        <div *ngIf="activeTab === 'permissions'" class="permissions-section">
-          <app-permissions-panel [userId]="supervisorId"></app-permissions-panel>
-        </div>
-
         <!-- Logs Tab -->
         <div *ngIf="activeTab === 'logs'" class="logs-section">
           <div class="filters-card">

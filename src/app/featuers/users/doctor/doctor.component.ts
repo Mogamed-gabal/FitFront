@@ -10,7 +10,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, finalize } from 'rxjs';
-import { Doctor, DoctorService, GetDoctorsParams } from '../../../core/services/users/doctor.service';
+import { Doctor, DoctorService, GetDoctorsParams, CreateBundleRequest } from '../../../core/services/users/doctor.service';
 import { DoctorTableComponent } from './doctor-table/doctor-table.component';
 import { DoctorDetailsModalComponent } from './doctor-details-modal/doctor-details-modal.component';
 import { DoctorTableRow } from './doctor.types';
@@ -49,10 +49,55 @@ export class DoctorComponent implements OnInit {
   protected readonly detailLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  // Bundle creation state
+  protected readonly bundleMode = signal(false);
+  protected readonly selectedDoctors = signal<string[]>([]);
+  protected readonly bundleName = signal('');
+  protected readonly bundlePricing = signal({
+    oneMonth: '',
+    threeMonths: '',
+    sixMonths: ''
+  });
+  protected readonly bundleLoading = signal(false);
+  protected readonly bundleError = signal<string | null>(null);
+
   protected readonly totalPages = computed(() => this.pagination().totalPages);
   protected readonly paginatedDoctors = computed(() => 
     this.doctors().map(this.mapToDoctorTableRow)
   );
+
+  // Bundle computed properties
+  protected readonly canCreateBundle = computed(() => {
+    const selected = this.selectedDoctors();
+    const name = this.bundleName().trim();
+    const pricing = this.bundlePricing();
+    
+    return selected.length === 2 && 
+           name.length > 0 && 
+           name.length <= 100 &&
+           pricing.oneMonth && 
+           pricing.threeMonths && 
+           pricing.sixMonths &&
+           parseFloat(pricing.oneMonth) > 0 &&
+           parseFloat(pricing.threeMonths) > 0 &&
+           parseFloat(pricing.sixMonths) > 0;
+  });
+
+  protected readonly selectedDoctorsNames = computed(() => {
+    const selectedIds = this.selectedDoctors();
+    return this.doctors()
+      .filter(doctor => selectedIds.includes(doctor._id))
+      .map(doctor => doctor.name);
+  });
+
+  protected readonly isDoctorSelected = (doctorId: string) => {
+    return this.selectedDoctors().includes(doctorId);
+  };
+
+  protected readonly isDoctorDisabled = (doctorId: string) => {
+    const selected = this.selectedDoctors();
+    return selected.length === 2 && !selected.includes(doctorId);
+  };
 
   private mapToDoctorTableRow(doctor: Doctor): DoctorTableRow {
     return {
@@ -372,5 +417,104 @@ export class DoctorComponent implements OnInit {
       }
     }
     return 'Something went wrong. Please try again.';
+  }
+
+  // Bundle creation methods
+  protected toggleBundleMode(): void {
+    this.bundleMode.set(!this.bundleMode());
+    if (!this.bundleMode()) {
+      this.resetBundleForm();
+    }
+  }
+
+  protected onDoctorSelect(doctorId: string): void {
+    const selected = this.selectedDoctors();
+    if (selected.includes(doctorId)) {
+      this.selectedDoctors.set(selected.filter(id => id !== doctorId));
+    } else if (selected.length < 2) {
+      this.selectedDoctors.set([...selected, doctorId]);
+    } else {
+      this.bundleError.set('You can only select exactly 2 doctors for a bundle');
+      setTimeout(() => this.bundleError.set(null), 3000);
+    }
+  }
+
+  protected onCreateBundle(): void {
+    if (!this.canCreateBundle()) {
+      this.bundleError.set('Please fill all required fields correctly');
+      setTimeout(() => this.bundleError.set(null), 3000);
+      return;
+    }
+
+    this.bundleLoading.set(true);
+    this.bundleError.set(null);
+
+    const bundleData: CreateBundleRequest = {
+      name: this.bundleName().trim(),
+      doctors: this.selectedDoctors(),
+      pricing: {
+        oneMonth: parseFloat(this.bundlePricing().oneMonth),
+        threeMonths: parseFloat(this.bundlePricing().threeMonths),
+        sixMonths: parseFloat(this.bundlePricing().sixMonths)
+      }
+    };
+
+    this.doctorService.createBundle(bundleData)
+      .pipe(finalize(() => this.bundleLoading.set(false)))
+      .subscribe({
+        next: (response) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Bundle Created!',
+            text: `Bundle "${bundleData.name}" has been created successfully with ${this.selectedDoctorsNames().join(' + ')}`,
+            confirmButtonColor: '#28a745'
+          });
+          this.resetBundleForm();
+          this.bundleMode.set(false);
+        },
+        error: (err: any) => {
+          const message = this.extractErrorMessage(err);
+          this.bundleError.set(message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Creation Failed',
+            text: message,
+            confirmButtonColor: '#dc3545'
+          });
+        }
+      });
+  }
+
+  protected resetBundleForm(): void {
+    this.selectedDoctors.set([]);
+    this.bundleName.set('');
+    this.bundlePricing.set({
+      oneMonth: '',
+      threeMonths: '',
+      sixMonths: ''
+    });
+    this.bundleError.set(null);
+  }
+
+  protected cancelBundleMode(): void {
+    this.bundleMode.set(false);
+    this.resetBundleForm();
+  }
+
+  // Helper methods for template to avoid arrow function syntax issues
+  protected updateBundleName(value: string): void {
+    this.bundleName.set(value);
+  }
+
+  protected updateBundleOneMonth(value: string): void {
+    this.bundlePricing.update(p => ({ ...p, oneMonth: value }));
+  }
+
+  protected updateBundleThreeMonths(value: string): void {
+    this.bundlePricing.update(p => ({ ...p, threeMonths: value }));
+  }
+
+  protected updateBundleSixMonths(value: string): void {
+    this.bundlePricing.update(p => ({ ...p, sixMonths: value }));
   }
 }

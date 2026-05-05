@@ -45,6 +45,30 @@ export interface Package {
   isActive: boolean;
 }
 
+export interface BundlePricing {
+  oneMonth: number;
+  threeMonths: number;
+  sixMonths: number;
+}
+
+export interface CreateBundleRequest {
+  name: string;
+  doctors: string[];
+  pricing: BundlePricing;
+}
+
+export interface CreateBundleResponse {
+  success: boolean;
+  message: string;
+  data: {
+    _id: string;
+    name: string;
+    doctors: Doctor[];
+    pricing: BundlePricing;
+    createdAt: string;
+  };
+}
+
 export interface GetDoctorsParams {
   page?: number;
   limit?: number;
@@ -158,5 +182,9 @@ export class DoctorService {
     return this.http.delete<{ success: boolean; message: string; data: Doctor }>(`${this.baseUrl}/api/doctors/${doctorId}/recommend`, {
       body: { reason }
     });
+  }
+
+  createBundle(bundleData: CreateBundleRequest): Observable<CreateBundleResponse> {
+    return this.http.post<CreateBundleResponse>(`${this.baseUrl}/api/bundles`, bundleData);
   }
 }

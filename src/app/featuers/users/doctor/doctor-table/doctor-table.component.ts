@@ -11,12 +11,15 @@ import { DoctorTableRow } from '../doctor.types';
 })
 export class DoctorTableComponent {
   @Input({ required: true }) doctors: DoctorTableRow[] = [];
+  @Input() bundleMode = false;
+  @Input() selectedDoctors: string[] = [];
   @Output() viewDoctor = new EventEmitter<DoctorTableRow>();
   @Output() blockDoctor = new EventEmitter<DoctorTableRow>();
   @Output() unblockDoctor = new EventEmitter<DoctorTableRow>();
   @Output() deleteDoctor = new EventEmitter<DoctorTableRow>();
   @Output() recommendDoctor = new EventEmitter<DoctorTableRow>();
   @Output() unrecommendDoctor = new EventEmitter<DoctorTableRow>();
+  @Output() doctorSelect = new EventEmitter<string>();
 
   protected onView(doctor: DoctorTableRow): void {
     this.viewDoctor.emit(doctor);
@@ -40,5 +43,18 @@ export class DoctorTableComponent {
 
   protected onUnrecommend(doctor: DoctorTableRow): void {
     this.unrecommendDoctor.emit(doctor);
+  }
+
+  protected onDoctorSelect(doctorId: string): void {
+    this.doctorSelect.emit(doctorId);
+  }
+
+  protected isDoctorSelected(doctorId: string): boolean {
+    return this.selectedDoctors.includes(doctorId);
+  }
+
+  protected isDoctorDisabled(doctorId: string): boolean {
+    const selected = this.selectedDoctors;
+    return selected.length === 2 && !selected.includes(doctorId);
   }
 }

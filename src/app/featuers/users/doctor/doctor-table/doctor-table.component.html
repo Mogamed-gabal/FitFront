@@ -4,6 +4,9 @@
     <table class="doctor-table">
       <thead>
         <tr>
+          @if (bundleMode) {
+            <th class="bundle-checkbox-header">Select</th>
+          }
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
@@ -15,7 +18,25 @@
       </thead>
       <tbody>
         @for (doctor of doctors; track doctor.id) {
-          <tr>
+          <tr [class.bundle-selected]="isDoctorSelected(doctor.id)" [class.bundle-disabled]="isDoctorDisabled(doctor.id)">
+            @if (bundleMode) {
+              <td class="bundle-checkbox-cell">
+                <div class="custom-checkbox">
+                  <input 
+                    type="checkbox" 
+                    [checked]="isDoctorSelected(doctor.id)"
+                    [disabled]="isDoctorDisabled(doctor.id)"
+                    (change)="onDoctorSelect(doctor.id)"
+                    [id]="'doctor-' + doctor.id"
+                  />
+                  <label [for]="'doctor-' + doctor.id" class="checkbox-label">
+                    <span class="checkbox-icon">
+                      <i class="fa-solid fa-check"></i>
+                    </span>
+                  </label>
+                </div>
+              </td>
+            }
             <td>{{ doctor.name }}</td>
             <td>{{ doctor.email }}</td>
             <td>{{ doctor.phone }}</td>
@@ -67,7 +88,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="7" class="empty-state">No doctors found.</td>
+            <td [attr.colspan]="bundleMode ? 8 : 7" class="empty-state">No doctors found.</td>
           </tr>
         }
       </tbody>
@@ -77,7 +98,25 @@
   <!-- Mobile Cards -->
   <div class="mobile-cards">
     @for (doctor of doctors; track doctor.id) {
-      <div class="doctor-card">
+      <div class="doctor-card" [class.bundle-selected]="isDoctorSelected(doctor.id)" [class.bundle-disabled]="isDoctorDisabled(doctor.id)">
+        @if (bundleMode) {
+          <div class="bundle-checkbox-overlay">
+            <div class="custom-checkbox">
+              <input 
+                type="checkbox" 
+                [checked]="isDoctorSelected(doctor.id)"
+                [disabled]="isDoctorDisabled(doctor.id)"
+                (change)="onDoctorSelect(doctor.id)"
+                [id]="'mobile-doctor-' + doctor.id"
+              />
+              <label [for]="'mobile-doctor-' + doctor.id" class="checkbox-label">
+                <span class="checkbox-icon">
+                  <i class="fa-solid fa-check"></i>
+                </span>
+              </label>
+            </div>
+          </div>
+        }
         <div class="card-header">
           <div class="user-info">
             <div class="user-name">{{ doctor.name }}</div>

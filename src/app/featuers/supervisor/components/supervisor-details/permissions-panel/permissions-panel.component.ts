@@ -1,48 +1,64 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { SupervisorService, Permission, UserPermission } from '../../../../../core/services/supervisor.service';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { SupervisorService, Permission, UserPermission, AvailablePermission, GrantPermissionRequest, RevokePermissionRequest } from '../../../../../core/services/supervisor.service';
+import { Subject, takeUntil } from 'rxjs';
+import { PermissionModalComponent } from './permission-modal/permission-modal.component';
 
 @Component({
   selector: 'app-permissions-panel',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PermissionModalComponent],
   templateUrl: './permissions-panel.component.html',
   styleUrl: './permissions-panel.component.scss'
 })
 export class PermissionsPanelComponent implements OnInit, OnDestroy {
   @Input() userId: string = '';
 
-  allPermissions: Permission[] = [];
-  userPermissions: UserPermission[] = [];
-  filteredAllPermissions: Permission[] = [];
-  filteredUserPermissions: UserPermission[] = [];
+  // Data
+  allPermissions: AvailablePermission[] = [];
+  assignedPermissions: UserPermission[] = [];
+  availablePermissions: AvailablePermission[] = [];
+  permissionCategories: string[] = [];
 
+  // UI State - Loading and modal states
   isLoading = false;
-  searchTerm = '';
-  selectedCategory = '';
+  showGrantModal = false;
+  showDetailsPopup = false;
+  showConfirmation = false;
 
-  categories: string[] = [];
-
-  searchForm: FormGroup;
+  // Selected Items
+  selectedPermission: AvailablePermission | null = null;
+  selectedPermissionDetails: AvailablePermission | UserPermission | null = null;
+  permissionToRevoke: UserPermission | null = null;
 
   private destroy$ = new Subject<void>();
+  
+  // Debug property to force recompilation
+  debugVersion = '1.0.0';
 
   constructor(
     private supervisorService: SupervisorService,
-    private fb: FormBuilder
-  ) {
-    this.searchForm = this.fb.group({
-      search: [''],
-      category: ['']
-    });
-  }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    if (!this.userId) return;
-
-    this.loadPermissions();
-    this.setupSearchListeners();
+    // Get userId from parent route parameters
+    if (this.route.parent) {
+      this.route.parent.paramMap.subscribe(params => {
+        this.userId = params.get('id') || '';
+        console.log('PermissionsPanel initialized with userId:', this.userId);
+        console.log('Parent route params:', params);
+        
+        if (!this.userId) {
+          console.error('No userId provided to PermissionsPanel');
+          return;
+        }
+        this.loadPermissions();
+      });
+    } else {
+      console.error('No parent route available');
+    }
   }
 
   ngOnDestroy(): void {
@@ -50,51 +66,20 @@ export class PermissionsPanelComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private setupSearchListeners(): void {
-    this.searchForm.get('search')?.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(value => {
-        this.searchTerm = value.toLowerCase();
-        this.filterPermissions();
-      });
-
-    this.searchForm.get('category')?.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(value => {
-        this.selectedCategory = value;
-        this.filterPermissions();
-      });
-  }
-
+  // Data Loading
   private loadPermissions(): void {
+    console.log('Loading permissions for userId:', this.userId);
     this.isLoading = true;
 
-    this.supervisorService.getAllPermissions().subscribe({
+    // Load both assigned and available permissions in parallel
+    this.supervisorService.getUserPermissions(this.userId).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (response) => {
-        this.allPermissions = response.data.permissions;
-        this.extractCategories();
-        this.loadUserPermissions();
-      },
-      error: (error) => {
-        console.error('Error loading permissions:', error);
-        this.isLoading = false;
-      }
-    });
-  }
-
-  private loadUserPermissions(): void {
-    this.supervisorService.getUserPermissions(this.userId).subscribe({
-      next: (response) => {
-        this.userPermissions = response.data.permissions;
-        this.filterPermissions();
-        this.isLoading = false;
+        console.log('User permissions response:', response);
+        this.assignedPermissions = response.data.permissions;
+        console.log('Assigned permissions loaded:', this.assignedPermissions.length);
+        this.loadAllPermissions();
       },
       error: (error) => {
         console.error('Error loading user permissions:', error);
@@ -103,67 +88,176 @@ export class PermissionsPanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  private extractCategories(): void {
-    this.categories = [...new Set(this.allPermissions.map(p => p.category))];
-  }
-
-  private filterPermissions(): void {
-    this.filteredAllPermissions = this.allPermissions.filter(permission => {
-      const matchesSearch = !this.searchTerm || 
-        permission.name.toLowerCase().includes(this.searchTerm) ||
-        permission.description.toLowerCase().includes(this.searchTerm);
-      
-      const matchesCategory = !this.selectedCategory || permission.category === this.selectedCategory;
-      
-      const notAssigned = !this.userPermissions.some(up => up.name === permission.name);
-
-      return matchesSearch && matchesCategory && notAssigned;
-    });
-
-    this.filteredUserPermissions = this.userPermissions.filter(permission => {
-      const matchesSearch = !this.searchTerm || 
-        permission.name.toLowerCase().includes(this.searchTerm);
-      
-      const matchesCategory = !this.selectedCategory || 
-        this.allPermissions.find(p => p.name === permission.name)?.category === this.selectedCategory;
-
-      return matchesSearch && matchesCategory;
-    });
-  }
-
-  grantPermission(permission: Permission): void {
-    this.supervisorService.grantPermission(this.userId, permission.name).subscribe({
+  private loadAllPermissions(): void {
+    console.log('Loading all available permissions...');
+    this.supervisorService.getAllPermissions().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (response) => {
-        console.log('Permission granted:', response.message);
-        this.loadUserPermissions();
+        console.log('All permissions response:', response);
+        this.allPermissions = response.data.permissions;
+        console.log('All permissions loaded:', this.allPermissions.length);
+        this.processAvailablePermissions();
+        this.extractCategories();
+        this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error granting permission:', error);
+        console.error('Error loading all permissions:', error);
+        this.isLoading = false;
       }
     });
   }
 
-  revokePermission(permission: UserPermission): void {
-    if (!confirm(`Are you sure you want to revoke the "${permission.name}" permission?`)) {
-      return;
-    }
+  private processAvailablePermissions(): void {
+    // Filter out already assigned permissions
+    const assignedPermissionNames = this.assignedPermissions.map(p => p.name);
+    this.availablePermissions = this.allPermissions.filter(
+      permission => !assignedPermissionNames.includes(permission.name)
+    );
+  }
 
-    this.supervisorService.revokePermission(this.userId, permission.name).subscribe({
+  private extractCategories(): void {
+    this.permissionCategories = [...new Set(this.allPermissions.map(p => p.category))];
+  }
+
+  // Permission Management
+  grantPermission(event: Event, permission: AvailablePermission): void {
+    event.stopPropagation(); // Prevent card click
+    this.selectedPermission = permission;
+    this.showGrantModal = true;
+  }
+
+  revokePermission(event: Event, permission: UserPermission): void {
+    event.stopPropagation(); // Prevent card click
+    this.permissionToRevoke = permission;
+    this.showConfirmation = true;
+  }
+
+  confirmRevoke(): void {
+    if (!this.permissionToRevoke) return;
+
+    const request: RevokePermissionRequest = {
+      userId: this.userId,
+      permissionName: this.permissionToRevoke.name
+    };
+
+    this.supervisorService.revokePermission(request).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (response) => {
-        console.log('Permission revoked:', response.message);
-        this.loadUserPermissions();
+        console.log('Permission revoked:', response.data.message);
+        this.removePermissionFromAssigned(this.permissionToRevoke!.name);
+        this.closeConfirmation();
       },
       error: (error) => {
         console.error('Error revoking permission:', error);
+        this.closeConfirmation();
       }
     });
   }
 
-  isPermissionAssigned(permissionName: string): boolean {
-    return this.userPermissions.some(p => p.name === permissionName);
+  cancelRevoke(): void {
+    this.closeConfirmation();
   }
 
-  getPermissionDetails(permissionName: string): Permission | undefined {
+  private removePermissionFromAssigned(permissionName: string): void {
+    this.assignedPermissions = this.assignedPermissions.filter(p => p.name !== permissionName);
+    // Add back to available permissions
+    const permission = this.allPermissions.find(p => p.name === permissionName);
+    if (permission) {
+      this.availablePermissions.push(permission);
+      this.availablePermissions.sort((a, b) => a.name.localeCompare(b.name));
+    }
+  }
+
+  // Modal Management
+  closeGrantModal(): void {
+    this.showGrantModal = false;
+    this.selectedPermission = null;
+  }
+
+  onPermissionGranted(grantData: {reason: string, expiresAt: string | null}): void {
+    if (!this.selectedPermission) return;
+
+    const request: GrantPermissionRequest = {
+      userId: this.userId,
+      permissionName: this.selectedPermission.name,
+      reason: grantData.reason,
+      expiresAt: grantData.expiresAt || undefined
+    };
+
+    this.supervisorService.grantPermission(request).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        // Add to assigned permissions
+        const newPermission: UserPermission = response.data.permission;
+        this.assignedPermissions.push(newPermission);
+        // Remove from available permissions
+        this.availablePermissions = this.availablePermissions.filter(
+          p => p.name !== newPermission.name
+        );
+        this.closeGrantModal();
+      },
+      error: (error) => {
+        console.error('Error granting permission:', error);
+        this.closeGrantModal();
+      }
+    });
+  }
+
+  // Permission Details
+  showPermissionDetails(permission: AvailablePermission | UserPermission): void {
+    this.selectedPermissionDetails = permission;
+    this.showDetailsPopup = true;
+  }
+
+  closeDetailsPopup(): void {
+    this.showDetailsPopup = false;
+    this.selectedPermissionDetails = null;
+  }
+
+  // Confirmation Management
+  closeConfirmation(): void {
+    this.showConfirmation = false;
+    this.permissionToRevoke = null;
+  }
+
+  // Helper Methods
+  isPermissionAssigned(permissionName: string): boolean {
+    return this.assignedPermissions.some(assigned => assigned.name === permissionName);
+  }
+
+  getPermissionsByCategory(category: string): AvailablePermission[] {
+    return this.availablePermissions.filter(p => p.category === category);
+  }
+
+  getPermissionDetails(permissionName: string): AvailablePermission | undefined {
     return this.allPermissions.find(p => p.name === permissionName);
+  }
+
+  // Helper methods for type-safe property access
+  hasDescription(permission: AvailablePermission | UserPermission): boolean {
+    return 'description' in permission;
+  }
+
+  hasCategory(permission: AvailablePermission | UserPermission): boolean {
+    return 'category' in permission;
+  }
+
+  hasLevel(permission: AvailablePermission | UserPermission): boolean {
+    return 'level' in permission;
+  }
+
+  hasAssignedAt(permission: AvailablePermission | UserPermission): boolean {
+    return 'assignedAt' in permission;
+  }
+
+  hasExpiresAt(permission: AvailablePermission | UserPermission): boolean {
+    return 'expiresAt' in permission;
+  }
+
+  hasReason(permission: AvailablePermission | UserPermission): boolean {
+    return 'reason' in permission;
   }
 }

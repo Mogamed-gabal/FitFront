@@ -74,8 +74,18 @@ export const routes: Routes = [
           },
           {
             path: ':id',
-            loadComponent: () =>
-              import('./featuers/supervisor/components/supervisor-details/supervisor-details/supervisor-details.component').then((m) => m.SupervisorDetailsComponent),
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./featuers/supervisor/components/supervisor-details/supervisor-details/supervisor-details.component').then((m) => m.SupervisorDetailsComponent),
+              },
+              {
+                path: 'permissions-panel',
+                loadComponent: () =>
+                  import('./featuers/supervisor/components/supervisor-details/permissions-panel/permissions-panel.component').then((m) => m.PermissionsPanelComponent),
+              }
+            ]
           }
         ]
       },
@@ -88,6 +98,11 @@ export const routes: Routes = [
         path: 'audit',
         loadComponent: () =>
           import('./featuers/audit/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),
+      },
+      {
+        path: 'supervisor-audit',
+        loadComponent: () =>
+          import('./featuers/supervisor/components/supervisor-details/audit/audit.component').then((m) => m.AuditComponent),
       },
       {
         path: 'admin-chat',

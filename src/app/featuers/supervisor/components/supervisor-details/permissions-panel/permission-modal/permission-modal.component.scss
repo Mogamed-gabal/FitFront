@@ -1,0 +1,375 @@
+/* Permission Modal - Professional SaaS Dashboard Style */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  
+  .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    
+    i {
+      color: #3b82f6;
+      font-size: 1.125rem;
+    }
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: #f1f5f9;
+      color: #374151;
+    }
+  }
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 1.5rem;
+}
+
+.permission-info {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  
+  .permission-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+    }
+    
+    .category-badge {
+      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+      color: #4338ca;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  .permission-description {
+    color: #64748b;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+/* Grant Form */
+.grant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  .form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    
+    i {
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+    
+    .required {
+      color: #ef4444;
+    }
+    
+    .optional {
+      color: #64748b;
+      font-weight: 400;
+    }
+  }
+  
+  .form-control {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+  
+  textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .date-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    
+    .form-control {
+      flex: 1;
+      padding-right: 2.5rem;
+    }
+    
+    .clear-btn {
+      position: absolute;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: #f1f5f9;
+        color: #374151;
+      }
+    }
+  }
+  
+  .form-hint {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn-cancel,
+.btn-grant {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+.btn-cancel {
+  background: #f1f5f9;
+  color: #374151;
+  
+  &:hover {
+    background: #e2e8f0;
+  }
+}
+
+.btn-grant {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+  
+  &:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+    
+    i {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+  
+  .modal-content {
+    max-width: none;
+    margin: 0.5rem;
+  }
+  
+  .modal-header {
+    padding: 1rem;
+    
+    .modal-title {
+      font-size: 1.125rem;
+    }
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  .permission-info {
+    padding: 0.75rem;
+    
+    .permission-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      
+      h4 {
+        font-size: 0.875rem;
+      }
+    }
+    
+    .permission-description {
+      font-size: 0.813rem;
+    }
+  }
+  
+  .form-group {
+    .form-label {
+      font-size: 0.813rem;
+    }
+    
+    .form-control {
+      font-size: 0.813rem;
+      padding: 0.625rem 0.875rem;
+    }
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    
+    .btn-cancel,
+    .btn-grant {
+      padding: 0.875rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header {
+    .modal-title {
+      font-size: 1rem;
+    }
+  }
+  
+  .permission-info {
+    .permission-header {
+      .category-badge {
+        font-size: 0.688rem;
+        padding: 0.188rem 0.625rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content horizontal" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <i class="fas fa-shield-alt"></i>
+        Grant Permission
+      </h3>
+      <button class="close-btn" (click)="onClose()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="permission-content">
+        @if (permission) {
+          <div class="permission-header">
+            <h4 class="permission-name">{{ permission.name }}</h4>
+            <span class="category-badge">{{ permission.category }}</span>
+          </div>
+          <p class="permission-description">{{ permission.description }}</p>
+        }
+      </div>
+      
+      <form [formGroup]="grantForm" class="grant-form" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <!-- Reason Field -->
+          <div class="form-group half-width">
+            <label for="reason" class="form-label">
+              <i class="fas fa-comment"></i>
+              Reason <span class="required">*</span>
+            </label>
+            <textarea 
+              id="reason"
+              formControlName="reason"
+              class="form-control"
+              rows="3"
+              placeholder="Enter reason for granting this permission..."
+              required
+            ></textarea>
+          </div>
+          
+          <!-- Expiration Date Field -->
+          <div class="form-group half-width">
+            <label for="expiresAt" class="form-label">
+              <i class="fas fa-calendar"></i>
+              Expiration Date <span class="optional">(optional)</span>
+            </label>
+            <div class="date-input-group">
+              <input 
+                id="expiresAt"
+                type="datetime-local"
+                formControlName="expiresAt"
+                class="form-control"
+                [min]="minDate"
+              />
+              <button 
+                type="button" 
+                class="clear-btn"
+                (click)="clearExpiration()"
+                title="Clear expiration date"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="onClose()">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button type="submit" class="btn-grant" [disabled]="!grantForm.valid || isLoading">
+            @if (isLoading) {
+              <i class="fas fa-spinner fa-spin"></i>
+              Granting...
+            } @else {
+              <i class="fas fa-check"></i>
+              Grant Permission
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,106 +1,184 @@
 <div class="permissions-container">
-  <div class="permissions-header">
-    <h3>Permissions Management</h3>
-    <form [formGroup]="searchForm" class="search-form">
-      <div class="search-controls">
-        <input 
-          type="text" 
-          formControlName="search"
-          placeholder="Search permissions..."
-          class="search-input"
-        />
-        <select formControlName="category" class="category-select">
-          <option value="">All Categories</option>
-          @for (category of categories; track category) {
-            <option [value]="category">{{ category }}</option>
-          }
-        </select>
-      </div>
-    </form>
-  </div>
-
+  <!-- Loading State -->
   @if (isLoading) {
     <div class="loading-spinner">
       <div class="spinner"></div>
       <p>Loading permissions...</p>
     </div>
   } @else {
-    <div class="permissions-content">
-      <div class="permissions-column">
-        <div class="column-header">
-          <h4>Available Permissions</h4>
-          <span class="count">{{ filteredAllPermissions.length }}</span>
+    <div class="permissions-layout">
+      <!-- LEFT SIDE - Assigned Permissions -->
+      <div class="assigned-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-shield-check"></i>
+            Assigned Permissions
+          </h2>
+          <span class="permission-count">{{ assignedPermissions.length }}</span>
         </div>
-        <div class="permissions-list">
-          @for (permission of filteredAllPermissions; track permission.name) {
-            <div class="permission-card">
-              <div class="permission-info">
-                <h5>{{ permission.name }}</h5>
-                <span class="category">{{ permission.category }}</span>
-                <p>{{ permission.description }}</p>
-              </div>
-              <div class="permission-actions">
-                <button 
-                  class="grant-btn"
-                  (click)="grantPermission(permission)"
-                  [disabled]="isPermissionAssigned(permission.name)"
-                >
-                  <i class="fa-solid fa-plus"></i>
-                  Grant
+        
+        <div class="permissions-grid">
+          @for (permission of assignedPermissions; track permission.name) {
+            <div class="permission-card assigned" 
+                 (click)="showPermissionDetails(permission)">
+              <div class="card-header">
+                <h3 class="permission-name">{{ permission.name }}</h3>
+                <button class="revoke-btn" 
+                        (click)="revokePermission($event, permission)"
+                        title="Revoke Permission">
+                  <i class="fas fa-times"></i>
                 </button>
+              </div>
+              
+              <p class="permission-description">
+                @if (permission.metadata && permission.metadata.reason) {
+                  {{ permission.metadata.reason }}
+                } @else {
+                  No reason provided
+                }
+              </p>
+              
+              <div class="permission-meta">
+                <span class="assigned-badge">Assigned</span>
+                @if (permission.assignedAt) {
+                  <span class="assigned-date">
+                    Assigned: {{ permission.assignedAt | date:'shortDate' }}
+                  </span>
+                }
               </div>
             </div>
           }
-          @if (filteredAllPermissions.length === 0) {
+          
+          @if (assignedPermissions.length === 0) {
             <div class="empty-state">
-              <i class="fa-solid fa-shield-halved"></i>
-              <p>No available permissions found</p>
+              <i class="fas fa-shield-alt"></i>
+              <p>No permissions assigned</p>
             </div>
           }
         </div>
       </div>
 
-      <div class="permissions-column">
-        <div class="column-header">
-          <h4>Assigned Permissions</h4>
-          <span class="count">{{ filteredUserPermissions.length }}</span>
+      <!-- RIGHT SIDE - Available Permissions -->
+      <div class="available-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-shield-alt"></i>
+            Available Permissions
+          </h2>
+          <span class="permission-count">{{ availablePermissions.length }}</span>
         </div>
-        <div class="permissions-list">
-          @for (userPermission of filteredUserPermissions; track userPermission.name) {
-            <div class="permission-card assigned">
-              <div class="permission-info">
-                <h5>{{ userPermission.name }}</h5>
-                <div class="permission-meta">
-                  <span class="assigned-date">
-                    Assigned: {{ userPermission.assignedAt | date:'shortDate' }}
-                  </span>
-                  @if (userPermission.expiresAt) {
-                    <span class="expiry-date">
-                      Expires: {{ userPermission.expiresAt | date:'shortDate' }}
-                    </span>
-                  }
-                </div>
-                @if (getPermissionDetails(userPermission.name)) {
-                  <p>{{ getPermissionDetails(userPermission.name)?.description }}</p>
+        
+        <div class="categories-container">
+          @for (category of permissionCategories; track category) {
+            <div class="category-group">
+              <h3 class="category-title">{{ category }}</h3>
+              
+              <div class="permissions-grid">
+                @for (permission of getPermissionsByCategory(category); track permission.name) {
+                  <div class="permission-card available"
+                       [class.assigned]="isPermissionAssigned(permission.name)"
+                       (click)="showPermissionDetails(permission)">
+                    <div class="card-header">
+                      <h3 class="permission-name">{{ permission.name }}</h3>
+                      <button class="grant-btn" 
+                              [disabled]="isPermissionAssigned(permission.name)"
+                              (click)="grantPermission($event, permission)"
+                              title="Grant Permission">
+                        <i class="fas fa-plus"></i>
+                        Grant
+                      </button>
+                    </div>
+                    
+                    <p class="permission-description">{{ permission.description }}</p>
+                    
+                    <div class="permission-meta">
+                      <span class="category-badge">{{ permission.category }}</span>
+                    </div>
+                  </div>
                 }
               </div>
-              <div class="permission-actions">
-                <button 
-                  class="revoke-btn"
-                  (click)="revokePermission(userPermission)"
-                >
-                  <i class="fa-solid fa-minus"></i>
-                  Revoke
-                </button>
-              </div>
             </div>
           }
-          @if (filteredUserPermissions.length === 0) {
-            <div class="empty-state">
-              <i class="fa-solid fa-shield-halved"></i>
-              <p>No permissions assigned</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Permission Modal (existing component) -->
+  @if (showGrantModal) {
+    <app-permission-modal 
+      [permission]="selectedPermission"
+      (close)="closeGrantModal()"
+      (grant)="onPermissionGranted($event)">
+    </app-permission-modal>
+  }
+
+  <!-- Permission Details Popup -->
+  @if (showDetailsPopup && selectedPermissionDetails) {
+    <div class="permission-details-popup" 
+         (click)="closeDetailsPopup()">
+      <div class="popup-content" (click)="$event.stopPropagation()">
+        <div class="popup-header">
+          <h3>{{ selectedPermissionDetails.name }}</h3>
+          <button class="close-btn" (click)="closeDetailsPopup()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="popup-body">
+          <div class="detail-row">
+            <label>Permission Name:</label>
+            <p>{{ selectedPermissionDetails.name }}</p>
+          </div>
+          
+          @if (selectedPermissionDetails && selectedPermissionDetails.description) {
+            <div class="detail-row">
+              <label>Description:</label>
+              <p>{{ selectedPermissionDetails.description }}</p>
             </div>
           }
+          
+          @if (selectedPermissionDetails && selectedPermissionDetails.category) {
+            <div class="detail-row">
+              <label>Category:</label>
+              <span class="category-badge">{{ selectedPermissionDetails.category }}</span>
+            </div>
+          }
+          
+          @if (selectedPermissionDetails && selectedPermissionDetails.level) {
+            <div class="detail-row">
+              <label>Level:</label>
+              <span class="level-badge">{{ selectedPermissionDetails.level || 'Standard' }}</span>
+            </div>
+          }
+          
+          @if (selectedPermissionDetails && selectedPermissionDetails.assignedAt) {
+            <div class="detail-row">
+              <label>Assigned At:</label>
+              <p>{{ selectedPermissionDetails.assignedAt | date:'mediumDate' }}</p>
+            </div>
+          }
+          
+          @if (selectedPermissionDetails && selectedPermissionDetails.metadata && selectedPermissionDetails.metadata.reason) {
+            <div class="detail-row">
+              <label>Reason:</label>
+              <p>{{ selectedPermissionDetails.metadata.reason }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Confirmation Toast -->
+  @if (showConfirmation) {
+    <div class="confirmation-toast">
+      <div class="toast-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>Are you sure you want to revoke this permission?</p>
+        <div class="toast-actions">
+          <button class="btn-cancel" (click)="cancelRevoke()">Cancel</button>
+          <button class="btn-confirm" (click)="confirmRevoke()">Revoke</button>
         </div>
       </div>
     </div>

@@ -10,6 +10,13 @@ export interface Supervisor {
   phone: string;
   createdAt: string;
   updatedAt: string;
+  isActive?: boolean;
+  status?: string;
+  role?: string;
+  emailVerified?: boolean;
+  isBlocked?: boolean;
+  isDeleted?: boolean;
+  address?: string;
 }
 
 export interface GetSupervisorsResponse {
@@ -37,34 +44,52 @@ export interface Permission {
   category: string;
   action: string;
   resource: string;
-  level: number;
+  level: 'SYSTEM' | 'ADMIN' | 'LIMITED' | 'PERSONAL';
+  isActive: boolean;
+  isAssignable?: boolean;
 }
 
 export interface UserPermission {
   _id: string;
   name: string;
-  userId: string;
-  assignedBy: string;
-  assignedAt: string;
-  expiresAt: string | null;
-  isActive: boolean;
-  reason?: string;
-  assignedByUser?: {
-    _id: string;
-    name: string;
-  };
-}
-
-export interface AvailablePermission {
-  name: string;
   description: string;
   category: string;
   action: string;
   resource: string;
-  level: 'SYSTEM' | 'LIMITED' | 'PERSONAL';
+  level: 'SYSTEM' | 'ADMIN' | 'LIMITED' | 'PERSONAL';
   isActive: boolean;
+  isSystem: boolean;
+  assignedBy: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  assignedTo: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  assignedAt: string;
+  expiresAt: string;
+  lastUsed: string | null;
+  usageCount: number;
+  metadata: {
+    reason: string;
+  };
+  isDeleted: boolean;
+  deletedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface AvailablePermission extends Permission {
   isAssignable: boolean;
-  endpoints?: string[];
+  assignedAt?: string;
+  reason?: string;
+  metadata?: {
+    reason: string;
+  };
 }
 
 export interface GrantPermissionRequest {
@@ -244,8 +269,8 @@ export class SupervisorService {
     return this.http.get<GetSupervisorsResponse>(`${this.baseUrl}${environment.supervisorEndpoint}?page=${page}&limit=${limit}`);
   }
 
-  getSupervisor(id: string): Observable<{ success: boolean; data: Supervisor }> {
-    return this.http.get<{ success: boolean; data: Supervisor }>(`${this.baseUrl}${environment.supervisorEndpoint}/${id}`);
+  getSupervisor(id: string): Observable<{ success: boolean; data: { user: Supervisor } }> {
+    return this.http.get<{ success: boolean; data: { user: Supervisor } }>(`${this.baseUrl}/api/admin/users/${id}`);
   }
 
   deleteSupervisor(id: string): Observable<DeleteSupervisorResponse> {

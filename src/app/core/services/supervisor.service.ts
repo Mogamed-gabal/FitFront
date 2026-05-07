@@ -128,11 +128,9 @@ export interface RevokePermissionResponse {
 export interface GetUserPermissionsResponse {
   success: boolean;
   data: {
-    user: Supervisor;
+    userId: string;
     permissions: UserPermission[];
-    totalPermissions: number;
-    activePermissions: number;
-    expiredPermissions: number;
+    count: number;
   };
 }
 

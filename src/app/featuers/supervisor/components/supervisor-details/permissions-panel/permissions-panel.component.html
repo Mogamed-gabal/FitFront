@@ -19,27 +19,77 @@
         
         <div class="permissions-grid">
           @for (permission of assignedPermissions; track permission.name) {
-            <div class="permission-card assigned" 
-                 (click)="showPermissionDetails(permission)">
+            <div class="permission-card assigned" (click)="showPermissionDetails(permission)">
               <div class="card-header">
-                <h3 class="permission-name">{{ permission.name }}</h3>
-                <button class="revoke-btn" 
-                        (click)="revokePermission($event, permission)"
-                        title="Revoke Permission">
+                <div class="permission-info">
+                  <h5 class="permission-name">{{ permission.name }}</h5>
+                  <span class="permission-level">{{ permission.level }}</span>
+                </div>
+                <button class="revoke-btn" (click)="revokePermission($event, permission)">
                   <i class="fas fa-times"></i>
+                  Revoke
                 </button>
               </div>
               
-              <p class="permission-description">
-                @if (permission.metadata && permission.metadata.reason) {
-                  {{ permission.metadata.reason }}
-                } @else {
-                  No reason provided
-                }
-              </p>
+              <div class="permission-content">
+                <p class="permission-description">{{ permission.description }}</p>
+                
+                <div class="permission-details">
+                  <div class="detail-row">
+                    <div class="detail-item">
+                      <i class="fas fa-user"></i>
+                      <span class="detail-label">Assigned by:</span>
+                      <span class="detail-value">{{ permission.assignedBy.name }}</span>
+                    </div>
+                  </div>
+                  
+                  <div class="detail-row">
+                    <div class="detail-item">
+                      <i class="fas fa-calendar"></i>
+                      <span class="detail-label">Assigned:</span>
+                      <span class="detail-value">{{ permission.assignedAt | date:'mediumDate' }}</span>
+                    </div>
+                    
+                    @if (permission.expiresAt) {
+                      <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="detail-label">Expires:</span>
+                        <span class="detail-value">{{ permission.expiresAt | date:'mediumDate' }}</span>
+                      </div>
+                    }
+                  </div>
+                  
+                  <div class="detail-row">
+                    <div class="detail-item">
+                      <i class="fas fa-info-circle"></i>
+                      <span class="detail-label">Reason:</span>
+                      <span class="detail-value">{{ permission.metadata.reason }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
-              <div class="permission-meta">
-                <span class="assigned-badge">Assigned</span>
+              <div class="permission-footer">
+                <div class="permission-badges">
+                  <span class="category-badge">{{ permission.category }}</span>
+                  <span class="action-badge">{{ permission.action }}</span>
+                  @if (permission.isSystem) {
+                    <span class="system-badge">System</span>
+                  }
+                </div>
+                
+                <div class="permission-stats">
+                  <div class="stat-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>{{ permission.usageCount }}</span>
+                  </div>
+                  @if (permission.lastUsed) {
+                    <div class="stat-item">
+                      <i class="fas fa-history"></i>
+                      <span>Last: {{ permission.lastUsed | date:'shortDate' }}</span>
+                    </div>
+                  }
+                </div>
                 @if (permission.assignedAt) {
                   <span class="assigned-date">
                     Assigned: {{ permission.assignedAt | date:'shortDate' }}

@@ -114,6 +114,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./featuers/subscription/subscription.component').then((m) => m.SubscriptionComponent),
       },
+      {
+        path: 'bundles',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./featuers/users/bundles/pages/bundles-list/bundles-list.component').then((m) => m.BundlesListComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./featuers/users/bundles/pages/bundle-details/bundle-details.component').then((m) => m.BundleDetailsComponent),
+          },
+        ],
+      },
     ],
   },
   {

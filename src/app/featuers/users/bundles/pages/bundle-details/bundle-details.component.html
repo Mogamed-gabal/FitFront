@@ -1,0 +1,313 @@
+<!-- Bundle Details Page - Premium Enterprise Admin Experience -->
+<div class="bundle-details-container">
+  
+  <!-- Loading State -->
+  @if (isLoadingValue) {
+    <div class="loading-state">
+      <div class="skeleton-header">
+        <div class="skeleton-back-btn"></div>
+        <div class="skeleton-title"></div>
+        <div class="skeleton-actions"></div>
+      </div>
+      <div class="skeleton-hero">
+        <div class="skeleton-hero-content"></div>
+      </div>
+      <div class="skeleton-sections">
+        <div class="skeleton-section"></div>
+        <div class="skeleton-section"></div>
+        <div class="skeleton-section"></div>
+      </div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @else if (errorValue) {
+    <div class="error-state">
+      <div class="error-content">
+        <div class="error-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2>Failed to Load Bundle</h2>
+        <p>{{ errorValue }}</p>
+        <button class="btn btn-primary" (click)="retryLoading()">
+          <i class="fas fa-redo"></i>
+          Try Again
+        </button>
+        <button class="btn btn-outline" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Back to Bundles
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @else if (bundleValue) {
+    <div class="bundle-details-content">
+      
+      <!-- Hero/Header Section -->
+      <section class="hero-section">
+        <div class="hero-header">
+          <button class="back-btn" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i>
+            Back to Bundles
+          </button>
+          
+          <div class="hero-actions">
+            <button class="btn btn-outline" (click)="editBundle()">
+              <i class="fas fa-edit"></i>
+              Edit Bundle
+            </button>
+            
+            @if (bundleStatus() === 'active') {
+              <button class="btn btn-warning" (click)="deactivateBundle()">
+                <i class="fas fa-pause"></i>
+                Deactivate
+              </button>
+            } @else {
+              <button class="btn btn-success" (click)="activateBundle()">
+                <i class="fas fa-play"></i>
+                Activate
+              </button>
+            }
+            
+            <button class="btn btn-danger" (click)="deleteBundle()">
+              <i class="fas fa-trash"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-content">
+          <div class="bundle-info">
+            <h1 class="bundle-name">{{ bundleName() }}</h1>
+            
+            <div class="bundle-meta">
+              <span class="status-badge" [class.active]="bundleStatus() === 'active'" [class.inactive]="bundleStatus() === 'inactive'">
+                {{ bundleStatus() === 'active' ? 'Active' : 'Inactive' }}
+              </span>
+              
+              <div class="meta-info">
+                <div class="meta-item">
+                  <i class="fas fa-calendar"></i>
+                  <span>Created: {{ createdDate() | date:'longDate' }}</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-user"></i>
+                  <span>By: {{ createdBy() }}</span>
+                </div>
+                @if (updatedDate()) {
+                  <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Updated: {{ updatedDate() | date:'longDate' }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Content Grid -->
+      <div class="content-grid">
+        
+        <!-- Doctors Section -->
+        <section class="doctors-section">
+          <div class="section-header">
+            <h2>
+              <i class="fas fa-user-md"></i>
+              Assigned Doctors
+            </h2>
+            <span class="doctor-count">{{ doctors().length }} doctors</span>
+          </div>
+          
+          <div class="doctors-grid">
+            @for (doctor of doctors(); track doctor._id) {
+              <div class="doctor-card">
+                <div class="doctor-avatar">
+                  <img [src]="'https://ui-avatars.com/api/?name=' + (doctor.name || 'Unknown') + '&background=3b82f6&color=fff&size=128'" [alt]="doctor.name || 'Unknown Doctor'" />
+                </div>
+                <div class="doctor-info">
+                  <h3 class="doctor-name">{{ doctor.name || 'Unknown Doctor' }}</h3>
+                  @if (doctor.specialization) {
+                    <p class="doctor-specialization">{{ doctor.specialization }}</p>
+                  }
+                  <div class="doctor-contact">
+                    @if (doctor.email) {
+                      <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ doctor.email }}</span>
+                      </div>
+                    }
+                    @if (doctor.phone) {
+                      <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>{{ doctor.phone }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-doctors">
+                <i class="fas fa-user-md"></i>
+                <p>No doctors assigned to this bundle</p>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="pricing-section">
+          <div class="section-header">
+            <h2>
+              <i class="fas fa-tag"></i>
+              Pricing Plans
+            </h2>
+          </div>
+          
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <div class="pricing-header">
+                <h3>1 Month</h3>
+                <div class="price">${{ pricing().oneMonth }}</div>
+              </div>
+              <div class="pricing-features">
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Basic features included</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Doctor consultations</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Standard support</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pricing-card featured">
+              <div class="pricing-badge">Popular</div>
+              <div class="pricing-header">
+                <h3>3 Months</h3>
+                <div class="price">${{ pricing().threeMonths }}</div>
+              </div>
+              <div class="pricing-features">
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>All 1-month features</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Priority consultations</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Enhanced support</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Save 10%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pricing-card">
+              <div class="pricing-header">
+                <h3>6 Months</h3>
+                <div class="price">${{ pricing().sixMonths }}</div>
+              </div>
+              <div class="pricing-features">
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>All 3-month features</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>VIP consultations</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Premium support</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-check"></i>
+                  <span>Save 20%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Activity Timeline Section -->
+        <section class="timeline-section">
+          <div class="section-header">
+            <h2>
+              <i class="fas fa-history"></i>
+              Activity Timeline
+            </h2>
+          </div>
+          
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-icon">
+                <i class="fas fa-plus"></i>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-title">Bundle Created</div>
+                <div class="timeline-date">{{ createdDate() | date:'longDate' }}</div>
+                <div class="timeline-detail">Created by {{ createdBy() }}</div>
+              </div>
+            </div>
+
+            @if (bundle()?.activatedAt) {
+              <div class="timeline-item">
+                <div class="timeline-icon success">
+                  <i class="fas fa-play"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Bundle Activated</div>
+                  <div class="timeline-date">{{ bundle()?.activatedAt | date:'longDate' }}</div>
+                  @if (bundle()?.activatedBy?.name) {
+                    <div class="timeline-detail">Activated by {{ bundle()?.activatedBy?.name }}</div>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (bundle()?.deactivatedAt) {
+              <div class="timeline-item">
+                <div class="timeline-icon warning">
+                  <i class="fas fa-pause"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Bundle Deactivated</div>
+                  <div class="timeline-date">{{ bundle()?.deactivatedAt | date:'longDate' }}</div>
+                  @if (bundle()?.deactivatedBy?.name) {
+                    <div class="timeline-detail">Deactivated by {{ bundle()?.deactivatedBy?.name }}</div>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (updatedDate() && createdDate() && updatedDate()!.getTime() !== createdDate()!.getTime()) {
+              <div class="timeline-item">
+                <div class="timeline-icon info">
+                  <i class="fas fa-edit"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Bundle Updated</div>
+                  <div class="timeline-date">{{ updatedDate() | date:'longDate' }}</div>
+                  <div class="timeline-detail">Last modification</div>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+
+      </div>
+    </div>
+  }
+</div>

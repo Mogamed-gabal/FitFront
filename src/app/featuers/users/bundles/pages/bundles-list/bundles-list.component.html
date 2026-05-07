@@ -1,0 +1,343 @@
+<div class="bundles-list-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">
+          <i class="fas fa-layer-group"></i>
+          Bundle Management
+        </h1>
+        <p class="page-subtitle">Manage healthcare service bundles and pricing plans</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" routerLink="/bundles/create">
+          <i class="fas fa-plus"></i>
+          Create Bundle
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filters Section -->
+  <div class="bundle-filters">
+    <div class="filters-container">
+      <!-- Search Input -->
+      <div class="search-section">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            class="search-input"
+            placeholder="Search bundles..."
+            [value]="searchTerm()"
+            (input)="onSearchChange($any($event).target.value)"
+          >
+          @if (searchTerm()) {
+            <button class="clear-search" (click)="clearFilters()">
+              <i class="fas fa-times"></i>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="filters-row">
+        <!-- Status Filter -->
+        <div class="filter-group">
+          <label for="status-filter" class="filter-label">Status</label>
+          <select 
+            id="status-filter"
+            class="filter-select"
+            [value]="selectedStatus()"
+            (change)="onStatusChange($any($event).target.value)"
+          >
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+
+        <!-- Sort Field -->
+        <div class="filter-group">
+          <label for="sort-field" class="filter-label">Sort By</label>
+          <select 
+            id="sort-field"
+            class="filter-select"
+            [value]="selectedSortField()"
+            (change)="onSortChange($any($event).target.value, selectedSortOrder())"
+          >
+            <option value="createdAt">Created Date</option>
+            <option value="name">Name</option>
+            <option value="pricing.oneMonth">Price</option>
+            <option value="updatedAt">Updated Date</option>
+          </select>
+        </div>
+
+        <!-- Sort Order -->
+        <div class="filter-group">
+          <label for="sort-order" class="filter-label">Order</label>
+          <select 
+            id="sort-order"
+            class="filter-select"
+            [value]="selectedSortOrder()"
+            (change)="onSortChange(selectedSortField(), $any($event).target.value)"
+          >
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+          </select>
+        </div>
+
+        <!-- Items Per Page -->
+        <div class="filter-group">
+          <label for="items-per-page" class="filter-label">Show</label>
+          <select 
+            id="items-per-page"
+            class="filter-select"
+            [value]="itemsPerPage()"
+            (change)="onItemsPerPageChange($any($event).target.value)"
+          >
+            <option [ngValue]="6">6</option>
+            <option [ngValue]="12">12</option>
+            <option [ngValue]="24">24</option>
+            <option [ngValue]="48">48</option>
+          </select>
+        </div>
+
+        <!-- Clear Filters Button -->
+        <button class="clear-filters-btn" (click)="clearFilters()">
+          <i class="fas fa-redo"></i>
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="skeleton-grid">
+          @for (i of [0,1,2,3,4,5]; track i) {
+            <div class="skeleton-card">
+              <div class="skeleton-header">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-status"></div>
+              </div>
+              <div class="skeleton-body">
+                <div class="skeleton-pricing"></div>
+                <div class="skeleton-doctors"></div>
+                <div class="skeleton-meta"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Empty State - No Results -->
+    @if (shouldShowNoResultsState) {
+      <div class="empty-state no-results">
+        <div class="empty-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3>No matching bundles found</h3>
+        <p>Try adjusting your search terms or filters to find what you're looking for.</p>
+        <button class="btn btn-outline" (click)="clearFilters()">
+          <i class="fas fa-times"></i>
+          Clear Filters
+        </button>
+      </div>
+    }
+
+    <!-- Empty State - Create First Bundle -->
+    @if (shouldShowCreateBundleState) {
+      <div class="empty-state create-first">
+        <div class="empty-icon">
+          <i class="fas fa-layer-group"></i>
+        </div>
+        <h3>No bundles yet</h3>
+        <p>Get started by creating your first healthcare service bundle.</p>
+        <button class="btn btn-primary" routerLink="/bundles/create">
+          <i class="fas fa-plus"></i>
+          Create Your First Bundle
+        </button>
+      </div>
+    }
+
+    <!-- Bundles Grid -->
+    @if (hasBundles() && !isLoading()) {
+      <div class="bundles-grid">
+        @for (bundle of bundles(); track bundle._id) {
+          <div class="bundle-card">
+            <div class="card-header">
+              <div class="bundle-info">
+                <h3 class="bundle-name">{{ bundle.name }}</h3>
+                <span class="bundle-status" [class]="bundle.isActive ? 'status-active' : 'status-inactive'">
+                  {{ bundle.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+              <div class="bundle-actions">
+                <div class="dropdown">
+                  <button class="dropdown-toggle">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" (click)="navigateToDetails(bundle._id)">
+                      <i class="fas fa-eye"></i>
+                      View Details
+                    </button>
+                    <button class="dropdown-item" (click)="navigateToEdit(bundle._id)">
+                      <i class="fas fa-edit"></i>
+                      Edit
+                    </button>
+                    @if (bundle.isActive) {
+                      <button class="dropdown-item" (click)="onDeactivateBundle(bundle._id)">
+                        <i class="fas fa-pause"></i>
+                        Deactivate
+                      </button>
+                    } @else {
+                      <button class="dropdown-item" (click)="onActivateBundle(bundle._id)">
+                        <i class="fas fa-play"></i>
+                        Activate
+                      </button>
+                    }
+                    <button class="dropdown-item danger" (click)="onDeleteBundle(bundle._id)">
+                      <i class="fas fa-trash"></i>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="bundle-stats">
+                <div class="stat-item">
+                  <i class="fas fa-user-md"></i>
+                  <span>{{ bundle.doctors.length }} Doctors</span>
+                </div>
+                <div class="stat-item">
+                  <i class="fas fa-tag"></i>
+                  <span>From {{ formatPrice(getMinPrice(bundle)) }}</span>
+                </div>
+              </div>
+
+              <div class="pricing-preview">
+                <div class="price-item">
+                  <span class="duration">1 Month</span>
+                  <span class="price">{{ formatPrice(bundle.pricing.oneMonth) }}</span>
+                </div>
+                <div class="price-item">
+                  <span class="duration">3 Months</span>
+                  <span class="price">{{ formatPrice(bundle.pricing.threeMonths) }}</span>
+                </div>
+                <div class="price-item">
+                  <span class="duration">6 Months</span>
+                  <span class="price">{{ formatPrice(bundle.pricing.sixMonths) }}</span>
+                </div>
+              </div>
+
+              <div class="bundle-doctors">
+                <div class="doctors-label">Doctors:</div>
+                <div class="doctors-list">
+                  @for (doctor of bundle.doctors.slice(0, 3); track doctor._id) {
+                    <div class="doctor-chip">
+                      {{ doctor.doctorId?.name || 'Unknown Doctor' }}
+                    </div>
+                  }
+                  @if (bundle.doctors.length > 3) {
+                    <div class="doctor-chip more">
+                      +{{ bundle.doctors.length - 3 }} more
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="bundle-meta">
+                <div class="meta-item">
+                  <i class="fas fa-calendar"></i>
+                  <span>Created {{ formatDate(bundle.createdAt) }}</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-user"></i>
+                  <span>{{ bundle.createdBy.name }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-outline" (click)="navigateToDetails(bundle._id)">
+                View Details
+              </button>
+              <button class="btn btn-primary" (click)="navigateToEdit(bundle._id)">
+                Edit Bundle
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+
+  <!-- Pagination -->
+  @if (totalPages() > 1 && !isLoading()) {
+    <footer class="pagination-section">
+      <div class="pagination-container">
+        <div class="pagination-info">
+          <span>Showing {{ ((currentPage() - 1) * itemsPerPage()) + 1 }} to 
+          {{ getPaginationEndCount() }} 
+          of {{ totalItems() }} bundles</span>
+        </div>
+        
+        <div class="pagination-controls">
+          <button 
+            class="pagination-btn" 
+            [disabled]="!hasPreviousPage()"
+            (click)="onPreviousPage()"
+            [attr.aria-label]="'Previous page'"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          
+          <div class="pagination-pages">
+            @for (page of getPagesArray(); track page) {
+              <button 
+                class="pagination-page"
+                [class.active]="page === currentPage()"
+                (click)="onPageChange(page)"
+                [attr.aria-label]="'Go to page ' + page"
+              >
+                {{ page }}
+              </button>
+            }
+          </div>
+          
+          <button 
+            class="pagination-btn" 
+            [disabled]="!hasNextPage()"
+            (click)="onNextPage()"
+            [attr.aria-label]="'Next page'"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        
+        <div class="items-per-page">
+          <label for="items-per-page">Items per page:</label>
+          <select 
+            id="items-per-page"
+            class="form-control"
+            [ngModel]="itemsPerPage()"
+            (ngModelChange)="onItemsPerPageChange($event)"
+          >
+            <option [ngValue]="6">6</option>
+            <option [ngValue]="12">12</option>
+            <option [ngValue]="24">24</option>
+            <option [ngValue]="48">48</option>
+          </select>
+        </div>
+      </div>
+    </footer>
+  }
+</div>

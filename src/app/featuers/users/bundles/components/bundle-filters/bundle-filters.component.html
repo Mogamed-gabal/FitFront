@@ -1,0 +1,91 @@
+<div class="bundle-filters">
+  <div class="filters-container">
+    <!-- Search Input -->
+    <div class="search-section">
+      <div class="search-input-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+          type="text" 
+          class="search-input"
+          placeholder="Search bundles..."
+          [value]="searchTerm()"
+          (input)="onSearchInputChange($event)"
+        >
+        @if (searchTerm()) {
+          <button class="clear-search" (click)="onClearFilters()">
+            <i class="fas fa-times"></i>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Filters Row -->
+    <div class="filters-row">
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <label for="status-filter" class="filter-label">Status</label>
+        <select 
+          id="status-filter"
+          class="filter-select"
+          [value]="selectedStatus()"
+          (change)="onStatusSelect($event)"
+        >
+          @for (option of statusOptions; track option.value) {
+            <option [ngValue]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Sort Field -->
+      <div class="filter-group">
+        <label for="sort-field" class="filter-label">Sort By</label>
+        <select 
+          id="sort-field"
+          class="filter-select"
+          [value]="selectedSortField()"
+          (change)="onSortFieldChange($event)"
+        >
+          @for (option of sortFieldOptions; track option.value) {
+            <option [ngValue]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Sort Order -->
+      <div class="filter-group">
+        <label for="sort-order" class="filter-label">Order</label>
+        <select 
+          id="sort-order"
+          class="filter-select"
+          [value]="selectedSortOrder()"
+          (change)="onSortOrderChange($event)"
+        >
+          @for (option of sortOrderOptions; track option.value) {
+            <option [ngValue]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Items Per Page -->
+      <div class="filter-group">
+        <label for="items-per-page" class="filter-label">Show</label>
+        <select 
+          id="items-per-page"
+          class="filter-select"
+          [value]="itemsPerPage()"
+          (change)="onItemsPerPageSelect($event)"
+        >
+          @for (option of itemsPerPageOptions; track option) {
+            <option [ngValue]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Clear Filters Button -->
+      <button class="clear-filters-btn" (click)="onClearFilters()">
+        <i class="fas fa-redo"></i>
+        Reset
+      </button>
+    </div>
+  </div>
+</div>

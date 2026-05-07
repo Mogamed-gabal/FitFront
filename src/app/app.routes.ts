@@ -84,6 +84,11 @@ export const routes: Routes = [
                 path: 'permissions-panel',
                 loadComponent: () =>
                   import('./featuers/supervisor/components/supervisor-details/permissions-panel/permissions-panel.component').then((m) => m.PermissionsPanelComponent),
+              },
+              {
+                path: 'audit',
+                loadComponent: () =>
+                  import('./featuers/supervisor/components/supervisor-details/audit/audit.component').then((m) => m.AuditComponent),
               }
             ]
           }
@@ -93,6 +98,11 @@ export const routes: Routes = [
         path: 'plans-monitoring',
         loadComponent: () =>
           import('./featuers/plans-monitoring/plans-monitoring.component').then((m) => m.PlansMonitoringComponent),
+      },
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./shared/components/notfoundpage/notfoundpage.component').then((m) => m.NotfoundpageComponent),
       },
       {
         path: 'audit',

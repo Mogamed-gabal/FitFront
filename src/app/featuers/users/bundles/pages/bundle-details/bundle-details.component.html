@@ -60,20 +60,35 @@
             </button>
             
             @if (bundleStatus() === 'active') {
-              <button class="btn btn-warning" (click)="deactivateBundle()">
-                <i class="fas fa-pause"></i>
-                Deactivate
+              <button class="btn btn-warning" (click)="deactivateBundle()" [disabled]="isDeactivatingValue">
+                @if (isDeactivatingValue) {
+                  <i class="fas fa-spinner fa-spin"></i>
+                  Deactivating...
+                } @else {
+                  <i class="fas fa-pause"></i>
+                  Deactivate
+                }
               </button>
             } @else {
-              <button class="btn btn-success" (click)="activateBundle()">
-                <i class="fas fa-play"></i>
-                Activate
+              <button class="btn btn-success" (click)="activateBundle()" [disabled]="isActivatingValue">
+                @if (isActivatingValue) {
+                  <i class="fas fa-spinner fa-spin"></i>
+                  Activating...
+                } @else {
+                  <i class="fas fa-play"></i>
+                  Activate
+                }
               </button>
             }
             
-            <button class="btn btn-danger" (click)="deleteBundle()">
-              <i class="fas fa-trash"></i>
-              Delete
+            <button class="btn btn-danger" (click)="deleteBundle()" [disabled]="isDeletingValue">
+              @if (isDeletingValue) {
+                <i class="fas fa-spinner fa-spin"></i>
+                Deleting...
+              } @else {
+                <i class="fas fa-trash"></i>
+                Delete
+              }
             </button>
           </div>
         </div>
@@ -307,6 +322,105 @@
           </div>
         </section>
 
+      </div>
+    </div>
+  }
+
+  <!-- Confirmation Dialogs -->
+  
+  <!-- Activate Confirmation Dialog -->
+  @if (showActivateDialogValue) {
+    <div class="dialog-overlay" (click)="closeActivateDialog()">
+      <div class="dialog-container" (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+          <h3>Activate Bundle</h3>
+          <button class="dialog-close" (click)="closeActivateDialog()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="dialog-content">
+          <p>Are you sure you want to activate this bundle?</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-outline" (click)="closeActivateDialog()" [disabled]="isActivatingValue">
+            Cancel
+          </button>
+          <button class="btn btn-success" (click)="confirmActivateBundle()" [disabled]="isActivatingValue">
+            @if (isActivatingValue) {
+              <i class="fas fa-spinner fa-spin"></i>
+              Activating...
+            } @else {
+              <i class="fas fa-play"></i>
+              Confirm
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Deactivate Confirmation Dialog -->
+  @if (showDeactivateDialogValue) {
+    <div class="dialog-overlay" (click)="closeDeactivateDialog()">
+      <div class="dialog-container" (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+          <h3>Deactivate Bundle</h3>
+          <button class="dialog-close" (click)="closeDeactivateDialog()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="dialog-content">
+          <p>Are you sure you want to deactivate this bundle?</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-outline" (click)="closeDeactivateDialog()" [disabled]="isDeactivatingValue">
+            Cancel
+          </button>
+          <button class="btn btn-warning" (click)="confirmDeactivateBundle()" [disabled]="isDeactivatingValue">
+            @if (isDeactivatingValue) {
+              <i class="fas fa-spinner fa-spin"></i>
+              Deactivating...
+            } @else {
+              <i class="fas fa-pause"></i>
+              Confirm
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Delete Confirmation Dialog -->
+  @if (showDeleteDialogValue) {
+    <div class="dialog-overlay" (click)="closeDeleteDialog()">
+      <div class="dialog-container dialog-danger" (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+          <h3>Delete Bundle</h3>
+          <button class="dialog-close" (click)="closeDeleteDialog()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="dialog-content">
+          <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <p>Are you sure you want to delete this bundle?</p>
+          <p class="warning-text">This action cannot be undone and will permanently remove the bundle.</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-outline" (click)="closeDeleteDialog()" [disabled]="isDeletingValue">
+            Cancel
+          </button>
+          <button class="btn btn-danger" (click)="confirmDeleteBundle()" [disabled]="isDeletingValue">
+            @if (isDeletingValue) {
+              <i class="fas fa-spinner fa-spin"></i>
+              Deleting...
+            } @else {
+              <i class="fas fa-trash"></i>
+              Delete
+            }
+          </button>
+        </div>
       </div>
     </div>
   }

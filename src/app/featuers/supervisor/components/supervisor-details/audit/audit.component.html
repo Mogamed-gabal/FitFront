@@ -1,1 +1,184 @@
-<p>audit works!</p>
+<!-- Supervisor Audit Page - Premium Enterprise UI -->
+<div class="supervisor-audit-container">
+  
+  <!-- Page Header -->
+  <div class="audit-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>
+          <i class="fas fa-history"></i>
+          Supervisor Audit Logs
+        </h1>
+        <p class="header-subtitle">Tracking all supervisor actions and activities</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoadingValue()) {
+    <div class="loading-state">
+      <div class="skeleton-cards">
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="skeleton-card">
+            <div class="skeleton-header">
+              <div class="skeleton-icon"></div>
+              <div class="skeleton-badge"></div>
+            </div>
+            <div class="skeleton-content">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @else if (errorValue()) {
+    <div class="error-state">
+      <div class="error-content">
+        <div class="error-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2>Failed to Load Audit Logs</h2>
+        <p>{{ errorValue() }}</p>
+        <button class="btn btn-primary" (click)="retryLoading()">
+          <i class="fas fa-redo"></i>
+          Try Again
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @else if (auditLogsValue.length === 0) {
+    <div class="empty-state">
+      <div class="empty-content">
+        <div class="empty-icon">
+          <i class="fas fa-history"></i>
+        </div>
+        <h2>No audit logs found</h2>
+        <p>No supervisor actions have been recorded yet.</p>
+      </div>
+    </div>
+  }
+
+  <!-- Audit Logs List -->
+  @else {
+    <div class="audit-logs-list">
+      @for (log of auditLogsValue(); track log._id) {
+        <div class="audit-card" [class.expanded]="isCardExpanded(log._id)">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="action-info">
+              <div class="action-icon">
+                <i [class]="getActionIcon(log.actionType)"></i>
+              </div>
+              <div class="action-details">
+                <h3 class="action-type">{{ formatActionType(log.actionType) }}</h3>
+                <p class="target-info">{{ log.targetType }} • {{ log.targetId }}</p>
+              </div>
+            </div>
+            <div class="card-meta">
+              <span class="result-badge" [class.success]="log.result === 'success'" [class.fail]="log.result === 'fail'">
+                {{ log.result === 'success' ? 'Success' : 'Failed' }}
+              </span>
+              <span class="timestamp">{{ formatDate(log.createdAt) }}</span>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="card-content">
+            <div class="performed-by">
+              <i class="fas fa-user"></i>
+              <span><strong>{{ log.details.metadata.performedBy.name }}</strong> ({{ log.details.metadata.performedBy.email }})</span>
+            </div>
+            <div class="reason">
+              <i class="fas fa-info-circle"></i>
+              <span>{{ log.details.reason }}</span>
+            </div>
+          </div>
+
+          <!-- View Details Button -->
+          <button 
+            class="view-details-btn" 
+            (click)="toggleCardExpansion(log._id)"
+            [class.expanded]="isCardExpanded(log._id)"
+          >
+            <span class="btn-text">
+              {{ isCardExpanded(log._id) ? 'Hide Details' : 'View Details' }}
+            </span>
+            <i class="fas fa-chevron-down" [class.rotated]="isCardExpanded(log._id)"></i>
+          </button>
+
+          <!-- Expanded Details Section -->
+          @if (isCardExpanded(log._id)) {
+            <div class="expanded-details">
+              <div class="details-grid">
+                <!-- Request Info -->
+                <div class="detail-section">
+                  <h4>
+                    <i class="fas fa-globe"></i>
+                    Request Information
+                  </h4>
+                  <div class="detail-item">
+                    <label>Endpoint:</label>
+                    <span>{{ log.requestInfo.endpoint }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Method:</label>
+                    <span class="method-badge">{{ log.requestInfo.method }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>IP Address:</label>
+                    <span>{{ log.requestInfo.ipAddress }}</span>
+                  </div>
+                </div>
+
+                <!-- Changes Section -->
+                @if (log.details.changes) {
+                  <div class="detail-section">
+                    <h4>
+                      <i class="fas fa-exchange-alt"></i>
+                      Changes Made
+                    </h4>
+                    @if (log.details.changes.oldValues) {
+                      <div class="changes-group">
+                        <label>Previous Values:</label>
+                        <pre class="code-block">{{ log.details.changes.oldValues | json }}</pre>
+                      </div>
+                    }
+                    @if (log.details.changes.newValues) {
+                      <div class="changes-group">
+                        <label>New Values:</label>
+                        <pre class="code-block">{{ log.details.changes.newValues | json }}</pre>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Metadata -->
+                <div class="detail-section">
+                  <h4>
+                    <i class="fas fa-cog"></i>
+                    Additional Metadata
+                  </h4>
+                  <div class="detail-item">
+                    <label>Created:</label>
+                    <span>{{ formatDate(log.createdAt) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Updated:</label>
+                    <span>{{ formatDate(log.updatedAt) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -3,6 +3,7 @@
     <button class="icon-btn mobile-only" type="button" (click)="onToggleMobileSidebar()">
       <i class="fa-solid fa-bars"></i>
     </button>
+    <app-back-button></app-back-button>
     <button class="icon-btn desktop-only" type="button" (click)="onToggleSidebar()">
       <i class="fa-solid" [class.fa-angles-left]="!sidebarCollapsed" [class.fa-angles-right]="sidebarCollapsed"></i>
     </button>

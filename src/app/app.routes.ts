@@ -99,12 +99,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./featuers/plans-monitoring/plans-monitoring.component').then((m) => m.PlansMonitoringComponent),
       },
-      {
-        path: '**',
-        loadComponent: () =>
-          import('./shared/components/notfoundpage/notfoundpage.component').then((m) => m.NotfoundpageComponent),
-      },
-      {
+            {
         path: 'audit',
         loadComponent: () =>
           import('./featuers/audit/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),

@@ -425,3 +425,12 @@
     </div>
   }
 </div>
+
+  <!-- Update Bundle Modal -->
+  <app-update-bundle-modal
+    [isVisible]="showUpdateDialogValue"
+    [bundle]="bundleValue"
+    (close)="closeUpdateDialog()"
+    (updateSuccess)="onBundleUpdateSuccess($event)"
+  ></app-update-bundle-modal>
+

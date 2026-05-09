@@ -6,11 +6,12 @@ import { Subject } from 'rxjs';
 
 import { Bundle, BundleStatus, DoctorInBundle, GetBundleByIdResponse, ActivateBundleResponse, DeactivateBundleResponse, DeleteBundleResponse } from '../../../../../core/models/bundle.interface';
 import { BundleService } from '../../../../../core/services/bundle.service';
+import { UpdateBundleModalComponent } from '../../components/update-bundle-modal/update-bundle-modal.component';
 
 @Component({
   selector: 'app-bundle-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, DatePipe],
+  imports: [CommonModule, RouterModule, DatePipe, UpdateBundleModalComponent],
   templateUrl: './bundle-details.component.html',
   styleUrl: './bundle-details.component.scss'
 })
@@ -28,6 +29,7 @@ export class BundleDetailsComponent implements OnInit, OnDestroy {
   showActivateDialog = signal<boolean>(false);
   showDeactivateDialog = signal<boolean>(false);
   showDeleteDialog = signal<boolean>(false);
+  showUpdateDialog = signal<boolean>(false);
   
   // Public getters for template access
   get isLoadingValue() { return this.isLoading(); }
@@ -39,6 +41,7 @@ export class BundleDetailsComponent implements OnInit, OnDestroy {
   get showActivateDialogValue() { return this.showActivateDialog(); }
   get showDeactivateDialogValue() { return this.showDeactivateDialog(); }
   get showDeleteDialogValue() { return this.showDeleteDialog(); }
+  get showUpdateDialogValue() { return this.showUpdateDialog(); }
   
   private destroy$ = new Subject<void>();
 
@@ -85,10 +88,7 @@ export class BundleDetailsComponent implements OnInit, OnDestroy {
   }
 
   editBundle(): void {
-    const id = this.bundleId();
-    if (id) {
-      this.router.navigate(['/bundles', id, 'edit']);
-    }
+    this.openUpdateDialog();
   }
 
   // Dialog methods
@@ -114,6 +114,22 @@ export class BundleDetailsComponent implements OnInit, OnDestroy {
 
   closeDeleteDialog(): void {
     this.showDeleteDialog.set(false);
+  }
+
+  // Update dialog methods
+  openUpdateDialog(): void {
+    this.showUpdateDialog.set(true);
+  }
+
+  closeUpdateDialog(): void {
+    this.showUpdateDialog.set(false);
+  }
+
+  onBundleUpdateSuccess(updatedBundle: Bundle): void {
+    // Update the bundle signal with the updated data
+    this.bundle.set(updatedBundle);
+    this.closeUpdateDialog();
+    this.showToast('Bundle updated successfully');
   }
 
   // Action methods

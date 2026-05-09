@@ -1,1 +1,156 @@
-<p>update-bundle-modal works!</p>
+<!-- Update Bundle Modal - Horizontal Professional Design -->
+@if (isVisible) {
+  <div class="modal-overlay" (click)="onCancel()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Bundle</h2>
+        <button class="close-btn" (click)="onCancel()" aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form [formGroup]="updateForm" (ngSubmit)="onSubmit()" class="update-form">
+          
+          <!-- Horizontal Layout Grid -->
+          <div class="form-grid">
+            
+            <!-- Left Column -->
+            <div class="form-column">
+              
+              <!-- Basic Info Section -->
+              <div class="form-section">
+                <h3 class="section-title">Bundle Information</h3>
+                
+                <div class="form-group">
+                  <label for="name" class="form-label">Bundle Name *</label>
+                  <input 
+                    id="name"
+                    type="text" 
+                    class="form-input"
+                    formControlName="name"
+                    placeholder="Enter bundle name"
+                    [class.is-invalid]="f['name'].touched && f['name'].invalid"
+                  />
+                  @if (f['name'].touched && f['name'].errors?.['required']) {
+                    <div class="error-message">Bundle name is required</div>
+                  }
+                  @if (f['name'].touched && f['name'].errors?.['minlength']) {
+                    <div class="error-message">Bundle name must be at least 3 characters</div>
+                  }
+                  @if (f['name'].touched && f['name'].errors?.['maxlength']) {
+                    <div class="error-message">Bundle name must not exceed 100 characters</div>
+                  }
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="form-column">
+              
+              <!-- Pricing Section -->
+              <div class="form-section">
+                <h3 class="section-title">Pricing Information</h3>
+                
+                <div class="pricing-row">
+                  <div class="form-group">
+                    <label for="oneMonth" class="form-label">1 Month *</label>
+                    <input 
+                      id="oneMonth"
+                      type="number" 
+                      class="form-input"
+                      formControlName="oneMonth"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0"
+                      [class.is-invalid]="pricing['oneMonth'].touched && pricing['oneMonth'].invalid"
+                    />
+                    @if (pricing['oneMonth'].touched && pricing['oneMonth'].errors?.['required']) {
+                      <div class="error-message">Required</div>
+                    }
+                    @if (pricing['oneMonth'].touched && pricing['oneMonth'].errors?.['min']) {
+                      <div class="error-message">Positive</div>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label for="threeMonths" class="form-label">3 Months *</label>
+                    <input 
+                      id="threeMonths"
+                      type="number" 
+                      class="form-input"
+                      formControlName="threeMonths"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0"
+                      [class.is-invalid]="pricing['threeMonths'].touched && pricing['threeMonths'].invalid"
+                    />
+                    @if (pricing['threeMonths'].touched && pricing['threeMonths'].errors?.['required']) {
+                      <div class="error-message">Required</div>
+                    }
+                    @if (pricing['threeMonths'].touched && pricing['threeMonths'].errors?.['min']) {
+                      <div class="error-message">Positive</div>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label for="sixMonths" class="form-label">6 Months *</label>
+                    <input 
+                      id="sixMonths"
+                      type="number" 
+                      class="form-input"
+                      formControlName="sixMonths"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0"
+                      [class.is-invalid]="pricing['sixMonths'].touched && pricing['sixMonths'].invalid"
+                    />
+                    @if (pricing['sixMonths'].touched && pricing['sixMonths'].errors?.['required']) {
+                      <div class="error-message">Required</div>
+                    }
+                    @if (pricing['sixMonths'].touched && pricing['sixMonths'].errors?.['min']) {
+                      <div class="error-message">Positive</div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-outline" 
+          (click)="onCancel()"
+          [disabled]="isLoading"
+        >
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="onSubmit()"
+          [disabled]="updateForm.invalid || isLoading"
+        >
+          @if (isLoading) {
+            <i class="fas fa-spinner fa-spin"></i>
+            Updating...
+          } @else {
+            <i class="fas fa-save"></i>
+            Save Changes
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

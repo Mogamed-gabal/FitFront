@@ -21,15 +21,10 @@ export class NavbarComponent {
   @Output() toggleMobileSidebar = new EventEmitter<void>();
 
   protected readonly pageTitle = signal('Dashboard');
-  protected readonly isDarkMode = signal(false);
   protected readonly userName = signal('Admin User');
   protected readonly userRole = signal('admin');
-  protected readonly themeIcon = computed(() =>
-    this.isDarkMode() ? 'fa-solid fa-sun' : 'fa-solid fa-moon',
-  );
 
   constructor() {
-    this.applySavedTheme();
     this.updateTitle(this.router.url);
 
     this.router.events
@@ -60,23 +55,9 @@ export class NavbarComponent {
     this.toggleMobileSidebar.emit();
   }
 
-  protected onToggleTheme(): void {
-    const nextMode = !this.isDarkMode();
-    this.isDarkMode.set(nextMode);
-    localStorage.setItem('app.theme', nextMode ? 'dark' : 'light');
-    document.body.classList.toggle('dark-mode', nextMode);
-  }
-
   protected onLogout(): void {
     this.authService.logout();
     this.router.navigateByUrl('/login');
-  }
-
-  private applySavedTheme(): void {
-    const saved = localStorage.getItem('app.theme');
-    const dark = saved === 'dark';
-    this.isDarkMode.set(dark);
-    document.body.classList.toggle('dark-mode', dark);
   }
 
   private updateTitle(url: string): void {

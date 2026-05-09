@@ -107,15 +107,6 @@
   display: none;
 }
 
-:host-context(body.dark-mode) .navbar {
-  --nav-bg: #0b1220;
-  --nav-border: #1e293b;
-  --title-color: #f8fafc;
-  --subtitle-color: #94a3b8;
-  --icon-border: #334155;
-  --icon-bg: #0f172a;
-  --icon-color: #cbd5e1;
-}
 
 :host-context(body) * {
   transition: background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 

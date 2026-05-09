@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { SupervisorService } from '../../../../../core/services/supervisor.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -7,53 +8,44 @@ import { finalize } from 'rxjs';
 
 interface AuditLog {
   _id: string;
-  adminId: string;
+  supervisorId: string;
   actionType: string;
   targetId: string;
   targetType: string;
-  details: {
-    reason: string;
-    changes?: {
-      oldValues?: any;
-      newValues?: any;
-    };
-    metadata: {
-      performedBy: {
-        id: string;
-        name: string;
-        email: string;
-        role: string;
-      };
-    };
-  };
-  requestInfo: {
-    endpoint: string;
-    method: string;
-    ipAddress: string;
-  };
-  result: 'success' | 'fail';
-  createdAt: string;
-  updatedAt: string;
+  date: string;
+  metadata: any;
 }
 
 @Component({
   selector: 'app-audit',
-  imports: [CommonModule, JsonPipe],
+  standalone: true,
+  imports: [CommonModule, FormsModule, JsonPipe],
   templateUrl: './audit.component.html',
   styleUrl: './audit.component.scss'
 })
 export class AuditComponent implements OnInit, OnDestroy {
   private supervisorId = signal<string>('');
-  private auditLogs = signal<AuditLog[]>([]);
-  private isLoading = signal<boolean>(true);
-  private expandedCards = signal<Set<string>>(new Set());
-  private error = signal<string | null>(null);
+  protected auditLogs = signal<AuditLog[]>([]);
+  protected isLoading = signal<boolean>(false);
+  private pagination = signal<any>({});
+  protected selectedLog = signal<AuditLog | null>(null);
+  protected showDetailsModal = signal(false);
+  protected error = signal<string | null>(null);
+  
+  // Filter state
+  protected filters = signal({
+    actionType: '',
+    startDate: '',
+    endDate: '',
+    page: 1,
+    limit: 10
+  });
 
-  // Computed properties for template access
-  readonly auditLogsValue = computed(() => this.auditLogs());
-  readonly isLoadingValue = computed(() => this.isLoading());
-  readonly expandedCardsValue = computed(() => this.expandedCards());
-  readonly errorValue = computed(() => this.error());
+  // Computed properties
+  readonly currentPage = computed(() => this.pagination()?.page || 1);
+  readonly totalPages = computed(() => this.pagination()?.pages || 1);
+  readonly hasPrev = computed(() => this.pagination()?.hasPrev || false);
+  readonly hasNext = computed(() => this.pagination()?.hasNext || false);
 
   constructor(
     private route: ActivatedRoute,
@@ -65,48 +57,67 @@ export class AuditComponent implements OnInit, OnDestroy {
     this.loadAuditLogs();
   }
 
-  private loadAuditLogs(): void {
-    if (!this.supervisorId()) {
-      this.error.set('Supervisor ID not found');
-      this.isLoading.set(false);
-      return;
-    }
+  protected loadAuditLogs(): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+    
+    const params = {
+      page: this.filters().page,
+      limit: this.filters().limit,
+      actionType: this.filters().actionType || undefined,
+      startDate: this.filters().startDate || undefined,
+      endDate: this.filters().endDate || undefined
+    };
 
-    this.supervisorService.getPermissionHistory(this.supervisorId())
-      .pipe(
-        takeUntilDestroyed(),
-        finalize(() => this.isLoading.set(false))
-      )
+    this.supervisorService.getAuditLogs(params)
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (response: any) => {
           if (response.success && response.data) {
-            this.auditLogs.set(response.data.history || []);
+            this.auditLogs.set(response.data.logs || []);
+            this.pagination.set(response.data.pagination || {});
           } else {
             this.error.set('Failed to load audit logs');
+            this.auditLogs.set([]);
           }
         },
         error: (error: any) => {
           this.error.set('Error loading audit logs');
+          this.auditLogs.set([]);
           console.error('Error loading audit logs:', error);
         }
       });
   }
 
-  toggleCardExpansion(logId: string): void {
-    const current = this.expandedCards();
-    const newSet = new Set(current);
-    
-    if (newSet.has(logId)) {
-      newSet.delete(logId);
-    } else {
-      newSet.add(logId);
-    }
-    
-    this.expandedCards.set(newSet);
+  onFiltersChange(newFilters: any): void {
+    this.filters.set({ ...this.filters(), ...newFilters, page: 1 });
+    this.loadAuditLogs();
   }
 
-  isCardExpanded(logId: string): boolean {
-    return this.expandedCards().has(logId);
+  onResetFilters(): void {
+    this.filters.set({
+      actionType: '',
+      startDate: '',
+      endDate: '',
+      page: 1,
+      limit: 10
+    });
+    this.loadAuditLogs();
+  }
+
+  onPageChange(page: number): void {
+    this.filters.set({ ...this.filters(), page });
+    this.loadAuditLogs();
+  }
+
+  onViewDetails(log: AuditLog): void {
+    this.selectedLog.set(log);
+    this.showDetailsModal.set(true);
+  }
+
+  closeDetailsModal(): void {
+    this.showDetailsModal.set(false);
+    this.selectedLog.set(null);
   }
 
   formatDate(dateString: string): string {
@@ -119,36 +130,15 @@ export class AuditComponent implements OnInit, OnDestroy {
     });
   }
 
-  formatActionType(actionType: string): string {
-    return actionType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  }
-
-  getActionIcon(actionType: string): string {
-    const iconMap: { [key: string]: string } = {
-      'approve_user': 'fas fa-user-check',
-      'reject_user': 'fas fa-user-times',
-      'block_user': 'fas fa-user-slash',
-      'unblock_user': 'fas fa-user',
-      'create_supervisor': 'fas fa-user-plus',
-      'delete_supervisor': 'fas fa-user-minus',
-      'create_bundle': 'fas fa-box',
-      'update_bundle': 'fas fa-edit',
-      'deactivate_bundle': 'fas fa-pause',
-      'activate_bundle': 'fas fa-play',
-      'delete_bundle': 'fas fa-trash',
-      'grant_permission': 'fas fa-key',
-      'revoke_permission': 'fas fa-lock'
-    };
-    return iconMap[actionType] || 'fas fa-cog';
-  }
-
-  retryLoading(): void {
-    this.error.set(null);
-    this.isLoading.set(true);
-    this.loadAuditLogs();
+  getActionBadgeClass(actionType: string): string {
+    const type = actionType.toLowerCase();
+    if (type.includes('create')) return 'badge-success';
+    if (type.includes('update')) return 'badge-primary';
+    if (type.includes('delete')) return 'badge-danger';
+    return 'badge-secondary';
   }
 
   ngOnDestroy(): void {
-    // Cleanup handled by takeUntilDestroyed
+    // Cleanup
   }
 }

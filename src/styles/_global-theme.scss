@@ -1,0 +1,819 @@
+/* =============================================================================
+   GLOBAL THEME SYSTEM - LIGHT/DARK MODE
+   ============================================================================= */
+
+/* CSS Custom Properties for Dynamic Theming */
+:root {
+  /* Light Theme (Default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  
+  --card-bg: #ffffff;
+  --card-hover: #f8fafc;
+  
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #3b82f6;
+  
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.18);
+  
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  
+  --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-normal: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Dark Theme Override */
+body.dark-mode {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  
+  --border-color: #475569;
+  --border-light: #64748b;
+  
+  --card-bg: #1e293b;
+  --card-hover: #334155;
+  
+  --primary-color: #60a5fa;
+  --primary-hover: #3b82f6;
+  
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #60a5fa;
+  
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* =============================================================================
+   THEME APPLICATION
+   ============================================================================= */
+
+/* Apply theme to body element */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* HTML element theming */
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Main app container */
+app-root {
+  display: block;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* Common page containers */
+.main-container, .page-container, .content-container,
+.container, .wrapper, .app-container, .layout {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* Section and div containers */
+section, .section, .page, .view {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Main content areas */
+main, .main, .content, .main-content {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Any div that doesn't have specific class */
+div {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Override any hardcoded backgrounds */
+div[style*="background"], div[style*="background-color"] {
+  background-color: var(--bg-primary) !important;
+}
+
+/* Common container classes that might have hardcoded backgrounds */
+.container-fluid, .container-lg, .container-md, .container-sm,
+.row, .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6,
+.col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* =============================================================================
+   GLOBAL COMPONENT STYLES
+   ============================================================================= */
+
+/* Cards - Apply theme variables */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  
+  &:hover {
+    background-color: var(--card-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* Buttons */
+.btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 24px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  
+  &:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Forms */
+input, textarea, select {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  transition: all var(--transition-normal);
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+}
+
+/* Tables */
+table {
+  background-color: var(--card-bg);
+  border-collapse: collapse;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  
+  th, td {
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    padding: 12px 16px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: var(--bg-secondary);
+    font-weight: 600;
+  }
+}
+
+/* Modals */
+.modal {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  
+  .modal-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px 24px;
+    border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm);
+  }
+}
+
+/* Sidebar/Navigation */
+.sidebar {
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  color: var(--text-primary);
+  
+  .sidebar-header {
+    background-color: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .nav-item {
+    color: var(--text-secondary);
+    
+    &:hover {
+      color: var(--text-primary);
+      background-color: var(--card-hover);
+    }
+    
+    &.active {
+      color: var(--text-primary);
+      background-color: var(--primary-color);
+    }
+  }
+}
+
+/* Headers */
+.header {
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  
+  .header-title {
+    color: var(--text-primary);
+  }
+  
+  .header-subtitle {
+    color: var(--text-secondary);
+  }
+}
+
+/* Text utilities */
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+/* Background utilities */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+/* Border utilities */
+.border-light {
+  border-color: var(--border-light);
+}
+
+.border-custom {
+  border-color: var(--border-color);
+}
+
+/* =============================================================================
+   COMPONENT OVERRIDES - ALL PROJECT PAGES
+   ============================================================================= */
+
+/* Global component overrides - applies to all pages */
+* {
+  transition: background-color var(--transition-normal), color var(--transition-normal), border-color var(--transition-normal);
+}
+
+/* Aggressive theme application - override everything */
+html, body, app-root {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* All elements by default */
+*:not(.card):not(.btn):not(.button):not(.modal):not(.dialog) {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Override any element with hardcoded background */
+*[style*="background"] {
+  background-color: var(--bg-primary) !important;
+}
+
+*[style*="background-color"] {
+  background-color: var(--bg-primary) !important;
+}
+
+/* Force theme on all common containers */
+.main-layout, .layout-container, .page-wrapper, .app-wrapper,
+.content-wrapper, .main-wrapper, .page-layout, .app-layout {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Force theme on routing outlets */
+router-outlet + * {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Force theme on all direct children of body */
+body > * {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Force theme on all Angular components */
+app-* {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Dashboard components */
+.dashboard-container {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%) !important;
+}
+
+.chart-card, .stat-card, .metric-card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-primary) !important;
+}
+
+.chart-card:hover, .stat-card:hover, .metric-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Audit components */
+.audit-container, .audit-logs-container {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.audit-header, .audit-card, .audit-item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-primary) !important;
+}
+
+.audit-stats, .audit-summary, .audit-filters {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Admin Chat components */
+.chat-dashboard, .chat-window, .chats-details {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.chats-list, .chats-table, .messages-list {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.chat-filters, .participants-list, .typing-indicator {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.messages-item {
+  background: var(--card-hover) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Plans Monitoring components */
+.plans-monitoring, .diet-container, .workout-container {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.diet-card, .workout-card, .diet-details, .workout-details {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-primary) !important;
+}
+
+.diet-filter, .workout-filter, .diet-progress, .workout-progress {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Auth components */
+.login-container, .login-form {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Supervisor components */
+.supervisor-container, .supervisor-details {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.supervisor-audit-container, .permissions-container {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.permission-card, .permission-item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Requests components */
+.requests-container, .joining-requests {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.request-filter, .request-item, .request-details {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Subscription components */
+.subscription-container, .subscription-plans {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.subscription-card, .plan-card, .subscription-details {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Layout components */
+.main-layout, .layout-container {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.sidebar, .sidebar-container {
+  background: var(--bg-secondary) !important;
+  border-right: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.navbar, .header {
+  background: var(--card-bg) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Common UI elements */
+.card, .panel, .widget {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text-primary) !important;
+}
+
+.card:hover, .panel:hover, .widget:hover {
+  background: var(--card-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Tables and forms */
+table {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+th, td {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+input, textarea, select {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Buttons */
+.btn, .button, .btn-primary, .btn-secondary {
+  background: var(--primary-color) !important;
+  color: white !important;
+  border: 1px solid var(--primary-color) !important;
+}
+
+.btn:hover, .button:hover, .btn-primary:hover, .btn-secondary:hover {
+  background: var(--primary-hover) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.btn-secondary {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Text utilities */
+.text-muted, .text-secondary, .subtitle {
+  color: var(--text-secondary) !important;
+}
+
+.text-primary, .title, .heading {
+  color: var(--text-primary) !important;
+}
+
+/* Background utilities */
+.bg-white, .bg-light {
+  background: var(--card-bg) !important;
+}
+
+.bg-gray, .bg-secondary {
+  background: var(--bg-secondary) !important;
+}
+
+.bg-dark {
+  background: var(--bg-tertiary) !important;
+}
+
+/* Border utilities */
+.border, .border-light {
+  border-color: var(--border-color) !important;
+}
+
+.border-dark {
+  border-color: var(--border-light) !important;
+}
+
+/* Specific component overrides */
+.stats-card, .info-card, .alert-card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.filter-container, .search-container {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.list-item, .table-row, .grid-item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.list-item:hover, .table-row:hover, .grid-item:hover {
+  background: var(--card-hover) !important;
+}
+
+/* Modal and overlay */
+.modal, .dialog, .overlay {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.modal-header, .dialog-title {
+  background: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Loading and empty states */
+.loading, .empty-state, .no-data {
+  background: var(--card-bg) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Status indicators */
+.status-active, .status-online {
+  color: var(--success-color) !important;
+}
+
+.status-inactive, .status-offline {
+  color: var(--text-muted) !important;
+}
+
+.status-error, .status-danger {
+  color: var(--danger-color) !important;
+}
+
+.status-warning {
+  color: var(--warning-color) !important;
+}
+
+.status-info {
+  color: var(--info-color) !important;
+}
+
+/* Dark mode specific enhancements */
+body.dark-mode {
+  /* Enhanced card visibility */
+  .card, .panel, .widget {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-md) !important;
+  }
+  
+  /* User page boxes */
+  .user-card, .profile-card, .user-info, .user-details {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-md) !important;
+  }
+  
+  /* Enhanced text visibility */
+  .title, .heading, h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+  }
+  
+  /* Enhanced form visibility */
+  input, textarea, select {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  /* Enhanced table visibility */
+  table {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+  }
+  
+  th, td {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  /* Enhanced button visibility */
+  .btn, .button {
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: 1px solid var(--primary-color) !important;
+  }
+  
+  /* Enhanced sidebar visibility */
+  .sidebar {
+    background: var(--bg-secondary) !important;
+    border-right: 1px solid var(--border-color) !important;
+  }
+  
+  /* Enhanced navbar visibility */
+  .navbar, .header {
+    background: var(--card-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+  
+  /* Enhanced modal visibility */
+  .modal, .dialog {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+/* Mobile-first responsive approach */
+@media (max-width: 768px) {
+  .card {
+    border-radius: var(--radius-md);
+    padding: 16px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .modal {
+    margin: 20px;
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    border-radius: var(--radius-sm);
+    padding: 12px;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+  
+  .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+    width: 280px;
+  }
+}
+
+/* =============================================================================
+   ACCESSIBILITY
+   ============================================================================= */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7);
+    --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.9);
+  }
+  
+  body.dark-mode {
+    --border-color: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --shadow-sm: 0 4px 12px rgba(255, 255, 255, 0.5);
+    --shadow-md: 0 8px 24px rgba(255, 255, 255, 0.7);
+    --shadow-lg: 0 12px 48px rgba(255, 255, 255, 0.9);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+  
+  .btn {
+    &:hover {
+      transform: none !important;
+    }
+    
+    &:active {
+      transform: none !important;
+    }
+  }
+  
+  .card {
+    &:hover {
+      transform: none !important;
+    }
+  }
+}

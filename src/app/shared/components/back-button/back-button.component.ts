@@ -16,7 +16,6 @@ import { Router } from '@angular/router';
         <i class="back-icon">←</i>
         <div class="glow-effect"></div>
       </div>
-      <span class="back-text">Back</span>
       <div class="magic-aura"></div>
     </button>
   `,
@@ -24,34 +23,38 @@ import { Router } from '@angular/router';
     .back-btn {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 50px;
-      background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-hover) 100%);
-      color: var(--text-primary);
+      justify-content: center;
+      padding: 8px;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: linear-gradient(145deg, var(--card-bg) 0%, var(--card-hover) 100%);
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
       position: relative;
       overflow: visible;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
+      box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 2px 6px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      transform-style: preserve-3d;
+      width: 44px;
+      height: 44px;
       
       &::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-        border-radius: 50px;
+        border-radius: 14px;
         opacity: 0;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: scale(0.8);
+        transform: scale(0.95);
+        z-index: -1;
       }
       
       &::after {
@@ -59,18 +62,23 @@ import { Router } from '@angular/router';
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-        border-radius: 50px;
+        width: 120%;
+        height: 120%;
+        background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+        border-radius: 16px;
         opacity: 0;
         transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         transform: translate(-50%, -50%) scale(0);
+        z-index: -1;
       }
       
       &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transform: translateY(-3px) rotateX(5deg);
+        box-shadow: 
+          0 8px 24px rgba(0, 0, 0, 0.2),
+          0 4px 12px rgba(0, 0, 0, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        border-color: var(--primary-color);
         
         &::before {
           opacity: 1;
@@ -83,13 +91,9 @@ import { Router } from '@angular/router';
         }
         
         .back-icon-container {
-          transform: translateX(-3px);
-          background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .back-text {
-          color: white;
-          transform: translateX(2px);
+          transform: translateX(-2px) rotateY(15deg);
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+          box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
         
         .magic-particles .particle {
@@ -98,21 +102,23 @@ import { Router } from '@angular/router';
         
         .magic-aura {
           opacity: 1;
-          transform: scale(1.2);
+          transform: scale(1.3);
         }
         
         .glow-effect {
           opacity: 1;
-          box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+          box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
         }
       }
       
       &:active {
-        transform: translateY(0);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px) rotateX(2deg) scale(0.95);
+        box-shadow: 
+          0 4px 16px rgba(0, 0, 0, 0.15),
+          0 2px 6px rgba(0, 0, 0, 0.1);
         
         .back-icon-container {
-          transform: translateX(-1px) scale(0.95);
+          transform: translateX(-1px) rotateY(8deg) scale(0.9);
         }
       }
     }
@@ -166,24 +172,27 @@ import { Router } from '@angular/router';
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--primary-color);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       z-index: 2;
       overflow: visible;
+      box-shadow: 
+        0 2px 8px rgba(59, 130, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     
     .glow-effect {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-      border-radius: 50%;
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, transparent 70%);
+      border-radius: 12px;
       transform: translate(-50%, -50%);
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -198,15 +207,7 @@ import { Router } from '@angular/router';
       z-index: 3;
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       animation: pulse 2s ease-in-out infinite;
-    }
-    
-    .back-text {
-      font-size: 14px;
-      color: var(--text-primary);
-      font-weight: 600;
-      position: relative;
-      z-index: 2;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
     
     @keyframes float {

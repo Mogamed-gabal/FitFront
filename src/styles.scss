@@ -1,0 +1,22 @@
+/* =============================================================================
+   GLOBAL STYLES WITH THEME SYSTEM
+   ============================================================================= */
+
+/* Import global theme system */
+@import './styles/_global-theme';
+
+/* Base styles */
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  line-height: 1.6;
+  min-height: 100vh;
+}

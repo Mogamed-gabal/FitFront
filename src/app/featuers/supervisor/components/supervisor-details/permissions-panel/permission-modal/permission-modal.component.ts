@@ -11,11 +11,11 @@ import { AvailablePermission } from '../../../../../../core/services/supervisor.
 })
 export class PermissionModalComponent {
   @Input() permission: AvailablePermission | null = null;
+  @Input() isLoading: boolean = false;
   @Output() close = new EventEmitter<void>();
   @Output() grant = new EventEmitter<{reason: string, expiresAt: string | null}>();
 
   grantForm: FormGroup;
-  isLoading = false;
   minDate: string;
 
   constructor(private fb: FormBuilder) {

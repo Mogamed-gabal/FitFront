@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SupervisorService, Permission, UserPermission, AvailablePermission, GrantPermissionRequest, RevokePermissionRequest } from '../../../../../core/services/supervisor.service';
 import { Subject, takeUntil } from 'rxjs';
 import { PermissionModalComponent } from './permission-modal/permission-modal.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-permissions-panel',
@@ -23,6 +24,7 @@ export class PermissionsPanelComponent implements OnInit, OnDestroy {
 
   // UI State - Loading and modal states
   isLoading = false;
+  isGrantingPermission = false;
   showGrantModal = false;
   showDetailsPopup = false;
   showConfirmation = false;
@@ -186,10 +188,25 @@ export class PermissionsPanelComponent implements OnInit, OnDestroy {
       expiresAt: grantData.expiresAt || undefined
     };
 
+    this.isGrantingPermission = true;
+
     this.supervisorService.grantPermission(request).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
       next: (response) => {
+        this.isGrantingPermission = false;
+        
+        // Show success toaster
+        Swal.fire({
+          icon: 'success',
+          title: 'Permission Granted!',
+          text: `Successfully granted ${this.selectedPermission?.name || 'permission'} to user.`,
+          timer: 3000,
+          showConfirmButton: false,
+          toast: true,
+          position: 'top-end'
+        });
+
         // Add to assigned permissions
         const newPermission: UserPermission = response.data.permission;
         this.assignedPermissions.push(newPermission);
@@ -200,6 +217,21 @@ export class PermissionsPanelComponent implements OnInit, OnDestroy {
         this.closeGrantModal();
       },
       error: (error) => {
+        this.isGrantingPermission = false;
+        
+        // Show error toaster
+        const errorMessage = error?.error?.message || error?.message || 'Failed to grant permission';
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Grant Failed!',
+          text: errorMessage,
+          timer: 3000,
+          showConfirmButton: false,
+          toast: true,
+          position: 'top-end'
+        });
+        
         console.error('Error granting permission:', error);
         this.closeGrantModal();
       }

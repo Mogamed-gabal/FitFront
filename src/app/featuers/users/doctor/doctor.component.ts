@@ -160,21 +160,30 @@ export class DoctorComponent implements OnInit {
     this.detailLoading.set(true);
     this.errorMessage.set(null);
 
-    this.doctorService
-      .getDoctorById(doctor.id)
-      .pipe(
-        finalize(() => {
-          this.detailLoading.set(false);
-        }),
-      )
-      .subscribe({
-        next: (doctorData) => {
-          this.selectedDoctor.set(doctorData);
-        },
-        error: (err: unknown) => {
-          this.errorMessage.set(this.extractErrorMessage(err));
-        },
-      });
+    // Find the full doctor data from the doctors list (which includes id_card_front and id_card_back)
+    const fullDoctor = this.doctors().find(d => d._id === doctor.id);
+    
+    if (fullDoctor) {
+      this.selectedDoctor.set(fullDoctor);
+      this.detailLoading.set(false);
+    } else {
+      // Fallback to API call if not found in list
+      this.doctorService
+        .getDoctorById(doctor.id)
+        .pipe(
+          finalize(() => {
+            this.detailLoading.set(false);
+          }),
+        )
+        .subscribe({
+          next: (doctorData) => {
+            this.selectedDoctor.set(doctorData);
+          },
+          error: (err: unknown) => {
+            this.errorMessage.set(this.extractErrorMessage(err));
+          },
+        });
+    }
   }
 
   protected closeModal(): void {
@@ -202,12 +211,27 @@ export class DoctorComponent implements OnInit {
       cancelButtonText: 'Cancel',
     }).then((result: any) => {
       if (result.isConfirmed && result.value) {
+        // Show loading toast
+        Swal.fire({
+          title: 'Blocking Doctor...',
+          text: `Please wait while blocking ${doctor.name}`,
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
         this.doctorService.blockDoctor(doctor.id, result.value).subscribe({
           next: () => {
+            Swal.close();
             Swal.fire('Blocked!', `${doctor.name} has been blocked.`, 'success');
             this.loadDoctors();
           },
           error: (err: unknown) => {
+            Swal.close();
             this.errorMessage.set(this.extractErrorMessage(err));
           }
         });
@@ -227,12 +251,27 @@ export class DoctorComponent implements OnInit {
       cancelButtonText: 'Cancel',
     }).then((result: any) => {
       if (result.isConfirmed) {
+        // Show loading toast
+        Swal.fire({
+          title: 'Unblocking Doctor...',
+          text: `Please wait while unblocking ${doctor.name}`,
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
         this.doctorService.unblockDoctor(doctor.id).subscribe({
           next: () => {
+            Swal.close();
             Swal.fire('Unblocked!', `${doctor.name} has been unblocked.`, 'success');
             this.loadDoctors();
           },
           error: (err: unknown) => {
+            Swal.close();
             this.errorMessage.set(this.extractErrorMessage(err));
           }
         });
@@ -261,12 +300,27 @@ export class DoctorComponent implements OnInit {
       cancelButtonText: 'Cancel',
     }).then((result: any) => {
       if (result.isConfirmed && result.value) {
+        // Show loading toast
+        Swal.fire({
+          title: 'Deleting Doctor...',
+          text: `Please wait while deleting ${doctor.name}`,
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
         this.doctorService.deleteDoctor(doctor.id, result.value).subscribe({
           next: () => {
+            Swal.close();
             Swal.fire('Deleted!', `${doctor.name} has been deleted.`, 'success');
             this.loadDoctors();
           },
           error: (err: unknown) => {
+            Swal.close();
             this.errorMessage.set(this.extractErrorMessage(err));
           }
         });
@@ -294,16 +348,33 @@ export class DoctorComponent implements OnInit {
         const reason = result.value || '';
         console.log('🔍 Sending recommend request for:', doctor.id, 'reason:', reason);
         
+        // Show loading toast
+        Swal.fire({
+          title: 'Recommending Doctor...',
+          text: `Please wait while recommending ${doctor.name}`,
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
         this.doctorService.recommendDoctor(doctor.id, reason).subscribe({
           next: (response) => {
             console.log('🔍 Recommend response:', response);
             console.log('🔍 Updated doctor isRecommended:', response.data.isRecommended);
             
+            Swal.close();
             Swal.fire('Recommended!', `${doctor.name} has been recommended.`, 'success');
             this.updateDoctorInList(response.data);
+            // Reload doctors list to get fresh data from server
+            this.loadDoctors();
           },
           error: (err: unknown) => {
             console.error('🔍 Recommend error:', err);
+            Swal.close();
             this.errorMessage.set(this.extractErrorMessage(err));
           }
         });
@@ -331,16 +402,33 @@ export class DoctorComponent implements OnInit {
         const reason = result.value || '';
         console.log('🔍 Sending unrecommend request for:', doctor.id, 'reason:', reason);
         
+        // Show loading toast
+        Swal.fire({
+          title: 'Removing Recommendation...',
+          text: `Please wait while removing recommendation for ${doctor.name}`,
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
         this.doctorService.unrecommendDoctor(doctor.id, reason).subscribe({
           next: (response) => {
             console.log('🔍 Unrecommend response:', response);
             console.log('🔍 Updated doctor isRecommended:', response.data.isRecommended);
             
+            Swal.close();
             Swal.fire('Removed!', `Recommendation for ${doctor.name} has been removed.`, 'success');
             this.updateDoctorInList(response.data);
+            // Reload doctors list to get fresh data from server
+            this.loadDoctors();
           },
           error: (err: unknown) => {
             console.error('🔍 Unrecommend error:', err);
+            Swal.close();
             this.errorMessage.set(this.extractErrorMessage(err));
           }
         });

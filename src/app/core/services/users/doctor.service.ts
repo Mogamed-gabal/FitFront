@@ -9,7 +9,7 @@ export interface Doctor {
   email: string;
   phone: string;
   specialization: string;
-  experience: number;
+  years_of_experience: number;
   status: 'approved' | 'pending' | 'rejected';
   isBlocked: boolean;
   isRecommended: boolean;
@@ -18,7 +18,7 @@ export interface Doctor {
   profilePicture?: Certificate;
   id_card_front?: Certificate;
   id_card_back?: Certificate;
-  shortBio?: string;
+  short_bio?: string;
   certificates?: Certificate[];
   packages?: Package[];
   createdAt: string;
@@ -31,8 +31,8 @@ export interface Certificate {
   originalName: string;
   mimetype: string;
   size: number;
-  secure_url: string;
-  public_id: string;
+  secure_url?: string;
+  public_id?: string;
 }
 
 export interface Package {

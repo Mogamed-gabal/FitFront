@@ -32,10 +32,10 @@
         </div>
 
         <!-- Bio Section -->
-        @if (doctor.shortBio) {
+        @if (doctor.short_bio) {
           <div class="bio-section">
             <h5>About</h5>
-            <p>{{ doctor.shortBio }}</p>
+            <p>{{ doctor.short_bio }}</p>
           </div>
         }
 
@@ -51,7 +51,7 @@
           </div>
           <div class="contact-item">
             <span class="label">Experience</span>
-            <p>{{ doctor.experience }} years</p>
+            <p>{{ doctor.years_of_experience }} years</p>
           </div>
         </div>
 
@@ -64,7 +64,15 @@
                 <div class="id-card">
                   <h6>Front Side</h6>
                   <div class="id-card-image">
-                    <img [src]="doctor.id_card_front.secure_url" alt="ID Card Front" />
+                    @if (doctor.id_card_front.secure_url) {
+                      <img [src]="doctor.id_card_front.secure_url" alt="ID Card Front" />
+                    } @else {
+                      <div class="id-card-placeholder">
+                        <i class="fa-solid fa-id-card"></i>
+                        <p>ID Card Front</p>
+                        <small>{{ doctor.id_card_front.originalName }}</small>
+                      </div>
+                    }
                   </div>
                   <p>{{ doctor.id_card_front.originalName }}</p>
                 </div>
@@ -73,7 +81,15 @@
                 <div class="id-card">
                   <h6>Back Side</h6>
                   <div class="id-card-image">
-                    <img [src]="doctor.id_card_back.secure_url" alt="ID Card Back" />
+                    @if (doctor.id_card_back.secure_url) {
+                      <img [src]="doctor.id_card_back.secure_url" alt="ID Card Back" />
+                    } @else {
+                      <div class="id-card-placeholder">
+                        <i class="fa-solid fa-id-card"></i>
+                        <p>ID Card Back</p>
+                        <small>{{ doctor.id_card_back.originalName }}</small>
+                      </div>
+                    }
                   </div>
                   <p>{{ doctor.id_card_back.originalName }}</p>
                 </div>

@@ -19,11 +19,11 @@ export class DeletedUsersService {
 
   getDeletedUsers(params: GetDeletedUsersParams): Observable<GetDeletedUsersResponse> {
     const httpParams = new HttpParams({ fromObject: params as any });
-    return this.http.get<GetDeletedUsersResponse>(`${this.baseUrl}/api/users/deleted`, { params: httpParams });
+    return this.http.get<GetDeletedUsersResponse>(`${this.baseUrl}/api/users/soft-deleted`, { params: httpParams });
   }
 
   restoreUser(userId: string, reason?: string): Observable<RestoreUserResponse> {
-    return this.http.post<RestoreUserResponse>(`${this.baseUrl}/api/users/${userId}/restore`, { reason });
+    return this.http.patch<RestoreUserResponse>(`${this.baseUrl}/api/users/${userId}/restore`, { reason });
   }
 
   permanentDelete(userId: string, reason?: string): Observable<PermanentDeleteResponse> {

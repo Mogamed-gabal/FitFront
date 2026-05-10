@@ -1,9 +1,10 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { finalize, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { DeletedUsersService } from '../../../core/services/users/deleted-users.service';
-import { DeletedUser, GetDeletedUsersParams } from '../../../core/models/user/deleted-user.model';
+import { DeletedUser, GetDeletedUsersParams, RestoreUserResponse, PermanentDeleteResponse } from '../../../core/models/user/deleted-user.model';
 import { DeletedFilterComponent } from './components/deleted-filter/deleted-filter.component';
 import { DeletedTableComponent } from './components/deleted-table/deleted-table.component';
 import { DeletedModelComponent } from './components/deleted-model/deleted-model.component';
@@ -26,6 +27,7 @@ export class DeletdUsersComponent implements OnInit {
   filters = signal<GetDeletedUsersParams>({});
   pagination = signal<any>({});
   statistics = signal<any>({});
+  currentFilters = signal<any>({});
   selectedUser = signal<DeletedUser | null>(null);
   modalVisible = signal(false);
   modalType = signal<'restore' | 'delete'>('restore');
@@ -34,12 +36,7 @@ export class DeletdUsersComponent implements OnInit {
   // Computed
   paginatedUsers = computed(() => this.users());
 
-  // Helper methods
-  getRoleCount(roleStatistics: any[], role: string): number {
-    const roleStat = roleStatistics?.find(stat => stat._id === role);
-    return roleStat?.count || 0;
-  }
-
+  
   ngOnInit(): void {
     this.loadUsers();
   }
@@ -61,10 +58,12 @@ export class DeletdUsersComponent implements OnInit {
             this.users.set(response.data.users);
             this.pagination.set(response.data.pagination);
             this.statistics.set(response.data.statistics);
+            this.currentFilters.set(response.data.filters);
             
             console.log('🔍 Deleted Users loaded:', response.data.users?.length || 0);
             console.log('🔍 Pagination:', response.data.pagination);
             console.log('🔍 Statistics:', response.data.statistics);
+            console.log('🔍 Current Filters:', response.data.filters);
           } else {
             Swal.fire('Error', 'Invalid response format', 'error');
           }
@@ -101,7 +100,7 @@ export class DeletdUsersComponent implements OnInit {
     const user = this.selectedUser();
     if (!user) return;
 
-    const action$ = this.modalType() === 'restore' 
+    const action$: Observable<any> = this.modalType() === 'restore' 
       ? this.deletedUsersService.restoreUser(user._id, reason)
       : this.deletedUsersService.permanentDelete(user._id, reason);
 

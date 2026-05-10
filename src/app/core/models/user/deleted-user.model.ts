@@ -9,6 +9,7 @@ export interface DeletedUser {
   isBlocked: boolean;
   isDeleted: boolean;
   status: 'approved' | 'pending' | 'rejected' | 'active';
+  isRecommended: boolean;
   loginAttempts: number;
   passwordResetOtpAttempts: number;
   packages: any[];
@@ -16,19 +17,21 @@ export interface DeletedUser {
   weightHistory: any[];
   createdAt: string;
   updatedAt: string;
-  lastLogin?: string;
-  lockUntil?: string;
   deletedAt: string;
-  deletedBy: string;
-  isRecommended: boolean;
-  sortDate: string;
-  restoredAt?: string;
-  restoredBy?: {
-    id: string;
+  deletedBy?: {
+    _id: string;
     name: string;
     email: string;
     role: string;
   };
+  restoredAt?: string;
+  restoredBy?: {
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
+  __v?: number;
 }
 
 export interface GetDeletedUsersParams {
@@ -36,8 +39,8 @@ export interface GetDeletedUsersParams {
   limit?: number;
   search?: string;
   role?: string;
-  deletedFrom?: string;
-  deletedTo?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export interface GetDeletedUsersResponse {
@@ -48,34 +51,21 @@ export interface GetDeletedUsersResponse {
       currentPage: number;
       totalPages: number;
       totalUsers: number;
+      itemsPerPage: number;
       hasNext: boolean;
       hasPrev: boolean;
     };
     statistics: {
-      totalRecords: number;
-      blockedUsers: number;
-      deletedSupervisors: number;
-      roleStatistics: {
-        _id: string;
-        count: number;
-        oldestBlocking: string;
-        newestBlocking: string;
-      }[];
-      overallStats: {
-        _id: null;
-        totalBlocked: number;
-        blockedByRole: {
-          role: string;
-          count: number;
-        }[];
-        avgBlockedDuration: number;
+      totalSoftDeleted: number;
+      deletedByRole: {
+        [key: string]: number;
       };
     };
     filters: {
-      search: null | string;
-      role: null | string;
-      blockedFrom: null | string;
-      blockedTo: null | string;
+      role: string;
+      sortBy: string;
+      sortOrder: string;
+      search: string;
     };
   };
 }
@@ -85,11 +75,21 @@ export interface RestoreUserResponse {
   message: string;
   data: {
     user: DeletedUser;
-    reason: string;
   };
 }
 
 export interface PermanentDeleteResponse {
   success: boolean;
   message: string;
+  data: {
+    deletedUser: DeletedUser;
+    deletedBy: {
+      _id: string;
+      name: string;
+      email: string;
+      role: string;
+    };
+    deletedAt: string;
+    reason: string;
+  };
 }

@@ -32,24 +32,25 @@
         </select>
       </div>
 
-      <!-- Date From -->
+      <!-- Sort By -->
       <div class="filter-field">
-        <label for="deletedFrom">Deleted From</label>
-        <input
-          id="deletedFrom"
-          type="date"
-          [(ngModel)]="filters.deletedFrom"
-        />
+        <label for="sortBy">Sort By</label>
+        <select id="sortBy" [(ngModel)]="filters.sortBy">
+          <option value="deletedAt">Deleted Date</option>
+          <option value="name">Name</option>
+          <option value="email">Email</option>
+          <option value="createdAt">Created Date</option>
+          <option value="role">Role</option>
+        </select>
       </div>
 
-      <!-- Date To -->
+      <!-- Sort Order -->
       <div class="filter-field">
-        <label for="deletedTo">Deleted To</label>
-        <input
-          id="deletedTo"
-          type="date"
-          [(ngModel)]="filters.deletedTo"
-        />
+        <label for="sortOrder">Sort Order</label>
+        <select id="sortOrder" [(ngModel)]="filters.sortOrder">
+          <option value="desc">Newest First</option>
+          <option value="asc">Oldest First</option>
+        </select>
       </div>
     </div>
 

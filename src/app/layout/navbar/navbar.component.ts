@@ -23,8 +23,14 @@ export class NavbarComponent {
   protected readonly pageTitle = signal('Dashboard');
   protected readonly userName = signal('Admin User');
   protected readonly userRole = signal('admin');
+  protected readonly isDarkMode = signal(false);
 
   constructor() {
+    // Initialize dark mode from localStorage
+    const savedDarkMode = localStorage.getItem('darkMode');
+    this.isDarkMode.set(savedDarkMode === 'true');
+    this.updateBodyClass();
+
     this.updateTitle(this.router.url);
 
     this.router.events
@@ -58,6 +64,22 @@ export class NavbarComponent {
   protected onLogout(): void {
     this.authService.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  protected toggleDarkMode(): void {
+    const newDarkMode = !this.isDarkMode();
+    this.isDarkMode.set(newDarkMode);
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    this.updateBodyClass();
+  }
+
+  private updateBodyClass(): void {
+    const body = document.body;
+    if (this.isDarkMode()) {
+      body.classList.add('dark-mode');
+    } else {
+      body.classList.remove('dark-mode');
+    }
   }
 
   private updateTitle(url: string): void {

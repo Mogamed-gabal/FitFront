@@ -45,7 +45,7 @@ export const routes: Routes = [
           import('./featuers/users/blocked-users/blocked-users.component').then((m) => m.BlockedUsersComponent),
       },
       {
-        path: 'users/deletd',
+        path: 'users/deleted',
         loadComponent: () =>
           import('./featuers/users/deletd-users/deletd-users.component').then((m) => m.DeletdUsersComponent),
       },

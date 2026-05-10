@@ -28,7 +28,7 @@
               </span>
             </td>
             <td>{{ formatDate(user.deletedAt) }}</td>
-            <td>{{ user.deletedBy }}</td>
+            <td>{{ user.deletedBy?.name || 'Unknown' }}</td>
             <td>
               <div class="action-buttons">
                 <button class="btn-restore" (click)="onRestore(user)">
@@ -76,7 +76,7 @@
           </div>
           <div class="info-row">
             <span class="label">Deleted By:</span>
-            <span class="value">{{ user.deletedBy }}</span>
+            <span class="value">{{ user.deletedBy?.name || 'Unknown' }}</span>
           </div>
         </div>
         

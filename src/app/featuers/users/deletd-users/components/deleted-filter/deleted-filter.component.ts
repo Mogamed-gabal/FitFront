@@ -16,8 +16,8 @@ export class DeletedFilterComponent {
   protected filters: GetDeletedUsersParams = {
     search: '',
     role: '',
-    deletedFrom: '',
-    deletedTo: '',
+    sortBy: 'deletedAt',
+    sortOrder: 'desc',
     page: 1,
     limit: 10
   };
@@ -30,8 +30,8 @@ export class DeletedFilterComponent {
     this.filters = {
       search: '',
       role: '',
-      deletedFrom: '',
-      deletedTo: '',
+      sortBy: 'deletedAt',
+      sortOrder: 'desc',
       page: 1,
       limit: 10
     };

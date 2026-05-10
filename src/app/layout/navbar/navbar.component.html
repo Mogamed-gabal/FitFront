@@ -15,6 +15,9 @@
       <strong>{{ userName() }}</strong>
       <span>{{ userRole() }}</span>
     </div>
+    <button class="icon-btn" type="button" (click)="toggleDarkMode()">
+      <i class="fa-solid" [class.fa-moon]="!isDarkMode()" [class.fa-sun]="isDarkMode()"></i>
+    </button>
         <button class="icon-btn" type="button">
       <i class="fa-solid fa-gear"></i>
     </button>

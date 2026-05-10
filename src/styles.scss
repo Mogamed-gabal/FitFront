@@ -14,4 +14,127 @@ body {
   color: #1f2937;
   line-height: 1.6;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+body.dark-mode .navbar {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+body.dark-mode .sidebar {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+body.dark-mode .page-content {
+  background-color: #1a1a1a;
+}
+
+body.dark-mode .card,
+body.dark-mode .content-card,
+body.dark-mode .table-container,
+body.dark-mode .filter-card {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+body.dark-mode .table-responsive table {
+  background-color: #2d2d2d;
+}
+
+body.dark-mode .table-responsive th,
+body.dark-mode .table-responsive td {
+  border-color: #404040;
+  color: #ffffff;
+}
+
+body.dark-mode .table-responsive th {
+  background-color: #3a3a3a;
+}
+
+body.dark-mode .btn-restore,
+body.dark-mode .btn-apply {
+  background-color: #059669;
+  color: #ffffff;
+}
+
+body.dark-mode .btn-delete,
+body.dark-mode .btn-reset {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+body.dark-mode .icon-btn {
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+
+body.dark-mode .icon-btn:hover {
+  background-color: #4a4a4a;
+}
+
+body.dark-mode .logout-btn {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+body.dark-mode .logout-btn:hover {
+  background-color: #b91c1c;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  border-color: #404040;
+}
+
+body.dark-mode .user-info strong,
+body.dark-mode .user-name,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: #ffffff;
+}
+
+body.dark-mode .stat-card {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+body.dark-mode .role-badge,
+body.dark-mode .category-badge {
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+
+body.dark-mode .pagination-bar {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+body.dark-mode .pagination-bar button {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  border-color: #404040;
+}
+
+body.dark-mode .pagination-bar button:hover:not(:disabled) {
+  background-color: #4a4a4a;
+}
+
+body.dark-mode .pagination-bar button:disabled {
+  background-color: #2a2a2a;
+  color: #666666;
 }

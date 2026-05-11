@@ -1,130 +1,433 @@
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(2, 6, 23, 0.6);
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  animation: overlayFade 0.25s ease;
+  overflow-y: auto;
+}
+
+.doctor-modal-card {
+  width: min(900px, 95%);
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.2);
+  padding: 1.5rem;
+  position: relative;
+  animation: modalIn 0.25s ease;
+  overflow-y: auto;
+
+  h3 {
+    margin: 0 0 1.5rem;
+    font-size: 1.3rem;
+    color: #0f172a;
+    font-weight: 700;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #eef2ff;
+    color: #3730a3;
+  }
+}
+
+.doctor-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.profile-picture {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #e2e8f0;
+  flex-shrink: 0;
+
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.profile-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 2rem;
+  color: #64748b;
+  font-size: 2.5rem;
+
+  i {
+    font-size: 2.5rem;
+  }
 }
 
-.modal-content {
-  background: white;
-  border-radius: 16px;
-  max-width: 600px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
+.profile-info {
+  flex: 1;
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-
-  h2 {
-    margin: 0;
+  h4 {
+    margin: 0 0 0.5rem;
     font-size: 1.5rem;
     font-weight: 700;
     color: #0f172a;
   }
 
-  .close-btn {
-    background: none;
-    border: none;
-    font-size: 1.25rem;
+  .specialization {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
     color: #64748b;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: #f1f5f9;
-      color: #0f172a;
-    }
-  }
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-.doctor-info {
-  .info-section {
-    margin-bottom: 2rem;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    h3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: #0f172a;
-      margin-bottom: 1rem;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-    }
-
-    .info-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-
-      label {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: #374151;
-      }
-
-      span {
-        font-size: 0.95rem;
-        color: #1f2937;
-      }
-    }
-
-    .bio-text {
-      line-height: 1.6;
-      color: #1f2937;
-      margin: 0;
-    }
+    font-weight: 500;
   }
 
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  .status {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    display: inline-block;
     text-transform: capitalize;
-
-    &.pending {
+    
+    &:contains('pending') {
       background: #fef3c7;
       color: #92400e;
     }
+    
+    &:contains('approved') {
+      background: #dcfce7;
+      color: #166534;
+    }
+    
+    &:contains('rejected') {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  }
+}
 
-    &.approved {
+.bio-section {
+  h5 {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.6;
+    color: #475569;
+  }
+}
+
+.contact-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.contact-item {
+  .label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #0f172a;
+  }
+}
+
+.id-cards-section {
+  h5 {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
+.id-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.id-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8fafc;
+
+  h6 {
+    margin: 0;
+    padding: 1rem 1rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    background: #f1f5f9;
+  }
+}
+
+.id-card-image {
+  padding: 1rem;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+}
+
+.id-card-placeholder {
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+
+  i {
+    font-size: 2rem;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    margin: 0 0 0.25rem;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+
+  small {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+}
+
+.certificates-section {
+  h5 {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.certificate-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.cert-image {
+  height: 160px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.cert-info {
+  padding: 1rem;
+
+  h6 {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+
+  .cert-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      color: #2563eb;
+    }
+  }
+}
+
+.packages-section {
+  h5 {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.package-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.package-header {
+  padding: 1rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h6 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .package-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #10b981;
+  }
+}
+
+.package-details {
+  padding: 1rem;
+
+  p {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+}
+
+.package-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .duration {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  .status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    text-transform: capitalize;
+
+    &.active {
       background: #dcfce7;
       color: #166534;
     }
 
-    &.rejected {
+    &.inactive {
       background: #fee2e2;
       color: #991b1b;
+    }
+  }
+}
+
+.package-features {
+  h6 {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+
+    li {
+      font-size: 0.875rem;
+      color: #475569;
+      margin-bottom: 0.25rem;
     }
   }
 }
@@ -134,7 +437,8 @@
   gap: 1rem;
   padding: 1.5rem;
   border-top: 1px solid #e2e8f0;
-  justify-content: flex-end;
+  background: #f8fafc;
+  margin-top: 1rem;
 
   .reject-btn {
     display: flex;
@@ -175,90 +479,51 @@
   }
 }
 
-/* Dark Mode */
-body.dark-mode .modal-content {
-  background: #1e293b;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-}
-
-body.dark-mode .modal-header {
-  border-color: #334155;
-
-  h2 {
-    color: #f1f5f9;
+/* Animations */
+@keyframes overlayFade {
+  from {
+    opacity: 0;
   }
-
-  .close-btn {
-    color: #94a3b8;
-
-    &:hover {
-      background: #334155;
-      color: #f1f5f9;
-    }
+  to {
+    opacity: 1;
   }
 }
 
-body.dark-mode .doctor-info {
-  .info-section {
-    h3 {
-      color: #f1f5f9;
-    }
-
-    .info-item {
-      label {
-        color: #cbd5e1;
-      }
-
-      span {
-        color: #e2e8f0;
-      }
-    }
-
-    .bio-text {
-      color: #e2e8f0;
-    }
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
   }
-}
-
-body.dark-mode .modal-footer {
-  border-color: #334155;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .modal-overlay {
+  .doctor-modal-card {
+    width: 95%;
     padding: 1rem;
   }
 
-  .modal-content {
-    max-width: 100%;
+  .profile-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
   }
 
-  .modal-header {
-    padding: 1rem;
-
-    h2 {
-      font-size: 1.25rem;
-    }
+  .contact-section {
+    grid-template-columns: 1fr;
   }
 
-  .modal-body {
-    padding: 1rem;
-  }
-
-  .doctor-info {
-    .info-section {
-      margin-bottom: 1.5rem;
-
-      .info-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-      }
-    }
+  .id-cards-grid,
+  .certificates-grid,
+  .packages-grid {
+    grid-template-columns: 1fr;
   }
 
   .modal-footer {
-    padding: 1rem;
     flex-direction: column;
 
     .reject-btn,

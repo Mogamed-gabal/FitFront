@@ -4,6 +4,7 @@ import { finalize, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BlockedUsersService, BlockedUser, GetBlockedUsersParams } from '../../../core/services/users/blocked-users.service';
 import { DoctorService } from '../../../core/services/users/doctor.service';
+import { ClientService } from '../../../core/services/users/client.service';
 import { BlockedFilterComponent } from './components/blocked-filter/blocked-filter.component';
 import { BlockedTableComponent } from './components/blocked-table/blocked-table.component';
 import { BlockedModelComponent } from './components/blocked-model/blocked-model.component';
@@ -19,6 +20,7 @@ import Swal from 'sweetalert2';
 export class BlockedUsersComponent implements OnInit {
   private readonly blockedUsersService = inject(BlockedUsersService);
   private readonly doctorService = inject(DoctorService);
+  private readonly clientService = inject(ClientService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly searchTrigger$ = new Subject<string>();
@@ -126,70 +128,183 @@ export class BlockedUsersComponent implements OnInit {
     const user = this.blockedUsers().find(u => u._id === userId);
     if (!user) return;
 
-    // Show loading toast
+    // Show reason dialog first
     Swal.fire({
-      title: 'Unblocking User...',
-      text: `Please wait while unblocking ${user.name}`,
-      icon: 'info',
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
+      title: 'Unblock User?',
+      text: `Are you sure you want to unblock ${user.name}?`,
+      icon: 'question',
+      input: 'text',
+      inputLabel: 'Unblock Reason',
+      inputPlaceholder: 'Enter reason for unblocking...',
+      showCancelButton: true,
+      confirmButtonText: 'Unblock',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#16a34a',
+      inputValidator: (value) => {
+        if (!value || value.trim() === '') {
+          return 'Please enter a reason for unblocking!';
+        }
+        return null;
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const reason = result.value.trim();
+        
+        // Show loading toast
+        Swal.fire({
+          title: 'Unblocking User...',
+          text: `Please wait while unblocking ${user.name}`,
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        this.loading.set(true);
+        this.errorMessage.set(null);
+
+        // Use correct service based on user role
+        let unblockObservable;
+        
+        switch (user.role) {
+          case 'doctor':
+            unblockObservable = this.doctorService.unblockDoctor(userId);
+            break;
+          case 'client':
+            unblockObservable = this.clientService.unblockClient(userId, reason);
+            break;
+          case 'supervisor':
+            unblockObservable = this.doctorService.unblockDoctor(userId);
+            break;
+          default:
+            unblockObservable = this.clientService.unblockClient(userId, reason);
+        }
+        
+        unblockObservable.pipe(
+          finalize(() => {
+            this.loading.set(false);
+            Swal.close();
+          })
+        ).subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              // Show success toast (same as doctor component)
+              Swal.close();
+              Swal.fire('Unblocked!', `${user.name} has been unblocked.`, 'success');
+              
+              this.closeModal();
+              this.loadBlockedUsers();
+            } else {
+              // Show error toast
+              Swal.close();
+              Swal.fire('Unblock Failed', response.message || 'Failed to unblock user. Please try again.', 'error');
+              this.errorMessage.set(response.message || 'Failed to unblock user. Please try again.');
+            }
+          },
+          error: (err: unknown) => {
+            Swal.close();
+            // Show error toast (same as doctor component)
+            this.errorMessage.set('Failed to unblock user. Please try again.');
+          }
+        });
       }
     });
+  }
 
-    this.loading.set(true);
-    this.errorMessage.set(null);
+  onBlockUser(userId: string, reason: string): void {
+    const user = this.blockedUsers().find(u => u._id === userId);
+    if (!user) return;
 
-    // Use doctor service for both client and doctor unblocking
-    const unblockMethod = user.role === 'doctor' ? 'unblockDoctor' : 'unblockClient';
-    
-    (this.doctorService as any)[unblockMethod](userId).pipe(
-      finalize(() => {
-        this.loading.set(false);
-        Swal.close();
-      })
-    ).subscribe({
-      next: (response: any) => {
-        if (response.success) {
-          // Show success toast
-          Swal.fire({
-            icon: 'success',
-            title: 'Unblocked!',
-            text: `${user.name} has been successfully unblocked.`,
-            timer: 3000,
-            showConfirmButton: false,
-            timerProgressBar: true
-          });
-          
-          this.closeModal();
-          this.loadBlockedUsers();
-        } else {
-          // Show error toast
-          Swal.fire({
-            icon: 'error',
-            title: 'Unblock Failed',
-            text: response.message || 'Failed to unblock user. Please try again.',
-            timer: 3000,
-            showConfirmButton: false,
-            timerProgressBar: true
-          });
-          this.errorMessage.set(response.message || 'Failed to unblock user. Please try again.');
+    // Show confirmation dialog
+    Swal.fire({
+      title: 'Block User?',
+      text: `Are you sure you want to block ${user.name}?`,
+      icon: 'warning',
+      input: 'text',
+      inputLabel: 'Block Reason',
+      inputPlaceholder: 'Enter reason for blocking...',
+      inputValue: reason,
+      showCancelButton: true,
+      confirmButtonText: 'Block',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc2626',
+      inputValidator: (value) => {
+        if (!value || value.trim() === '') {
+          return 'Please enter a reason for blocking!';
         }
-      },
-      error: (err: unknown) => {
-        Swal.close();
-        // Show error toast
+        return null;
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const blockReason = result.value.trim();
+        
+        // Show loading toast
         Swal.fire({
-          icon: 'error',
-          title: 'Unblock Failed',
-          text: 'Failed to unblock user. Please try again.',
-          timer: 3000,
+          title: 'Blocking User...',
+          text: `Please wait while blocking ${user.name}`,
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
           showConfirmButton: false,
-          timerProgressBar: true
+          didOpen: () => {
+            Swal.showLoading();
+          }
         });
-        this.errorMessage.set('Failed to unblock user. Please try again.');
+
+        this.loading.set(true);
+        this.errorMessage.set(null);
+
+        // Use client service for blocking
+        this.clientService.blockClient(userId, blockReason).pipe(
+          finalize(() => {
+            this.loading.set(false);
+            Swal.close();
+          })
+        ).subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              // Show success toast
+              Swal.fire({
+                icon: 'success',
+                title: 'Blocked!',
+                text: `${user.name} has been successfully blocked.`,
+                timer: 3000,
+                showConfirmButton: false,
+                timerProgressBar: true
+              });
+              
+              this.closeModal();
+              this.loadBlockedUsers();
+            } else {
+              // Show error toast
+              Swal.fire({
+                icon: 'error',
+                title: 'Block Failed',
+                text: response.message || 'Failed to block user. Please try again.',
+                timer: 3000,
+                showConfirmButton: false,
+                timerProgressBar: true
+              });
+              this.errorMessage.set(response.message || 'Failed to block user. Please try again.');
+            }
+          },
+          error: (err: unknown) => {
+            Swal.close();
+            // Show error toast
+            Swal.fire({
+              icon: 'error',
+              title: 'Block Failed',
+              text: 'Failed to block user. Please try again.',
+              timer: 3000,
+              showConfirmButton: false,
+              timerProgressBar: true
+            });
+            this.errorMessage.set('Failed to block user. Please try again.');
+          }
+        });
       }
     });
   }

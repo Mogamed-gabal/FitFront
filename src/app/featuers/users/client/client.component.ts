@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Client } from '../../../core/models/user/client';
@@ -27,6 +28,7 @@ import { ClientTableRow, mapClientToRow } from './client.types';
 export class ClientComponent implements OnInit {
   private readonly clientService = inject(ClientService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   private readonly searchTrigger$ = new Subject<string>();
 
@@ -120,42 +122,96 @@ export class ClientComponent implements OnInit {
   }
 
   protected async onBlockClient(client: ClientTableRow): Promise<void> {
-    await this.confirmAction('block', client.name, () => {
-      this.clientService.blockClient(client.id).subscribe({
-        next: () => {
-          this.loadClients(); // Refresh the list
-          Swal.fire('Success!', 'Client has been blocked successfully.', 'success');
-        },
-        error: (err: unknown) => {
-          this.errorMessage.set(this.extractErrorMessage(err));
+    const result = await Swal.fire({
+      title: 'Block Client?',
+      text: `Are you sure you want to block ${client.name}?`,
+      icon: 'warning',
+      input: 'text',
+      inputLabel: 'Block Reason',
+      inputPlaceholder: 'Enter reason for blocking...',
+      showCancelButton: true,
+      confirmButtonText: 'Block',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc2626',
+      inputValidator: (value) => {
+        if (!value || value.trim() === '') {
+          return 'Please enter a reason for blocking!';
         }
-      });
+        return null;
+      }
     });
+
+    if (result.isConfirmed && result.value) {
+      const reason = result.value.trim();
+      
+      await this.confirmAction('block', client.name, () => {
+        this.clientService.blockClient(client.id, reason).subscribe({
+          next: () => {
+            this.loadClients(); // Refresh the list
+            Swal.fire('Success!', 'Client has been blocked successfully.', 'success');
+          },
+          error: (err: unknown) => {
+            Swal.fire('Error!', 'Failed to block client.', 'error');
+          }
+        });
+      });
+    }
   }
 
   protected async onUnblockClient(client: ClientTableRow): Promise<void> {
-    await this.confirmAction('unblock', client.name, () => {
-      this.clientService.unblockClient(client.id).subscribe({
-        next: () => {
-          this.loadClients(); // Refresh the list
-          Swal.fire('Success!', 'Client has been unblocked successfully.', 'success');
-        },
-        error: (err: unknown) => {
-          this.errorMessage.set(this.extractErrorMessage(err));
-        }
-      });
+    // Show alert directing to blocked users page
+    await Swal.fire({
+      title: 'Unblock Client?',
+      html: `
+        <div style="text-align: left; padding: 10px;">
+          <p><strong>Client:</strong> ${client.name}</p>
+          <p><strong>Email:</strong> ${client.email}</p>
+          <hr style="margin: 15px 0; border: 1px solid #e2e8f0;">
+          <p style="color: #64748b; font-size: 14px;">
+            To unblock this client, please go to the <strong>Blocked Users</strong> page where you can manage all blocked users and perform unblock operations.
+          </p>
+        </div>
+      `,
+      icon: 'info',
+      confirmButtonText: 'Go to Blocked Users',
+      cancelButtonText: 'Cancel',
+      showCancelButton: true,
+      confirmButtonColor: '#3b82f6',
+      cancelButtonColor: '#64748b',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Navigate to blocked users page
+        this.router.navigate(['/users/deletd-users']);
+      }
     });
   }
 
   protected async onDeleteClient(client: ClientTableRow): Promise<void> {
     await this.confirmAction('delete', client.name, () => {
+      // Show loading toast
+      Swal.fire({
+        title: 'Deleting Client...',
+        text: `Please wait while deleting ${client.name}`,
+        icon: 'info',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
       this.clientService.deleteClient(client.id).subscribe({
         next: () => {
+          Swal.close();
           this.loadClients(); // Refresh the list
           Swal.fire('Success!', 'Client has been deleted successfully.', 'success');
         },
         error: (err: unknown) => {
+          Swal.close();
           this.errorMessage.set(this.extractErrorMessage(err));
+          Swal.fire('Error!', 'Failed to delete client. Please try again.', 'error');
         }
       });
     });

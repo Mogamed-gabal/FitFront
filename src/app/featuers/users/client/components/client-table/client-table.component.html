@@ -25,7 +25,7 @@
                   <span>View</span>
                 </button>
                 
-                @if (client.status === 'Active') {
+                @if (!client.isBlocked) {
                   <button type="button" class="block-btn" (click)="onBlockClient(client)">
                     <i class="fa-solid fa-ban"></i>
                     <span>Block</span>
@@ -79,7 +79,7 @@
               <span>View</span>
             </button>
             
-            @if (client.status === 'Active') {
+            @if (!client.isBlocked) {
               <button type="button" class="block-btn" (click)="onBlockClient(client)">
                 <i class="fa-solid fa-ban"></i>
                 <span>Block</span>

@@ -45,12 +45,16 @@ export class ClientService {
     );
   }
 
-  blockClient(id: string): Observable<{ success: boolean; message: string }> {
-    return this.http.patch<{ success: boolean; message: string }>(`${this.baseUrl}/api/users/${id}/block`, {});
+  blockClient(id: string, reason: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.baseUrl}/api/admin/users/${id}/block`, {
+      reason: reason
+    });
   }
 
-  unblockClient(id: string): Observable<{ success: boolean; message: string }> {
-    return this.http.patch<{ success: boolean; message: string }>(`${this.baseUrl}/api/admin/users/${id}/unblock`, {});
+  unblockClient(id: string, reason: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.baseUrl}/api/admin/users/${id}/unblock`, {
+      reason: reason
+    });
   }
 
   deleteClient(id: string): Observable<{ success: boolean; message: string }> {

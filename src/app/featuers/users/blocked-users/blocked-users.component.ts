@@ -7,6 +7,7 @@ import { DoctorService } from '../../../core/services/users/doctor.service';
 import { BlockedFilterComponent } from './components/blocked-filter/blocked-filter.component';
 import { BlockedTableComponent } from './components/blocked-table/blocked-table.component';
 import { BlockedModelComponent } from './components/blocked-model/blocked-model.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-blocked-users',
@@ -74,6 +75,45 @@ export class BlockedUsersComponent implements OnInit {
     this.loadBlockedUsers();
   }
 
+  goToPage(page: number | string): void {
+    const pageNumber = typeof page === 'number' ? page : parseInt(page as string);
+    if (pageNumber < 1 || pageNumber > this.pagination().totalPages || pageNumber === this.currentPage()) {
+      return;
+    }
+    this.currentPage.set(pageNumber);
+    this.loadBlockedUsers();
+  }
+
+  getPageNumbers(): (string | number)[] {
+    const currentPage = this.currentPage();
+    const totalPages = this.pagination().totalPages;
+    const delta = 2;
+    const range: (string | number)[] = [];
+    const rangeWithDots: (string | number)[] = [];
+
+    for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) {
+      range.push(i);
+    }
+
+    if (totalPages <= 7) {
+      return range;
+    }
+
+    let left = Math.max(1, currentPage - delta);
+    let right = Math.min(totalPages, currentPage + delta);
+    const middle = Math.floor((left + right) / 2);
+
+    if (left > 1 && middle > left && middle < right) {
+      rangeWithDots.push('...');
+    }
+
+    if (right < totalPages) {
+      rangeWithDots.push(right);
+    }
+
+    return rangeWithDots;
+  }
+
   onViewUser(userId: string): void {
     const user = this.blockedUsers().find(u => u._id === userId);
     if (user) {
@@ -86,6 +126,19 @@ export class BlockedUsersComponent implements OnInit {
     const user = this.blockedUsers().find(u => u._id === userId);
     if (!user) return;
 
+    // Show loading toast
+    Swal.fire({
+      title: 'Unblocking User...',
+      text: `Please wait while unblocking ${user.name}`,
+      icon: 'info',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     this.loading.set(true);
     this.errorMessage.set(null);
 
@@ -95,17 +148,47 @@ export class BlockedUsersComponent implements OnInit {
     (this.doctorService as any)[unblockMethod](userId).pipe(
       finalize(() => {
         this.loading.set(false);
+        Swal.close();
       })
     ).subscribe({
       next: (response: any) => {
         if (response.success) {
+          // Show success toast
+          Swal.fire({
+            icon: 'success',
+            title: 'Unblocked!',
+            text: `${user.name} has been successfully unblocked.`,
+            timer: 3000,
+            showConfirmButton: false,
+            timerProgressBar: true
+          });
+          
           this.closeModal();
           this.loadBlockedUsers();
         } else {
-          this.errorMessage.set('Failed to unblock user.');
+          // Show error toast
+          Swal.fire({
+            icon: 'error',
+            title: 'Unblock Failed',
+            text: response.message || 'Failed to unblock user. Please try again.',
+            timer: 3000,
+            showConfirmButton: false,
+            timerProgressBar: true
+          });
+          this.errorMessage.set(response.message || 'Failed to unblock user. Please try again.');
         }
       },
-      error: () => {
+      error: (err: unknown) => {
+        Swal.close();
+        // Show error toast
+        Swal.fire({
+          icon: 'error',
+          title: 'Unblock Failed',
+          text: 'Failed to unblock user. Please try again.',
+          timer: 3000,
+          showConfirmButton: false,
+          timerProgressBar: true
+        });
         this.errorMessage.set('Failed to unblock user. Please try again.');
       }
     });

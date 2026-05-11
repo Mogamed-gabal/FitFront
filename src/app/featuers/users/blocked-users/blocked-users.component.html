@@ -1,7 +1,22 @@
 <section class="blocked-users-page">
   <header class="page-header">
-    <h2>Blocked Users</h2>
-    <p>View and manage blocked user accounts.</p>
+    <div class="header-content">
+      <div class="header-text">
+        <h2>Blocked Users Management</h2>
+        <p>View and manage blocked user accounts with advanced filtering and actions.</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fa-solid fa-users-slash"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-number">{{ pagination().totalBlockedUsers }}</span>
+            <span class="stat-label">Total Blocked</span>
+          </div>
+        </div>
+      </div>
+    </div>
     
     <app-blocked-filter
       [searchTerm]="searchTerm()"
@@ -11,42 +26,87 @@
     ></app-blocked-filter>
   </header>
 
-  @if (loading()) {
-    <div class="loader-container">
-      <div class="spinner"></div>
-      <p>Loading blocked users...</p>
-    </div>
-  } @else if (errorMessage()) {
-    <div class="error-container">
-      <i class="fa-solid fa-exclamation-triangle"></i>
-      <p>{{ errorMessage() }}</p>
-    </div>
-  } @else {
-    <app-blocked-table
-      [users]="blockedUsers()"
-      [loading]="loading()"
-      (viewUser)="onViewUser($event)"
-      (unblockUser)="onUnblockUser($event)"
-    ></app-blocked-table>
+  <main class="main-content">
+    @if (loading()) {
+      <div class="loader-container">
+        <div class="spinner"></div>
+        <p>Loading blocked users...</p>
+      </div>
+    } @else if (errorMessage()) {
+      <div class="error-container">
+        <i class="fa-solid fa-exclamation-triangle"></i>
+        <p>{{ errorMessage() }}</p>
+      </div>
+    } @else if (blockedUsers().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-users-slash"></i>
+        </div>
+        <h3>No Blocked Users Found</h3>
+        <p>There are currently no blocked users matching your criteria.</p>
+      </div>
+    } @else {
+      <div class="users-grid">
+        <app-blocked-table
+          [users]="blockedUsers()"
+          [loading]="loading()"
+          (viewUser)="onViewUser($event)"
+          (unblockUser)="onUnblockUser($event)"
+        ></app-blocked-table>
+      </div>
+    }
+  </main>
 
-    <div class="pagination-bar">
-      <p>
-        Page <strong>{{ currentPage() }}</strong> of <strong>{{ pagination().totalPages }}</strong>
-        ({{ pagination().totalBlockedUsers }} total)
-      </p>
-      <div class="pagination-actions">
-        <button type="button" (click)="prevPage()" [disabled]="currentPage() === 1">
+  <footer class="pagination-footer">
+    <div class="pagination-container">
+      <div class="pagination-info">
+        <span class="pagination-text">
+          Showing <strong>{{ blockedUsers().length }}</strong> of <strong>{{ pagination().totalBlockedUsers }}</strong> users
+          @if (pagination().totalBlockedUsers > 0) {
+            (Page {{ currentPage() }} of {{ pagination().totalPages }})
+          }
+        </span>
+      </div>
+      <div class="pagination-controls">
+        <button 
+          type="button" 
+          class="pagination-btn prev-btn" 
+          (click)="prevPage()" 
+          [disabled]="currentPage() === 1"
+          [attr.aria-label]="'Previous page'">
           <i class="fa-solid fa-chevron-left"></i>
-          Previous
+          <span class="btn-text">Previous</span>
         </button>
-        <button type="button" (click)="nextPage()" [disabled]="currentPage() === pagination().totalPages">
-          Next
+        
+        <div class="page-numbers">
+          @for (page of getPageNumbers(); track page) {
+            @if (typeof page === 'number') {
+              <button 
+                type="button" 
+                class="page-number" 
+                [class]="currentPage() === page ? 'active' : ''"
+                (click)="goToPage(page)"
+                [attr.aria-label]="'Go to page ' + page">
+                {{ page }}
+              </button>
+            } @else {
+              <span class="page-dots">{{ page }}</span>
+            }
+          }
+        </div>
+        
+        <button 
+          type="button" 
+          class="pagination-btn next-btn" 
+          (click)="nextPage()" 
+          [disabled]="currentPage() === pagination().totalPages"
+          [attr.aria-label]="'Next page'">
+          <span class="btn-text">Next</span>
           <i class="fa-solid fa-chevron-right"></i>
         </button>
       </div>
     </div>
-  }
-</section>
+  </footer>
 
 <!-- User Details Modal -->
 @if (showModal() && selectedUser()) {

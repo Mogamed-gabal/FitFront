@@ -10,7 +10,7 @@ import { WorkoutPlanMonitoring } from '../../../../../../core/models/admin/admin
   styleUrl: './workout-card.component.scss'
 })
 export class WorkoutCardComponent {
-  @Input() plan: WorkoutPlanMonitoring | null = null;
+  @Input() plan: any | null = null;
   @Input() isExpanded: boolean = false;
   @Input() expandedType: 'details' | 'progress' | null = null;
   
@@ -21,12 +21,14 @@ export class WorkoutCardComponent {
     switch (status) {
       case 'active':
         return 'status-active';
+      case 'inactive':
+        return 'status-inactive';
       case 'completed':
         return 'status-completed';
       case 'paused':
         return 'status-paused';
       default:
-        return 'status-unknown';
+        return 'status-inactive';
     }
   }
 
@@ -44,6 +46,60 @@ export class WorkoutCardComponent {
       month: 'short', 
       day: 'numeric' 
     });
+  }
+
+  protected calculateProgress(): number {
+    if (!this.plan?.weeklyPlan) return 0;
+    
+    let totalExercises = 0;
+    let completedExercises = 0;
+    
+    this.plan.weeklyPlan.forEach((day: any) => {
+      day.exercises.forEach((exercise: any) => {
+        totalExercises++;
+        if (exercise.status === 'completed') {
+          completedExercises++;
+        }
+      });
+    });
+    
+    return totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+  }
+
+  protected getTotalWorkouts(): number {
+    if (!this.plan?.weeklyPlan) return 0;
+    
+    let totalExercises = 0;
+    this.plan.weeklyPlan.forEach((day: any) => {
+      totalExercises += day.exercises.length;
+    });
+    
+    return totalExercises;
+  }
+
+  protected getCompletedWorkouts(): number {
+    if (!this.plan?.weeklyPlan) return 0;
+    
+    let completedExercises = 0;
+    this.plan.weeklyPlan.forEach((day: any) => {
+      day.exercises.forEach((exercise: any) => {
+        if (exercise.status === 'completed') {
+          completedExercises++;
+        }
+      });
+    });
+    
+    return completedExercises;
+  }
+
+  protected getWeeklyPlanPreview(): any[] {
+    if (!this.plan?.weeklyPlan) return [];
+    
+    return this.plan.weeklyPlan.map((day: any) => ({
+      name: day.dayName,
+      exercises: day.exercises.length,
+      completed: day.status === 'completed'
+    }));
   }
 
   protected onViewDetailsClick(): void {

@@ -134,6 +134,11 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'admin-settings',
+        loadComponent: () =>
+          import('./featuers/admin/admin-setting/admin-setting.component').then((m) => m.AdminSettingComponent)
+      }
     ],
   },
   {

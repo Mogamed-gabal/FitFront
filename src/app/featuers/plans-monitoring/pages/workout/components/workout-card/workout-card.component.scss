@@ -1,0 +1,484 @@
+// Modern Workout Plan Card Component
+.workout-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  &.expanded {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  // Card Header
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+
+    .plan-info {
+      flex: 1;
+
+      .plan-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0 0 12px 0;
+        line-height: 1.3;
+        word-wrap: break-word;
+      }
+
+      .plan-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .client-info,
+        .trainer-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.875rem;
+          color: #6c757d;
+
+          i {
+            font-size: 0.75rem;
+            opacity: 0.7;
+          }
+
+          .client-name,
+          .trainer-name {
+            font-weight: 500;
+            color: #495057;
+          }
+        }
+      }
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+
+      i {
+        font-size: 0.5rem;
+      }
+
+      &.status-active {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+      }
+
+      &.status-inactive {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+      }
+
+      &.status-completed {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+      }
+
+      &.status-paused {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        color: #212529;
+      }
+    }
+  }
+
+  // Card Content
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    // Description Section
+    .description-section {
+      .description {
+        color: #6c757d;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin: 0;
+        word-wrap: break-word;
+      }
+    }
+
+    // Plan Details
+    .plan-details {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+
+        .detail-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+          border-radius: 8px;
+          color: white;
+          font-size: 0.875rem;
+        }
+
+        .detail-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+
+          .detail-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .detail-value {
+            font-size: 0.875rem;
+            color: #2c3e50;
+            font-weight: 600;
+
+            &.difficulty-beginner {
+              color: #28a745;
+            }
+
+            &.difficulty-intermediate {
+              color: #ffc107;
+            }
+
+            &.difficulty-advanced {
+              color: #dc3545;
+            }
+          }
+        }
+      }
+    }
+
+    // Weekly Preview
+    .weekly-preview {
+      .preview-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+
+        i {
+          color: #007bff;
+          font-size: 0.875rem;
+        }
+
+        .preview-title {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #2c3e50;
+        }
+      }
+
+      .days-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 8px;
+
+        .day-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 12px 8px;
+          background: rgba(0, 0, 0, 0.02);
+          border-radius: 8px;
+          border: 1px solid rgba(0, 0, 0, 0.04);
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: rgba(0, 123, 255, 0.05);
+            border-color: rgba(0, 123, 255, 0.1);
+          }
+
+          &.completed {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: rgba(40, 167, 69, 0.2);
+          }
+
+          .day-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+            text-align: center;
+          }
+
+          .day-exercises {
+            font-size: 0.625rem;
+            color: #6c757d;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    // Progress Section
+    .progress-section {
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .progress-label {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #2c3e50;
+        }
+
+        .progress-value {
+          font-size: 0.875rem;
+          font-weight: 700;
+          color: #007bff;
+        }
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 8px;
+
+        .progress-fill {
+          height: 100%;
+          border-radius: 4px;
+          transition: width 0.3s ease;
+
+          &.progress-high {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+          }
+
+          &.progress-medium {
+            background: linear-gradient(90deg, #ffc107 0%, #fd7e14 100%);
+          }
+
+          &.progress-low {
+            background: linear-gradient(90deg, #dc3545 0%, #e83e8c 100%);
+          }
+        }
+      }
+
+      .progress-details {
+        .sessions-completed {
+          font-size: 0.75rem;
+          color: #6c757d;
+        }
+      }
+    }
+  }
+
+  // Card Actions
+  .card-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+
+    .action-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+
+      i {
+        font-size: 0.75rem;
+      }
+
+      &.details-btn {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+
+        &:hover {
+          background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+          transform: translateY(-1px);
+        }
+
+        &.active {
+          background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+          box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+      }
+
+      &.progress-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+
+        &:hover {
+          background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+          transform: translateY(-1px);
+        }
+
+        &.active {
+          background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+          box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .workout-card {
+    padding: 16px;
+    margin-bottom: 16px;
+
+    .card-header {
+      flex-direction: column;
+      gap: 12px;
+
+      .plan-info {
+        .plan-name {
+          font-size: 1.125rem;
+        }
+
+        .plan-meta {
+          .client-info,
+          .trainer-info {
+            font-size: 0.8rem;
+          }
+        }
+      }
+
+      .status-badge {
+        align-self: flex-start;
+      }
+    }
+
+    .card-content {
+      gap: 16px;
+
+      .plan-details {
+        .detail-item {
+          padding: 10px;
+
+          .detail-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 0.75rem;
+          }
+
+          .detail-content {
+            .detail-label {
+              font-size: 0.7rem;
+            }
+
+            .detail-value {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+
+      .weekly-preview {
+        .days-grid {
+          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+          gap: 6px;
+
+          .day-item {
+            padding: 8px 6px;
+
+            .day-name {
+              font-size: 0.7rem;
+            }
+
+            .day-exercises {
+              font-size: 0.6rem;
+            }
+          }
+        }
+      }
+    }
+
+    .card-actions {
+      flex-direction: column;
+      gap: 8px;
+
+      .action-btn {
+        padding: 10px 14px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .workout-card {
+    padding: 12px;
+
+    .card-header {
+      .plan-info {
+        .plan-name {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .card-content {
+      .plan-details {
+        .detail-item {
+          flex-direction: column;
+          text-align: center;
+          gap: 8px;
+        }
+      }
+
+      .weekly-preview {
+        .days-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    }
+
+    .card-actions {
+      .action-btn {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+      }
+    }
+  }
+}

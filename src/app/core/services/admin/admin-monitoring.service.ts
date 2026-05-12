@@ -49,11 +49,11 @@ export class AdminMonitoringService {
   // Workout Plans Monitoring
   getWorkoutPlans(filters: WorkoutPlanFilters = {}): Observable<GetWorkoutPlansResponse> {
     const httpParams = new HttpParams({ fromObject: filters as any });
-    return this.http.get<GetWorkoutPlansResponse>(`${this.baseUrl}/api/workout-plans`, { params: httpParams });
+    return this.http.get<GetWorkoutPlansResponse>(`${this.baseUrl}/api/workout-plans/plans`, { params: httpParams });
   }
 
   getWorkoutPlanDetails(planId: string): Observable<GetWorkoutPlanDetailsResponse> {
-    return this.http.get<GetWorkoutPlanDetailsResponse>(`${this.baseUrl}/api/workout-plans/${planId}`);
+    return this.http.get<GetWorkoutPlanDetailsResponse>(`${this.baseUrl}/api/workout-plans/plans/${planId}`);
   }
 
   getWorkoutPlanProgress(planId: string): Observable<GetWorkoutProgressResponse> {

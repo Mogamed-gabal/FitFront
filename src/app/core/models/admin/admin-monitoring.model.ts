@@ -68,12 +68,64 @@ export interface WeeklyWorkoutPlan {
 
 export interface ExercisePlan {
   name: string;
+  gifUrl: string;
+  equipment: string;
+  instructions: string;
   sets: number;
   reps: number;
-  weight: number;
   restTime: number;
-  completed?: boolean;
+  status: 'incomplete' | 'completed';
   completedAt?: string;
+  _id: string;
+}
+
+export interface WorkoutPlanDay {
+  dayName: string;
+  dailyPlanName: string;
+  bodyParts: string[];
+  muscles: string[];
+  exercises: ExercisePlan[];
+  status: 'incomplete' | 'completed';
+  completedAt?: string;
+  _id: string;
+}
+
+export interface WorkoutPlanDetails {
+  _id: string;
+  clientId: {
+    _id: string;
+    name: string;
+    email: string;
+    age?: number;
+    id: string;
+  };
+  doctorId: {
+    _id: string;
+    name: string;
+    email: string;
+    age?: number;
+    id: string;
+  };
+  doctorName: string;
+  name: string;
+  description: string;
+  notes?: string;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  durationWeeks: number;
+  weeklyPlan: WorkoutPlanDay[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface GetWorkoutPlanDetailsResponse {
+  success: boolean;
+  data: {
+    workoutPlan: WorkoutPlanDetails;
+  };
 }
 
 export interface DietPlanProgress {
@@ -164,7 +216,9 @@ export interface GetDietPlanDetailsResponse {
 
 export interface GetWorkoutPlanDetailsResponse {
   success: boolean;
-  data: WorkoutPlanMonitoring;
+  data: {
+    workoutPlan: WorkoutPlanDetails;
+  };
 }
 
 export interface GetDietProgressResponse {

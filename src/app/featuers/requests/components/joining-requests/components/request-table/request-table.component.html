@@ -21,7 +21,7 @@
               <td>{{ doctor.email }}</td>
               <td>{{ doctor.phone }}</td>
               <td>{{ doctor.specialization }}</td>
-              <td>{{ doctor.experience }} years</td>
+              <td>{{ doctor.years_of_experience }} years</td>
               <td>
                 <span class="status-badge" [class]="getStatusClass(doctor.status)">
                   {{ doctor.status }}
@@ -89,7 +89,7 @@
           </div>
           <div class="info-row">
             <span class="label">Experience:</span>
-            <span class="value">{{ doctor.experience }} years</span>
+            <span class="value">{{ doctor.years_of_experience }} years</span>
           </div>
           <div class="info-row">
             <span class="label">Joined:</span>

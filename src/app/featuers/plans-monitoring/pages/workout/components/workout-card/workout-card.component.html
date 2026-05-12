@@ -5,26 +5,75 @@
     <div class="plan-info">
       <h3 class="plan-name">{{ plan.name }}</h3>
       <div class="plan-meta">
-        <span class="client-name">{{ plan.clientName }}</span>
-        <span class="separator">•</span>
-        <span class="trainer-name">Dr. {{ plan.doctorName }}</span>
+        <div class="client-info">
+          <i class="fa-solid fa-user"></i>
+          <span class="client-name">{{ plan.clientId?.name || 'Unknown Client' }}</span>
+        </div>
+        <div class="trainer-info">
+          <i class="fa-solid fa-user-md"></i>
+          <span class="trainer-name">{{ plan.doctorName }}</span>
+        </div>
       </div>
     </div>
-    <div class="status-badge {{ getStatusClass(plan.status) }}">
-      {{ plan.status }}
+    <div class="status-badge {{ getStatusClass(plan.isActive ? 'active' : 'inactive') }}">
+      <i class="fa-solid fa-circle"></i>
+      {{ plan.isActive ? 'Active' : 'Inactive' }}
     </div>
   </div>
 
   <!-- Card Content -->
   <div class="card-content">
-    <div class="dates-info">
-      <div class="date-item">
-        <span class="date-label">Start:</span>
-        <span class="date-value">{{ formatDate(plan.startDate) }}</span>
+    <!-- Description -->
+    <div class="description-section">
+      <p class="description">{{ plan.description }}</p>
+    </div>
+
+    <!-- Plan Details -->
+    <div class="plan-details">
+      <div class="detail-item">
+        <div class="detail-icon">
+          <i class="fa-solid fa-calendar-alt"></i>
+        </div>
+        <div class="detail-content">
+          <span class="detail-label">Duration</span>
+          <span class="detail-value">{{ plan.durationWeeks }} {{ plan.durationWeeks === 1 ? 'Week' : 'Weeks' }}</span>
+        </div>
       </div>
-      <div class="date-item">
-        <span class="date-label">End:</span>
-        <span class="date-value">{{ formatDate(plan.endDate) }}</span>
+      
+      <div class="detail-item">
+        <div class="detail-icon">
+          <i class="fa-solid fa-signal"></i>
+        </div>
+        <div class="detail-content">
+          <span class="detail-label">Difficulty</span>
+          <span class="detail-value difficulty-{{ plan.difficulty }}">{{ plan.difficulty }}</span>
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <div class="detail-icon">
+          <i class="fa-solid fa-calendar"></i>
+        </div>
+        <div class="detail-content">
+          <span class="detail-label">Period</span>
+          <span class="detail-value">{{ formatDate(plan.startDate) }} - {{ formatDate(plan.endDate) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Plan Preview -->
+    <div class="weekly-preview">
+      <div class="preview-header">
+        <i class="fa-solid fa-list-check"></i>
+        <span class="preview-title">Weekly Schedule</span>
+      </div>
+      <div class="days-grid">
+        @for (day of getWeeklyPlanPreview(); track $index) {
+          <div class="day-item" [class.completed]="day.completed">
+            <div class="day-name">{{ day.name }}</div>
+            <div class="day-exercises">{{ day.exercises }} exercises</div>
+          </div>
+        }
       </div>
     </div>
 
@@ -32,16 +81,16 @@
     <div class="progress-section">
       <div class="progress-header">
         <span class="progress-label">Progress</span>
-        <span class="progress-value">{{ plan.progress.completionRate }}%</span>
+        <span class="progress-value">{{ calculateProgress() }}%</span>
       </div>
       <div class="progress-bar">
         <div 
-          class="progress-fill {{ getProgressClass(plan.progress.completionRate) }}"
-          [style.width.%]="plan.progress.completionRate"
+          class="progress-fill {{ getProgressClass(calculateProgress()) }}"
+          [style.width.%]="calculateProgress()"
         ></div>
       </div>
       <div class="progress-details">
-        <span class="sessions-completed">{{ plan.progress.completedWorkouts }}/{{ plan.progress.totalWorkouts }} workouts</span>
+        <span class="sessions-completed">{{ getCompletedWorkouts() }}/{{ getTotalWorkouts() }} workouts completed</span>
       </div>
     </div>
   </div>
@@ -55,14 +104,6 @@
     >
       <i class="fa-solid fa-info-circle"></i>
       View Details
-    </button>
-    <button 
-      class="action-btn progress-btn"
-      [class.active]="isExpanded && expandedType === 'progress'"
-      (click)="onViewProgressClick()"
-    >
-      <i class="fa-solid fa-chart-line"></i>
-      View Progress
     </button>
   </div>
 </div>

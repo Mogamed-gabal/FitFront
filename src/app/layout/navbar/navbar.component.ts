@@ -61,6 +61,10 @@ export class NavbarComponent {
     this.toggleMobileSidebar.emit();
   }
 
+  protected onNavigateToSettings(): void {
+    this.router.navigateByUrl('/admin-settings');
+  }
+
   protected onLogout(): void {
     this.authService.logout();
     this.router.navigateByUrl('/login');

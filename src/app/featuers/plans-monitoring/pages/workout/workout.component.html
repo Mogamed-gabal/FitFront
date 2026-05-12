@@ -13,6 +13,13 @@
     </div>
   </div>
 
+  <!-- Workout Details Modal -->
+  <app-workout-details 
+    [isModalOpen]="isDetailsModalOpen()"
+    [plan]="selectedPlanDetails()"
+    (closeModal)="closeDetailsModal()"
+  ></app-workout-details>
+
   <!-- Filters Section -->
   <div class="filters-section">
     <app-workout-filter (filtersChange)="onFiltersChange($event)"></app-workout-filter>
@@ -41,14 +48,9 @@
           ></app-workout-card>
 
           <!-- Expanded Content -->
-          @if (selectedPlanId() === plan._id && expandedType()) {
+          @if (selectedPlanId() === plan._id && expandedType() === 'progress') {
             <div class="expanded-content">
-              @if (expandedType() === 'details') {
-                <app-workout-details [plan]="getSelectedPlan()"></app-workout-details>
-              }
-              @if (expandedType() === 'progress') {
-                <app-workout-progress [progress]="selectedPlanProgress()"></app-workout-progress>
-              }
+              <app-workout-progress [progress]="selectedPlanProgress()"></app-workout-progress>
             </div>
           }
         </div>

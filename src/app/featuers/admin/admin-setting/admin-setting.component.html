@@ -1,1 +1,113 @@
-<p>admin-setting works!</p>
+<div class="change-password-container">
+  <!-- Centered Card -->
+  <div class="password-card">
+    <!-- Card Header -->
+    <div class="card-header">
+      <h2 class="card-title">Change Password</h2>
+      <p class="card-subtitle">Update your account password for enhanced security</p>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" *ngIf="isSuccess">
+      <i class="fas fa-check-circle"></i>
+      <span>Password changed successfully</span>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-message" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Validation Errors -->
+    <div class="validation-errors" *ngIf="validationErrors.length > 0">
+      <div class="error-item" *ngFor="let error of validationErrors">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>{{ error }}</span>
+      </div>
+    </div>
+
+    <!-- Change Password Form -->
+    <form class="password-form" [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Current Password -->
+      <div class="form-group">
+        <label for="currentPassword" class="form-label">Current Password *</label>
+        <div class="input-wrapper">
+          <input 
+            #currentPasswordInput
+            id="currentPassword"
+            [type]="showCurrentPassword ? 'text' : 'password'"
+            formControlName="currentPassword"
+            placeholder="Enter your current password"
+            class="form-input"
+            [class.error]="changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched"
+          />
+          <button 
+            type="button" 
+            class="toggle-password"
+            (click)="togglePasswordVisibility('current')"
+          >
+            <i class="fas" [class]="showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- New Password -->
+      <div class="form-group">
+        <label for="newPassword" class="form-label">New Password *</label>
+        <div class="input-wrapper">
+          <input 
+            id="newPassword"
+            [type]="showNewPassword ? 'text' : 'password'"
+            formControlName="newPassword"
+            placeholder="Enter your new password"
+            class="form-input"
+            [class.error]="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched"
+          />
+          <button 
+            type="button" 
+            class="toggle-password"
+            (click)="togglePasswordVisibility('new')"
+          >
+            <i class="fas" [class]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Confirm Password *</label>
+        <div class="input-wrapper">
+          <input 
+            id="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            placeholder="Confirm your new password"
+            class="form-input"
+            [class.error]="(changePasswordForm.get('confirmPassword')?.invalid || changePasswordForm.errors?.['passwordMismatch']) && (changePasswordForm.get('confirmPassword')?.touched || changePasswordForm.get('newPassword')?.touched)"
+          />
+          <button 
+            type="button" 
+            class="toggle-password"
+            (click)="togglePasswordVisibility('confirm')"
+          >
+            <i class="fas" [class]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="submit-button"
+          [disabled]="isLoading || changePasswordForm.invalid"
+        >
+          <i class="fas" [class]="isLoading ? 'fa-spinner fa-spin' : 'fa-key'"></i>
+          {{ isLoading ? 'Updating...' : 'Update Password' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

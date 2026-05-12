@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WorkoutPlanMonitoring } from '../../../../../../core/models/admin/admin-monitoring.model';
+import { WorkoutPlanDetails } from '../../../../../../core/models/admin/admin-monitoring.model';
 
 @Component({
   selector: 'app-workout-details',
@@ -10,40 +10,103 @@ import { WorkoutPlanMonitoring } from '../../../../../../core/models/admin/admin
   styleUrl: './workout-details.component.scss'
 })
 export class WorkoutDetailsComponent {
-  @Input() plan: WorkoutPlanMonitoring | null = null;
+  @Input() plan: WorkoutPlanDetails | null = null;
+  @Input() isModalOpen: boolean = false;
+  @Output() closeModal = new EventEmitter<void>();
 
-  protected getDaysOfWeek(): string[] {
-    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  }
+  // Modal state
+  protected selectedDayIndex: number = 0;
+  protected expandedExerciseId: string | null = null;
 
-  protected getDayPlan(day: string): any {
+  // Get selected day
+  protected get selectedDay(): any {
     if (!this.plan?.weeklyPlan) return null;
-    return this.plan.weeklyPlan[day.toLowerCase()] || null;
+    return this.plan.weeklyPlan[this.selectedDayIndex];
   }
 
-  protected getExerciseIcon(index: number): string {
-    const icons = [
-      'fa-solid fa-dumbbell',
-      'fa-solid fa-person-running',
-      'fa-solid fa-heart-pulse',
-      'fa-solid fa-fire-flame-curved',
-      'fa-solid fa-bolt',
-      'fa-solid fa-weight-hanging'
-    ];
-    return icons[index % icons.length];
+  protected formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
   }
 
-  protected formatSetsRepsWeight(sets: number, reps: number, weight: number): string {
-    return `${sets} sets × ${reps} reps @ ${weight}kg`;
-  }
-
-  protected formatRestTime(restTime: number): string {
-    if (restTime < 60) {
-      return `${restTime}s rest`;
-    } else {
-      const minutes = Math.floor(restTime / 60);
-      const seconds = restTime % 60;
-      return `${minutes}m${seconds > 0 ? ` ${seconds}s` : ''} rest`;
+  protected getDifficultyColor(difficulty: string): string {
+    switch (difficulty) {
+      case 'beginner':
+        return '#28a745';
+      case 'intermediate':
+        return '#ffc107';
+      case 'advanced':
+        return '#dc3545';
+      default:
+        return '#6c757d';
     }
+  }
+
+  protected getEquipmentIcon(equipment: string): string {
+    const equipmentIcons: Record<string, string> = {
+      'barbell': 'fa-solid fa-weight-hanging',
+      'dumbbells': 'fa-solid fa-dumbbell',
+      'bodyweight': 'fa-solid fa-user',
+      'cable': 'fa-solid fa-link',
+      'machine': 'fa-solid fa-cog',
+      'resistance': 'fa-solid fa-compress'
+    };
+    return equipmentIcons[equipment] || 'fa-solid fa-dumbbell';
+  }
+
+  // Day selection
+  protected selectDay(index: number): void {
+    this.selectedDayIndex = index;
+    this.expandedExerciseId = null; // Reset expanded exercise
+  }
+
+  // Exercise expansion
+  protected toggleExercise(exerciseId: string): void {
+    this.expandedExerciseId = this.expandedExerciseId === exerciseId ? null : exerciseId;
+  }
+
+  // Close modal
+  protected onCloseModal(): void {
+    this.closeModal.emit();
+  }
+
+  // Close on backdrop click
+  protected onBackdropClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.onCloseModal();
+    }
+  }
+
+  // ESC key handler
+  @HostListener('document:keydown.escape')
+  protected onEscapeKey(): void {
+    if (this.isModalOpen) {
+      this.onCloseModal();
+    }
+  }
+
+  // Get completion status for day
+  protected getDayCompletionStatus(day: any): string {
+    if (!day.exercises || day.exercises.length === 0) return 'No exercises';
+    
+    const completedExercises = day.exercises.filter((ex: any) => ex.status === 'completed').length;
+    const totalExercises = day.exercises.length;
+    
+    if (completedExercises === 0) return 'Not Started';
+    if (completedExercises === totalExercises) return 'Completed';
+    return `${completedExercises}/${totalExercises} Completed`;
+  }
+
+  // Get progress percentage for day
+  protected getDayProgressPercentage(day: any): number {
+    if (!day.exercises || day.exercises.length === 0) return 0;
+    
+    const completedExercises = day.exercises.filter((ex: any) => ex.status === 'completed').length;
+    return Math.round((completedExercises / day.exercises.length) * 100);
   }
 }

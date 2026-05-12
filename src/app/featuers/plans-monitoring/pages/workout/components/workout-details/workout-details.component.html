@@ -1,62 +1,153 @@
-@if (plan) {
-  <div class="workout-details">
-    <!-- Description Section -->
-    @if (plan.description) {
-      <div class="description-section">
-        <h4>📋 Plan Description</h4>
-        <p>{{ plan.description }}</p>
-      </div>
-    }
-
-    <!-- Weekly Plan Section -->
-    <div class="weekly-plan-section">
-      <h4>📅 Weekly Workout Plan</h4>
-      <div class="days-grid">
-        @for (day of getDaysOfWeek(); track day) {
-          <div class="day-card">
-            <div class="day-header">
-              <h5>{{ day }}</h5>
+@if (isModalOpen && plan) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button class="close-btn" (click)="onCloseModal()" aria-label="Close modal">
+          <i class="fa-solid fa-times"></i>
+        </button>
+        
+        <div class="plan-basic-info">
+          <h1 class="plan-title">{{ plan.name }}</h1>
+          <div class="plan-meta">
+            <div class="meta-item">
+              <i class="fa-solid fa-user-md"></i>
+              <span>{{ plan.doctorName }}</span>
             </div>
-            <div class="exercises-container">
-              @let dayPlan = getDayPlan(day);
-              @if (dayPlan && dayPlan.exercises && dayPlan.exercises.length > 0) {
-                @for (exercise of dayPlan.exercises; track $index) {
-                  <div class="exercise-card">
-                    <div class="exercise-header">
-                      <i class="{{ getExerciseIcon($index) }}"></i>
-                      <span class="exercise-name">{{ exercise.name }}</span>
-                      @if (exercise.completed) {
+            <div class="meta-item">
+              <i class="fa-solid fa-calendar-alt"></i>
+              <span>{{ plan.durationWeeks }} {{ plan.durationWeeks === 1 ? 'Week' : 'Weeks' }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="fa-solid fa-signal"></i>
+              <span class="difficulty-badge" [style.background-color]="getDifficultyColor(plan.difficulty)">
+                {{ plan.difficulty }}
+              </span>
+            </div>
+          </div>
+          <div class="date-range">
+            <span>{{ formatDate(plan.startDate) }} - {{ formatDate(plan.endDate) }}</span>
+          </div>
+          @if (plan.description) {
+            <p class="plan-description">{{ plan.description }}</p>
+          }
+        </div>
+      </div>
+
+      <!-- Days Tabs -->
+      <div class="days-tabs">
+        <div class="tabs-container">
+          @for (day of plan.weeklyPlan; track day._id; let index = $index) {
+            <button 
+              class="day-tab" 
+              [class.active]="selectedDayIndex === index"
+              (click)="selectDay(index)"
+            >
+              <span class="day-name">{{ day.dayName }}</span>
+              <span class="day-status">{{ getDayCompletionStatus(day) }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Selected Day Details -->
+      @if (selectedDay) {
+        <div class="day-details">
+          <!-- Day Header -->
+          <div class="day-header">
+            <div class="day-info">
+              <h2 class="daily-plan-name">{{ selectedDay.dailyPlanName }}</h2>
+              <div class="day-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" 
+                       [style.width.%]="getDayProgressPercentage(selectedDay)"
+                       [style.background-color]="getDayProgressPercentage(selectedDay) >= 80 ? '#28a745' : getDayProgressPercentage(selectedDay) >= 50 ? '#ffc107' : '#dc3545'">
+                  </div>
+                </div>
+                <span class="progress-text">{{ getDayProgressPercentage(selectedDay) }}% Complete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Body Parts & Muscles -->
+          <div class="body-info">
+            <div class="info-group">
+              <span class="info-label">Target Areas</span>
+              <div class="tags">
+                @for (part of selectedDay.bodyParts; track $index) {
+                  <span class="tag body-part">{{ part }}</span>
+                }
+              </div>
+            </div>
+            <div class="info-group">
+              <span class="info-label">Muscles</span>
+              <div class="tags">
+                @for (muscle of selectedDay.muscles; track $index) {
+                  <span class="tag muscle">{{ muscle }}</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercises Grid -->
+          <div class="exercises-grid">
+            @for (exercise of selectedDay.exercises; track exercise._id) {
+              <div class="exercise-card" [class.completed]="exercise.status === 'completed'">
+                <!-- Exercise Header -->
+                <div class="exercise-header" (click)="toggleExercise(exercise._id)">
+                  <div class="exercise-main-info">
+                    <h3 class="exercise-name">{{ exercise.name }}</h3>
+                    <div class="exercise-meta">
+                      <span class="equipment-tag">
+                        <i class="{{ getEquipmentIcon(exercise.equipment) }}"></i>
+                        {{ exercise.equipment }}
+                      </span>
+                      @if (exercise.status === 'completed') {
                         <span class="completed-badge">
                           <i class="fa-solid fa-check"></i>
+                          Completed
                         </span>
                       }
                     </div>
-                    <div class="exercise-details">
-                      <div class="exercise-main">
-                        {{ formatSetsRepsWeight(exercise.sets, exercise.reps, exercise.weight) }}
-                      </div>
-                      <div class="exercise-rest">
-                        <i class="fa-solid fa-clock"></i>
-                        {{ formatRestTime(exercise.restTime) }}
-                      </div>
+                  </div>
+                  <div class="exercise-expand-icon">
+                    <i class="fa-solid fa-chevron-down" [class.rotated]="expandedExerciseId === exercise._id"></i>
+                  </div>
+                </div>
+
+                <!-- Exercise Basic Info -->
+                <div class="exercise-basic">
+                  <div class="info-row">
+                    <div class="info-item">
+                      <i class="fa-solid fa-layer-group"></i>
+                      <span>{{ exercise.sets }} sets</span>
+                    </div>
+                    <div class="info-item">
+                      <i class="fa-solid fa-repeat"></i>
+                      <span>{{ exercise.reps }} reps</span>
+                    </div>
+                    <div class="info-item">
+                      <i class="fa-solid fa-clock"></i>
+                      <span>{{ exercise.restTime }}s rest</span>
                     </div>
                   </div>
-                }
-              } @else {
-                <div class="no-plan">
-                  <i class="fa-solid fa-dumbbell"></i>
-                  <p>Rest day</p>
                 </div>
-              }
-            </div>
+
+                <!-- Expanded Instructions -->
+                @if (expandedExerciseId === exercise._id && exercise.instructions) {
+                  <div class="exercise-instructions">
+                    <div class="instructions-header">
+                      <i class="fa-solid fa-info-circle"></i>
+                      <span>Instructions</span>
+                    </div>
+                    <p class="instructions-text">{{ exercise.instructions }}</p>
+                  </div>
+                }
+              </div>
+            }
           </div>
-        }
-      </div>
+        </div>
+      }
     </div>
-  </div>
-} @else {
-  <div class="no-data">
-    <i class="fa-solid fa-dumbbell"></i>
-    <p>No workout plan data available</p>
   </div>
 }

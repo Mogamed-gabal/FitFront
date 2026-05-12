@@ -2,7 +2,7 @@ import { Component, signal, computed, inject, OnInit, OnDestroy, Output, EventEm
 import { CommonModule } from '@angular/common';
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { AdminMonitoringService } from '../../../../core/services/admin/admin-monitoring.service';
-import { WorkoutPlanMonitoring, WorkoutPlanProgress, WorkoutPlanFilters } from '../../../../core/models/admin/admin-monitoring.model';
+import { WorkoutPlanMonitoring, WorkoutPlanProgress, WorkoutPlanFilters, WorkoutPlanDetails } from '../../../../core/models/admin/admin-monitoring.model';
 import { WorkoutCardComponent } from './components/workout-card/workout-card.component';
 import { WorkoutFilterComponent } from './components/workout-filter/workout-filter.component';
 import { WorkoutDetailsComponent } from './components/workout-details/workout-details.component';
@@ -25,6 +25,10 @@ export class WorkoutComponent implements OnInit, OnDestroy {
   protected readonly selectedPlanId = signal<string | null>(null);
   protected readonly expandedType = signal<'details' | 'progress' | null>(null);
   protected readonly selectedPlanProgress = signal<WorkoutPlanProgress | null>(null);
+  
+  // Modal state
+  protected readonly isDetailsModalOpen = signal(false);
+  protected readonly selectedPlanDetails = signal<WorkoutPlanDetails | null>(null);
 
   protected readonly filteredPlans = computed(() => {
     const plans = this.workoutPlans();
@@ -83,14 +87,28 @@ export class WorkoutComponent implements OnInit, OnDestroy {
   }
 
   protected onViewDetails(planId: string): void {
-    if (this.selectedPlanId() === planId && this.expandedType() === 'details') {
-      this.selectedPlanId.set(null);
-      this.expandedType.set(null);
-    } else {
-      this.selectedPlanId.set(planId);
-      this.expandedType.set('details');
-      this.selectedPlanProgress.set(null);
-    }
+    this.loadWorkoutPlanDetails(planId);
+  }
+
+  private loadWorkoutPlanDetails(planId: string): void {
+    this.adminMonitoringService.getWorkoutPlanDetails(planId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.selectedPlanDetails.set(response.data.workoutPlan);
+            this.isDetailsModalOpen.set(true);
+          }
+        },
+        error: (error) => {
+          console.error('Error loading workout plan details:', error);
+        }
+      });
+  }
+
+  protected closeDetailsModal(): void {
+    this.isDetailsModalOpen.set(false);
+    this.selectedPlanDetails.set(null);
   }
 
   protected onViewProgress(planId: string): void {

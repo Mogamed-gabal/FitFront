@@ -27,7 +27,7 @@ export class AdminMonitoringService {
   // Diet Plans Monitoring
   getDietPlans(filters: DietPlanFilters = {}): Observable<GetDietPlansResponse> {
     const httpParams = new HttpParams({ fromObject: filters as any });
-    return this.http.get<GetDietPlansResponse>(`${this.baseUrl}/api/diet-plans`, { params: httpParams });
+    return this.http.get<GetDietPlansResponse>(`${this.baseUrl}/api/diet-plans/admin/all`, { params: httpParams });
   }
 
   getDietPlanDetails(planId: string): Observable<GetDietPlanDetailsResponse> {

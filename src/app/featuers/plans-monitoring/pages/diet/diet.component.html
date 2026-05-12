@@ -13,6 +13,13 @@
     </div>
   </div>
 
+  <!-- Diet Details Modal -->
+  <app-diet-details-modal 
+    [isModalOpen]="isDetailsModalOpen()"
+    [plan]="selectedPlanDetails()"
+    (closeModal)="closeDetailsModal()"
+  ></app-diet-details-modal>
+
   <!-- Filters Section -->
   <div class="filters-section">
     <app-diet-filter (filtersChange)="onFiltersChange($event)"></app-diet-filter>

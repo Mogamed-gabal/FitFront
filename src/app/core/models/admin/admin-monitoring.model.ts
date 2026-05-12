@@ -3,40 +3,59 @@
 export interface DietPlanMonitoring {
   _id: string;
   name: string;
-  description: string;
-  doctorId: string;
+  clientId: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  doctorId: {
+    _id: string;
+    name: string;
+    email: string;
+  };
   doctorName: string;
-  clientId: string;
-  clientName: string;
-  status: 'active' | 'completed' | 'paused';
   startDate: string;
   endDate: string;
-  progress: {
-    completedDays: number;
-    totalDays: number;
-    completionRate: number;
-    streakDays?: number;
-    missedDays?: number;
-  };
-  weeklyPlan: WeeklyDietPlan;
+  isActive: boolean;
+  durationWeeks: number;
+  weeklyPlan: DietPlanDay[];
+  videoLink: string | null;
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }
 
-export interface WeeklyDietPlan {
-  [day: string]: {
-    breakfast: MealPlan;
-    lunch: MealPlan;
-    dinner: MealPlan;
+export interface DietPlanDay {
+  dayName: string;
+  dayNumber: number;
+  meals: Meal[];
+  dailyTotals: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
   };
 }
 
-export interface MealPlan {
-  food: string;
+export interface Meal {
+  type: string;
+  food: FoodItem[];
+  totalCalories: number;
+  totalProtein: number;
+  totalCarbs: number;
+  totalFat: number;
+  videoLink: string | null;
+}
+
+export interface FoodItem {
+  name: string;
   calories: number;
-  protein?: number;
-  carbs?: number;
-  fats?: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  source: string;
+  image: string | null;
+  recipe: string | null;
 }
 
 export interface WorkoutPlanMonitoring {
@@ -188,11 +207,13 @@ export interface GetDietPlansResponse {
   data: {
     dietPlans: DietPlanMonitoring[];
     pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      pages: number;
+      currentPage: number;
+      totalPages: number;
+      totalPlans: number;
+      hasNext: boolean;
+      hasPrev: boolean;
     };
+    filters: {};
   };
 }
 

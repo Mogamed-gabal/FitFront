@@ -1,0 +1,172 @@
+@if (isModalOpen && plan) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button class="close-btn" (click)="onCloseModal()" aria-label="Close modal">
+          <i class="fa-solid fa-times"></i>
+        </button>
+        
+        <div class="plan-basic-info">
+          <h1 class="plan-title">{{ plan.name }}</h1>
+          <div class="plan-meta">
+            <div class="meta-item">
+              <i class="fa-solid fa-user-md"></i>
+              <span>{{ plan.doctorId.name }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="fa-solid fa-calendar-alt"></i>
+              <span>{{ plan.durationWeeks }} {{ plan.durationWeeks === 1 ? 'Week' : 'Weeks' }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="fa-solid fa-heart"></i>
+              <span class="status-badge" [class.active]="plan.isActive">
+                {{ plan.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+          </div>
+          <div class="date-range">
+            <span>{{ formatDate(plan.startDate) }} - {{ formatDate(plan.endDate) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Days Tabs -->
+      <div class="days-tabs">
+        <div class="tabs-container">
+          @for (day of plan.weeklyPlan; track $index; let index = $index) {
+            <button 
+              class="day-tab" 
+              [class.active]="selectedDayIndex === index"
+              (click)="selectDay(index)"
+            >
+              <span class="day-name">{{ day.dayName }}</span>
+              <span class="day-status">{{ getDayCompletionStatus(day) }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Selected Day Details -->
+      @if (selectedDay) {
+        <div class="day-details">
+          <!-- Day Header -->
+          <div class="day-header">
+            <div class="day-info">
+              <h2 class="day-name">{{ selectedDay.dayName }}</h2>
+              <div class="day-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" 
+                       [style.width.%]="getDayProgressPercentage(selectedDay)"
+                       [style.background-color]="getDayProgressPercentage(selectedDay) >= 80 ? '#28a745' : getDayProgressPercentage(selectedDay) >= 50 ? '#ffc107' : '#dc3545'">
+                  </div>
+                </div>
+                <span class="progress-text">{{ getDayProgressPercentage(selectedDay) }}% Complete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Nutrition Summary -->
+          <div class="nutrition-summary">
+            <div class="nutrition-item">
+              <i class="fa-solid fa-fire"></i>
+              <span class="nutrition-value">{{ getTotalCaloriesForDay(selectedDay) }}</span>
+              <span class="nutrition-label">Calories</span>
+            </div>
+            <div class="nutrition-item">
+              <i class="fa-solid fa-drumstick-bite"></i>
+              <span class="nutrition-value">{{ getTotalProteinForDay(selectedDay) }}g</span>
+              <span class="nutrition-label">Protein</span>
+            </div>
+            <div class="nutrition-item">
+              <i class="fa-solid fa-bread-slice"></i>
+              <span class="nutrition-value">{{ getTotalCarbsForDay(selectedDay) }}g</span>
+              <span class="nutrition-label">Carbs</span>
+            </div>
+            <div class="nutrition-item">
+              <i class="fa-solid fa-cheese"></i>
+              <span class="nutrition-value">{{ getTotalFatForDay(selectedDay) }}g</span>
+              <span class="nutrition-label">Fat</span>
+            </div>
+          </div>
+
+          <!-- Meals Grid -->
+          <div class="meals-grid">
+            @for (meal of selectedDay.meals; track meal.type) {
+              <div class="meal-card" [class.completed]="meal.completed">
+                <!-- Meal Header -->
+                <div class="meal-header" (click)="toggleMeal(meal.type)">
+                  <div class="meal-main-info">
+                    <div class="meal-type">
+                      <i class="{{ getMealTypeIcon(meal.type) }}"></i>
+                      <h3 class="meal-name">{{ getMealTypeLabel(meal.type) }}</h3>
+                    </div>
+                    <div class="meal-meta">
+                      <span class="calories-tag">
+                        <i class="fa-solid fa-fire"></i>
+                        {{ meal.totalCalories }} cal
+                      </span>
+                      @if (meal.completed) {
+                        <span class="completed-badge">
+                          <i class="fa-solid fa-check"></i>
+                          Completed
+                        </span>
+                      }
+                    </div>
+                  </div>
+                  <div class="meal-expand-icon">
+                    <i class="fa-solid fa-chevron-down" [class.rotated]="expandedMealId === meal.type"></i>
+                  </div>
+                </div>
+
+                <!-- Meal Basic Info -->
+                <div class="meal-basic">
+                  <div class="info-row">
+                    <div class="info-item">
+                      <i class="fa-solid fa-drumstick-bite"></i>
+                      <span>{{ meal.totalProtein }}g protein</span>
+                    </div>
+                    <div class="info-item">
+                      <i class="fa-solid fa-bread-slice"></i>
+                      <span>{{ meal.totalCarbs }}g carbs</span>
+                    </div>
+                    <div class="info-item">
+                      <i class="fa-solid fa-cheese"></i>
+                      <span>{{ meal.totalFat }}g fat</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Expanded Food Items -->
+                @if (expandedMealId === meal.type) {
+                  <div class="food-items">
+                    <div class="food-items-header">
+                      <i class="fa-solid fa-utensils"></i>
+                      <span>Food Items</span>
+                    </div>
+                    @for (food of meal.food; track food.name) {
+                      <div class="food-item">
+                        <div class="food-info">
+                          <h4 class="food-name">{{ food.name }}</h4>
+                          <div class="food-nutrition">
+                            <span class="nutrition-item">{{ food.calories }} cal</span>
+                            <span class="nutrition-item">{{ food.protein }}g protein</span>
+                            <span class="nutrition-item">{{ food.carbs }}g carbs</span>
+                            <span class="nutrition-item">{{ food.fat }}g fat</span>
+                          </div>
+                        </div>
+                        <div class="food-source">
+                          <span class="source-tag">{{ food.source }}</span>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

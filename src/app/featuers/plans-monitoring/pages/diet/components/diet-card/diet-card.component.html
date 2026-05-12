@@ -1,29 +1,58 @@
+@if (plan) {
 <div class="diet-card" [class.expanded]="isExpanded">
   <!-- Card Header -->
   <div class="card-header">
     <div class="plan-info">
       <h3 class="plan-name">{{ plan.name }}</h3>
       <div class="plan-meta">
-        <span class="client-name">{{ plan.clientName }}</span>
-        <span class="separator">•</span>
-        <span class="doctor-name">Dr. {{ plan.doctorName }}</span>
+        <div class="client-info">
+          <i class="fa-solid fa-user"></i>
+          <span class="client-name">{{ clientName }}</span>
+        </div>
+        <div class="nutritionist-info">
+          <i class="fa-solid fa-user-md"></i>
+          <span class="nutritionist-name">{{ doctorName }}</span>
+        </div>
       </div>
     </div>
-    <div class="status-badge {{ getStatusClass(plan.status) }}">
-      {{ plan.status }}
+    <div class="status-badge {{ getStatusClass(plan.isActive) }}">
+      <i class="fa-solid fa-circle"></i>
+      {{ statusText }}
     </div>
   </div>
 
   <!-- Card Content -->
   <div class="card-content">
-    <div class="dates-info">
-      <div class="date-item">
-        <span class="date-label">Start:</span>
-        <span class="date-value">{{ formatDate(plan.startDate) }}</span>
+    <!-- Plan Details -->
+    <div class="plan-details-section">
+      <div class="detail-item">
+        <i class="fa-solid fa-calendar-alt"></i>
+        <div class="detail-content">
+          <span class="detail-label">Duration</span>
+          <span class="detail-value">{{ plan.durationWeeks }} {{ plan.durationWeeks === 1 ? 'Week' : 'Weeks' }}</span>
+        </div>
       </div>
-      <div class="date-item">
-        <span class="date-label">End:</span>
-        <span class="date-value">{{ formatDate(plan.endDate) }}</span>
+      <div class="detail-item">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <div class="detail-content">
+          <span class="detail-label">Daily Calories</span>
+          <span class="detail-value">{{ round(totalCalories / max(plan.weeklyPlan.length || 1, 1)) }} cal</span>
+        </div>
+      </div>
+      <div class="detail-item">
+        <i class="fa-solid fa-utensils"></i>
+        <div class="detail-content">
+          <span class="detail-label">Total Meals</span>
+          <span class="detail-value">{{ totalMeals }} meals</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Date Range -->
+    <div class="date-range-section">
+      <div class="date-info">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>{{ formatDate(plan.startDate) }} - {{ formatDate(plan.endDate) }}</span>
       </div>
     </div>
 
@@ -31,16 +60,16 @@
     <div class="progress-section">
       <div class="progress-header">
         <span class="progress-label">Progress</span>
-        <span class="progress-value">{{ plan.progress.completionRate }}%</span>
+        <span class="progress-value">{{ round((completedDays / max(plan.weeklyPlan.length || 1, 1)) * 100) }}%</span>
       </div>
       <div class="progress-bar">
         <div 
-          class="progress-fill {{ getProgressClass(plan.progress.completionRate) }}"
-          [style.width.%]="plan.progress.completionRate"
+          class="progress-fill {{ getProgressClass((completedDays / max(plan.weeklyPlan.length || 1, 1)) * 100) }}"
+          [style.width.%]="(completedDays / max(plan.weeklyPlan.length || 1, 1)) * 100"
         ></div>
       </div>
       <div class="progress-details">
-        <span class="days-completed">{{ plan.progress.completedDays }}/{{ plan.progress.totalDays }} days</span>
+        <span class="days-completed">{{ completedDays }}/{{ plan.weeklyPlan.length || 0 }} days completed</span>
       </div>
     </div>
   </div>
@@ -52,16 +81,9 @@
       [class.active]="isExpanded && expandedType === 'details'"
       (click)="onViewDetailsClick()"
     >
-      <i class="fa-solid fa-info-circle"></i>
+      <i class="fa-solid fa-utensils"></i>
       View Details
-    </button>
-    <button 
-      class="action-btn progress-btn"
-      [class.active]="isExpanded && expandedType === 'progress'"
-      (click)="onViewProgressClick()"
-    >
-      <i class="fa-solid fa-chart-line"></i>
-      View Progress
     </button>
   </div>
 </div>
+}

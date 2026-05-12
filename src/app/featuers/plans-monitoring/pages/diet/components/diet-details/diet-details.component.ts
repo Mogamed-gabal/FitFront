@@ -17,7 +17,14 @@ export class DietDetailsComponent {
   }
 
   protected getDayPlan(day: string): any {
-    return this.plan?.weeklyPlan?.[day] || null;
+    if (!this.plan?.weeklyPlan) return null;
+    const weeklyPlan = this.plan.weeklyPlan as any[];
+    for (let i = 0; i < weeklyPlan.length; i++) {
+      if (weeklyPlan[i].dayName === day) {
+        return weeklyPlan[i];
+      }
+    }
+    return null;
   }
 
   protected formatCalories(calories: number): string {

@@ -1,0 +1,658 @@
+// Diet Details Modal Component
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 12px;
+  width: 70%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: scaleIn 0.3s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+// Modal Header
+.modal-header {
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+
+  .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+      transform: scale(1.1);
+    }
+
+    i {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+  }
+
+  .plan-basic-info {
+    .plan-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #2c3e50;
+      margin: 0 0 16px 0;
+      line-height: 1.2;
+      word-wrap: break-word;
+    }
+
+    .plan-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        color: #495057;
+
+        i {
+          font-size: 0.75rem;
+          color: #007bff;
+        }
+
+        .status-badge {
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-weight: 600;
+          font-size: 0.75rem;
+
+          &.active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+          }
+
+          &:not(.active) {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+          }
+        }
+      }
+    }
+
+    .date-range {
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin-bottom: 12px;
+    }
+  }
+}
+
+// Days Tabs
+.days-tabs {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
+
+  .tabs-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 0 24px;
+
+    .day-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      min-width: 100px;
+
+      &:hover {
+        background: rgba(0, 123, 255, 0.05);
+      }
+
+      &.active {
+        border-bottom-color: #007bff;
+        background: rgba(0, 123, 255, 0.1);
+
+        .day-name {
+          color: #007bff;
+          font-weight: 700;
+        }
+      }
+
+      .day-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 4px;
+      }
+
+      .day-status {
+        font-size: 0.75rem;
+        color: #6c757d;
+      }
+    }
+  }
+}
+
+// Day Details
+.day-details {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+
+  .day-header {
+    margin-bottom: 20px;
+
+    .day-info {
+      .day-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0 0 12px 0;
+      }
+
+      .day-progress {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .progress-bar {
+          flex: 1;
+          height: 6px;
+          background: rgba(0, 0, 0, 0.1);
+          border-radius: 3px;
+          overflow: hidden;
+
+          .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+          }
+        }
+
+        .progress-text {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #007bff;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  // Nutrition Summary
+  .nutrition-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: rgba(0, 123, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+
+    .nutrition-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+
+      i {
+        font-size: 1.25rem;
+        color: #007bff;
+        margin-bottom: 8px;
+      }
+
+      .nutrition-value {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 4px;
+      }
+
+      .nutrition-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  // Meals Grid
+  .meals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+
+    .meal-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      transition: all 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      &.completed {
+        background: rgba(40, 167, 69, 0.05);
+        border-color: rgba(40, 167, 69, 0.2);
+      }
+
+      .meal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+
+        .meal-main-info {
+          flex: 1;
+
+          .meal-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+
+            i {
+              font-size: 1rem;
+              color: #007bff;
+            }
+
+            .meal-name {
+              font-size: 1rem;
+              font-weight: 600;
+              color: #2c3e50;
+              margin: 0;
+            }
+          }
+
+          .meal-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+
+            .calories-tag {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              padding: 4px 8px;
+              background: rgba(255, 193, 7, 0.1);
+              color: #856404;
+              border-radius: 6px;
+              font-size: 0.75rem;
+              font-weight: 500;
+
+              i {
+                font-size: 0.625rem;
+              }
+            }
+
+            .completed-badge {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              padding: 4px 8px;
+              background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+              color: white;
+              border-radius: 6px;
+              font-size: 0.75rem;
+              font-weight: 600;
+
+              i {
+                font-size: 0.625rem;
+              }
+            }
+          }
+        }
+
+        .meal-expand-icon {
+          i {
+            font-size: 0.875rem;
+            color: #6c757d;
+            transition: transform 0.2s ease;
+
+            &.rotated {
+              transform: rotate(180deg);
+            }
+          }
+        }
+      }
+
+      .meal-basic {
+        margin-bottom: 8px;
+
+        .info-row {
+          display: flex;
+          gap: 16px;
+
+          .info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            i {
+              font-size: 0.75rem;
+              color: #007bff;
+            }
+
+            span {
+              font-size: 0.875rem;
+              color: #495057;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+
+      .food-items {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding-top: 12px;
+        margin-top: 12px;
+
+        .food-items-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 12px;
+
+          i {
+            font-size: 0.875rem;
+            color: #007bff;
+          }
+
+          span {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #2c3e50;
+          }
+        }
+
+        .food-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          padding: 8px 12px;
+          background: rgba(0, 0, 0, 0.02);
+          border-radius: 8px;
+          margin-bottom: 8px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .food-info {
+            flex: 1;
+
+            .food-name {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: #2c3e50;
+              margin: 0 0 4px 0;
+            }
+
+            .food-nutrition {
+              display: flex;
+              gap: 8px;
+
+              .nutrition-item {
+                font-size: 0.75rem;
+                color: #6c757d;
+                background: rgba(0, 0, 0, 0.05);
+                padding: 2px 6px;
+                border-radius: 4px;
+              }
+            }
+          }
+
+          .food-source {
+            .source-tag {
+              font-size: 0.625rem;
+              color: #6c757d;
+              background: rgba(108, 117, 125, 0.1);
+              padding: 2px 6px;
+              border-radius: 4px;
+              text-transform: uppercase;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .modal-container {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: 20px;
+
+    .plan-basic-info {
+      .plan-title {
+        font-size: 1.5rem;
+      }
+
+      .plan-meta {
+        .meta-item {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
+  .days-tabs {
+    .tabs-container {
+      padding: 0 20px;
+
+      .day-tab {
+        padding: 12px 16px;
+        min-width: 90px;
+
+        .day-name {
+          font-size: 0.8rem;
+        }
+
+        .day-status {
+          font-size: 0.7rem;
+        }
+      }
+    }
+  }
+
+  .day-details {
+    padding: 20px;
+
+    .nutrition-summary {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .meals-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+
+      .meal-card {
+        padding: 14px;
+
+        .meal-header {
+          .meal-main-info {
+            .meal-type {
+              .meal-name {
+                font-size: 0.95rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header {
+    padding: 16px;
+
+    .plan-basic-info {
+      .plan-title {
+        font-size: 1.25rem;
+      }
+
+      .plan-meta {
+        .meta-item {
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+
+  .days-tabs {
+    .tabs-container {
+      padding: 0 16px;
+
+      .day-tab {
+        padding: 10px 12px;
+        min-width: 80px;
+
+        .day-name {
+          font-size: 0.75rem;
+        }
+
+        .day-status {
+          font-size: 0.625rem;
+        }
+      }
+    }
+  }
+
+  .day-details {
+    padding: 16px;
+
+    .nutrition-summary {
+      grid-template-columns: 1fr;
+      gap: 8px;
+
+      .nutrition-item {
+        .nutrition-value {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .meals-grid {
+      .meal-card {
+        padding: 12px;
+
+        .meal-header {
+          .meal-main-info {
+            .meal-type {
+              .meal-name {
+                font-size: 0.875rem;
+              }
+
+              .meal-meta {
+                .calories-tag,
+                .completed-badge {
+                  font-size: 0.625rem;
+                }
+              }
+            }
+          }
+        }
+
+        .meal-basic {
+          .info-row {
+            flex-wrap: wrap;
+            gap: 12px;
+
+            .info-item {
+              font-size: 0.8rem;
+            }
+          }
+        }
+
+        .food-items {
+          .food-item {
+            flex-direction: column;
+            gap: 8px;
+
+            .food-info {
+              .food-name {
+                font-size: 0.8rem;
+              }
+
+              .food-nutrition {
+                .nutrition-item {
+                  font-size: 0.625rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

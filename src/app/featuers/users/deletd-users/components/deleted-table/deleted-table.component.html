@@ -22,7 +22,7 @@
             </td>
             <td>{{ user.email }}</td>
             <td>
-              <span class="role-badge" [class]="getRoleClass(user.role)">
+              <span [class]="'role-badge ' + getRoleClass(user.role)">
                 <i class="fa-solid" [ngClass]="getRoleIcon(user.role)"></i>
                 {{ user.role }}
               </span>
@@ -63,7 +63,7 @@
             <div class="user-name">{{ user.name }}</div>
             <div class="user-email">{{ user.email }}</div>
           </div>
-          <span class="role-badge" [class]="getRoleClass(user.role)">
+          <span [class]="'role-badge ' + getRoleClass(user.role)">
             <i class="fa-solid" [ngClass]="getRoleIcon(user.role)"></i>
             {{ user.role }}
           </span>

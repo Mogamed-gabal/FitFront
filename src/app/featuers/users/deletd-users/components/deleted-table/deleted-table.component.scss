@@ -1,9 +1,9 @@
 .table-container {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
 }
 
 .table-responsive {
@@ -14,15 +14,15 @@
 .deleted-users-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--card-bg);
 
   th {
-    background: #f9fafb;
+    background: var(--bg-secondary);
     padding: 1rem;
     text-align: left;
     font-weight: 600;
-    color: #374151;
-    border-bottom: 2px solid #e5e7eb;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border-color);
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -30,20 +30,20 @@
 
   td {
     padding: 1rem;
-    border-bottom: 1px solid #f1f5f9;
-    color: #1f2937;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary);
     font-size: 0.9rem;
     vertical-align: middle;
   }
 
   tr:hover {
-    background: #f9fafb;
+    background: var(--card-hover);
   }
 
   .user-info {
     .user-name {
       font-weight: 600;
-      color: #1f2937;
+      color: var(--text-primary);
     }
   }
 
@@ -127,7 +127,7 @@
   .empty-state {
     text-align: center;
     padding: 3rem 1rem;
-    color: #6b7280;
+    color: var(--text-muted);
 
     i {
       font-size: 3rem;
@@ -147,16 +147,16 @@
 }
 
 .user-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
 
   &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
   }
 
@@ -166,7 +166,7 @@
     align-items: flex-start;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border-color);
 
     .user-info {
       flex: 1;
@@ -174,13 +174,13 @@
       .user-name {
         font-size: 1rem;
         font-weight: 600;
-        color: #1f2937;
+        color: var(--text-primary);
         margin-bottom: 0.25rem;
       }
 
       .user-email {
         font-size: 0.875rem;
-        color: #6b7280;
+        color: var(--text-secondary);
         word-break: break-all;
       }
     }
@@ -207,11 +207,11 @@
 
       .label {
         font-weight: 600;
-        color: #374151;
+        color: var(--text-secondary);
       }
 
       .value {
-        color: #6b7280;
+        color: var(--text-primary);
         text-align: right;
         flex: 1;
         margin-left: 1rem;
@@ -241,16 +241,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
 
   p {
     margin: 0;
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 0.875rem;
 
     strong {
-      color: #1f2937;
+      color: var(--text-primary);
     }
   }
 
@@ -260,17 +260,17 @@
 
     button {
       padding: 0.5rem 1rem;
-      border: 1px solid #d1d5db;
+      border: 1px solid var(--border-color);
       border-radius: 6px;
-      background: white;
-      color: #374151;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
       font-size: 0.875rem;
       cursor: pointer;
       transition: all 0.2s ease;
 
       &:hover:not(:disabled) {
-        background: #f9fafb;
-        border-color: #9ca3af;
+        background: var(--card-hover);
+        border-color: var(--primary-color);
       }
 
       &:disabled {

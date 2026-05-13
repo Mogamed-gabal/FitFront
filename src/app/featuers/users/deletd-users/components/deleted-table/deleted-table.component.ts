@@ -17,7 +17,7 @@ export class DeletedTableComponent {
   @Output() pageChange = new EventEmitter<number>();
 
   protected getRoleClass(role: string): string {
-    return `role-${role}`;
+    return `role-${(role || '').toLowerCase()}`;
   }
 
   protected formatDate(dateString: string): string {

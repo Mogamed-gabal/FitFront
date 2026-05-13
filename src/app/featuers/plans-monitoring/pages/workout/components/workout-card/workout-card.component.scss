@@ -482,3 +482,170 @@
     }
   }
 }
+
+// Dark Mode Styles
+:global(body.dark-mode) .workout-card {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  border-color: #404040;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  &.expanded {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .card-header {
+    .plan-info {
+      .plan-name {
+        color: #ffffff;
+      }
+
+      .plan-meta {
+        .client-info,
+        .trainer-info {
+          color: #9ca3af;
+
+          .client-name,
+          .trainer-name {
+            color: #e5e7eb;
+          }
+        }
+      }
+    }
+  }
+
+  .card-content {
+    .description-section {
+      .description {
+        color: #9ca3af;
+      }
+    }
+
+    .plan-details {
+      .detail-item {
+        background: rgba(0, 123, 255, 0.1);
+        border-color: rgba(0, 123, 255, 0.2);
+
+        .detail-icon {
+          background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        }
+
+        .detail-content {
+          .detail-label {
+            color: #9ca3af;
+          }
+
+          .detail-value {
+            color: #e5e7eb;
+
+            &.difficulty-beginner {
+              color: #22c55e;
+            }
+
+            &.difficulty-intermediate {
+              color: #fbbf24;
+            }
+
+            &.difficulty-advanced {
+              color: #ef4444;
+            }
+          }
+        }
+      }
+    }
+
+    .weekly-preview {
+      .preview-header {
+        i {
+          color: #3b82f6;
+        }
+
+        .preview-title {
+          color: #ffffff;
+        }
+      }
+
+      .days-grid {
+        .day-item {
+          background: rgba(0, 0, 0, 0.2);
+          border-color: #404040;
+
+          &:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+          }
+
+          &.completed {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.3);
+          }
+
+          .day-name {
+            color: #e5e7eb;
+          }
+
+          .day-exercises {
+            color: #9ca3af;
+          }
+        }
+      }
+    }
+
+    .progress-section {
+      .progress-header {
+        .progress-label {
+          color: #e5e7eb;
+        }
+
+        .progress-value {
+          color: #3b82f6;
+        }
+      }
+
+      .progress-bar {
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .progress-details {
+        .sessions-completed {
+          color: #9ca3af;
+        }
+      }
+    }
+  }
+
+  .card-actions {
+    border-top-color: #404040;
+
+    .action-btn {
+      &.details-btn {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+
+        &:hover {
+          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        &.active {
+          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+      }
+
+      &.progress-btn {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+
+        &:hover {
+          background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        }
+
+        &.active {
+          background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+        }
+      }
+    }
+  }
+}

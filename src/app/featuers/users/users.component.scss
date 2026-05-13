@@ -1,19 +1,20 @@
 .users-page {
   display: grid;
   gap: 1rem;
+  color: var(--text-primary);
 }
 
 .users-header {
   h2 {
     margin: 0;
     font-size: 1.25rem;
-    color: #0f172a;
+    color: var(--text-primary);
     font-weight: 700;
   }
 
   p {
     margin: 0.35rem 0 0;
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 0.92rem;
   }
 }
@@ -25,30 +26,36 @@
 }
 
 .user-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-md);
   padding: 1.1rem;
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  color: inherit;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 
   &:hover {
     transform: translateY(-3px);
-    border-color: #c7d2fe;
-    box-shadow: 0 14px 30px rgba(99, 102, 241, 0.12);
+    border-color: var(--primary-color);
+    background: var(--card-hover);
+    box-shadow: var(--shadow-lg);
   }
 
   h3 {
     margin: 0.8rem 0 0.35rem;
-    color: #0f172a;
+    color: var(--text-primary);
     font-size: 1.02rem;
     font-weight: 700;
   }
 
   p {
     margin: 0;
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 0.9rem;
   }
 }
@@ -59,8 +66,8 @@
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: #eef2ff;
-  color: #3730a3;
+  background: var(--bg-tertiary);
+  color: var(--primary-color);
   font-size: 1rem;
 }
 
@@ -72,8 +79,8 @@
   height: 32px;
   min-width: 64px;
   border-radius: 8px;
-  background: #0f172a;
-  color: #fff;
+  background: var(--primary-color);
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.82rem;
 }

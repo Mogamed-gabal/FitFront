@@ -3,7 +3,8 @@
   --sidebar-collapsed-width: 88px;
   --navbar-height: 74px;
   min-height: 100vh;
-  background: var(--app-bg, #f3f6fb);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .layout-main {
@@ -41,4 +42,18 @@
   .admin-layout.sidebar-collapsed .layout-main {
     margin-left: 0;
   }
+}
+
+// Dark Mode Styles
+:global(body.dark-mode) .admin-layout {
+  --bg-secondary: #1a1a1a;
+  --text-primary: #ffffff;
+
+  .page-content {
+    background: #1a1a1a;
+  }
+}
+
+:global(body.dark-mode) .mobile-overlay {
+  background: rgba(0, 0, 0, 0.7);
 }

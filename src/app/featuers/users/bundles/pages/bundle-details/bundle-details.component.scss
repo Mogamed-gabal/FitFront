@@ -890,8 +890,8 @@
   }
 }
 
-// Dark mode support
-@media (prefers-color-scheme: dark) {
+// Dark mode (follows app toggle, not OS preference)
+:host-context(body.dark-mode) {
   .dialog-container {
     background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
     border-color: rgba(255, 255, 255, 0.1);

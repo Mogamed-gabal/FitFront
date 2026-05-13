@@ -1,8 +1,8 @@
 .table-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   animation: tableFade 0.35s ease;
 }
@@ -16,32 +16,34 @@ table {
   width: 100%;
   border-collapse: collapse;
   min-width: 700px;
+  background: var(--card-bg);
 }
 
 thead th {
-  background: #f8fafc;
-  color: #334155;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 0.95rem 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   text-align: left;
 }
 
 tbody td {
   padding: 0.95rem 1rem;
-  border-bottom: 1px solid #f1f5f9;
-  color: #0f172a;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
   font-size: 0.93rem;
 }
 
 tbody tr {
   transition: background-color 0.2s ease;
+  background: var(--card-bg);
 
   &:hover {
-    background: #f8fafc;
+    background: var(--card-hover);
   }
 }
 
@@ -80,7 +82,8 @@ tbody tr {
 }
 
 @keyframes pulseRed {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -121,13 +124,13 @@ tbody tr {
 }
 
 .view-btn {
-  border-color: #c7d2fe;
-  background: #eef2ff;
-  color: #3730a3;
+  border-color: var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--primary-color);
 
   &:hover {
-    background: #e0e7ff;
-    border-color: #a5b4fc;
+    background: var(--card-hover);
+    border-color: var(--primary-color);
   }
 }
 
@@ -166,7 +169,7 @@ tbody tr {
 
 .empty-state {
   text-align: center;
-  color: #64748b;
+  color: var(--text-muted);
   padding: 1.5rem 1rem;
 }
 
@@ -188,16 +191,16 @@ tbody tr {
   }
 
   .client-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    box-shadow: var(--shadow-sm);
     padding: 1rem;
     margin-bottom: 1rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
     transition: all 0.2s ease;
 
     &:hover {
-      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+      box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
 
@@ -207,7 +210,7 @@ tbody tr {
       align-items: flex-start;
       margin-bottom: 1rem;
       padding-bottom: 0.75rem;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid var(--border-color);
 
       .user-info {
         flex: 1;
@@ -215,13 +218,13 @@ tbody tr {
         .user-name {
           font-size: 1rem;
           font-weight: 600;
-          color: #0f172a;
+          color: var(--text-primary);
           margin-bottom: 0.25rem;
         }
 
         .user-email {
           font-size: 0.875rem;
-          color: #64748b;
+          color: var(--text-secondary);
           word-break: break-all;
         }
       }
@@ -248,11 +251,11 @@ tbody tr {
 
         .label {
           font-weight: 600;
-          color: #374151;
+          color: var(--text-secondary);
         }
 
         .value {
-          color: #64748b;
+          color: var(--text-primary);
         }
       }
     }
@@ -260,7 +263,7 @@ tbody tr {
     .card-footer {
       margin-top: 1rem;
       padding-top: 0.75rem;
-      border-top: 1px solid #f1f5f9;
+      border-top: 1px solid var(--border-color);
 
       .action-buttons {
         display: flex;
@@ -268,7 +271,10 @@ tbody tr {
         width: 100%;
         flex-wrap: wrap;
 
-        .view-btn, .block-btn, .unblock-btn, .delete-btn {
+        .view-btn,
+        .block-btn,
+        .unblock-btn,
+        .delete-btn {
           flex: 1;
           justify-content: center;
           padding: 0.625rem 1rem;

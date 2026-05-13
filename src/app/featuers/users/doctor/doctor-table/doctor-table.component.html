@@ -42,7 +42,7 @@
             <td>{{ doctor.phone }}</td>
             <td>{{ doctor.specialization }}</td>
             <td>
-              <span class="status-badge" [class]="doctor.status.toLowerCase()">{{ doctor.status }}</span>
+              <span [class]="'status-badge ' + doctor.status.toLowerCase()">{{ doctor.status }}</span>
             </td>
             <td>
               @if (doctor.isRecommended) {
@@ -123,7 +123,7 @@
             <div class="user-email">{{ doctor.email }}</div>
           </div>
           <div class="card-badges">
-            <span class="status-badge" [class]="doctor.status.toLowerCase()">{{ doctor.status }}</span>
+            <span [class]="'status-badge ' + doctor.status.toLowerCase()">{{ doctor.status }}</span>
             @if (doctor.isRecommended) {
               <span class="recommended-badge">Recommended ⭐</span>
             } @else {

@@ -489,3 +489,101 @@
     }
   }
 }
+
+// Dark Mode Styles
+:global(body.dark-mode) .diet-card {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  border-color: #404040;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  &::before {
+    background: linear-gradient(90deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+  }
+
+  &:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    border-color: #505050;
+  }
+
+  &.expanded {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+    border-color: #22c55e;
+  }
+}
+
+:global(body.dark-mode) .card-header {
+  .plan-info {
+    .plan-name {
+      color: #ffffff;
+    }
+
+    .plan-meta {
+      .client-info,
+      .nutritionist-info {
+        .client-name,
+        .nutritionist-name {
+          color: #e5e7eb;
+        }
+      }
+    }
+  }
+}
+
+:global(body.dark-mode) .card-content {
+  .plan-details-section {
+    .detail-item {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.2) 100%);
+      border-color: rgba(34, 197, 94, 0.3);
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.25) 100%);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      }
+
+      .detail-content {
+        .detail-label {
+          color: #9ca3af;
+        }
+
+        .detail-value {
+          color: #22c55e;
+        }
+      }
+    }
+  }
+
+  .date-range-section {
+    .date-info {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.15) 100%);
+      border-color: rgba(34, 197, 94, 0.25);
+
+      span {
+        color: #e5e7eb;
+      }
+    }
+  }
+
+  .progress-section {
+    .progress-header {
+      .progress-label {
+        color: #e5e7eb;
+      }
+
+      .progress-value {
+        color: #22c55e;
+      }
+    }
+
+    .progress-bar {
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-details {
+      .days-completed {
+        color: #9ca3af;
+        background: rgba(34, 197, 94, 0.1);
+      }
+    }
+  }
+}

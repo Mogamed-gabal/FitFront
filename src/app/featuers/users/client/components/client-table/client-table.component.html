@@ -16,7 +16,7 @@
             <td>{{ client.name }}</td>
             <td>{{ client.email }}</td>
             <td>
-              <span class="status-badge" [class]="client.status.toLowerCase()">{{ client.status }}</span>
+              <span [class]="'status-badge ' + client.status.toLowerCase()">{{ client.status }}</span>
             </td>
             <td>
               <div class="action-buttons">
@@ -62,7 +62,7 @@
             <div class="user-name">{{ client.name }}</div>
             <div class="user-email">{{ client.email }}</div>
           </div>
-          <span class="status-badge" [class]="client.status.toLowerCase()">{{ client.status }}</span>
+          <span [class]="'status-badge ' + client.status.toLowerCase()">{{ client.status }}</span>
         </div>
         
         <div class="card-body">

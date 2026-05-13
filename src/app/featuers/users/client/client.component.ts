@@ -182,7 +182,7 @@ export class ClientComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Navigate to blocked users page
-        this.router.navigate(['/users/deletd-users']);
+        this.router.navigate(['/users/blocked']);
       }
     });
   }

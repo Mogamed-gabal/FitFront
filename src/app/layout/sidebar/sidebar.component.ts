@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { ThemeService } from '../../core/services/theme/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,9 +12,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  readonly theme = inject(ThemeService);
+
   @Input() collapsed = false;
   @Input() mobileOpen = false;
   @Output() closeMobile = new EventEmitter<void>();
+
+  protected readonly isDarkMode = this.theme.isDarkMode;
 
   protected readonly menuItems = [
     { label: 'Dashboard', icon: 'fa-solid fa-chart-line', route: '/dashboard' },
@@ -27,5 +35,19 @@ export class SidebarComponent {
 
   protected closeSidebarOnMobile(): void {
     this.closeMobile.emit();
+  }
+
+  protected toggleDarkMode(): void {
+    this.theme.toggle();
+  }
+
+  protected onNavigateToSettings(): void {
+    this.router.navigateByUrl('/admin-settings');
+    this.closeSidebarOnMobile();
+  }
+
+  protected onLogout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 }

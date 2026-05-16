@@ -15,13 +15,13 @@
       <strong>{{ userName() }}</strong>
       <span>{{ userRole() }}</span>
     </div>
-    <button class="icon-btn" type="button" (click)="toggleDarkMode()">
+    <button class="icon-btn desktop-only" type="button" (click)="toggleDarkMode()">
       <i class="fa-solid" [class.fa-moon]="!theme.isDarkMode()" [class.fa-sun]="theme.isDarkMode()"></i>
     </button>
-        <button class="icon-btn" type="button" (click)="onNavigateToSettings()">
+        <button class="icon-btn desktop-only" type="button" (click)="onNavigateToSettings()">
       <i class="fa-solid fa-gear"></i>
     </button>
-    <button class="logout-btn" type="button" (click)="onLogout()">
+    <button class="logout-btn desktop-only" type="button" (click)="onLogout()">
       <i class="fa-solid fa-right-from-bracket"></i>
       <span>Logout</span>
     </button>

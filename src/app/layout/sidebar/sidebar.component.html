@@ -26,4 +26,20 @@
       <span *ngIf="!collapsed">{{ item.label }}</span>
     </a>
   </nav>
+
+  <!-- Mobile-only action buttons -->
+  <div class="sidebar-actions mobile-only">
+    <button class="action-btn" type="button" (click)="toggleDarkMode()">
+      <i class="fa-solid" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
+      <span>Dark Mode</span>
+    </button>
+    <button class="action-btn" type="button" (click)="onNavigateToSettings()">
+      <i class="fa-solid fa-gear"></i>
+      <span>Settings</span>
+    </button>
+    <button class="action-btn logout" type="button" (click)="onLogout()">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Logout</span>
+    </button>
+  </div>
 </aside>

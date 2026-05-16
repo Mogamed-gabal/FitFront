@@ -78,16 +78,6 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon total-messages">
-              <i class="fas fa-envelope"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-value">{{ stats().totalMessages }}</div>
-              <div class="stat-label">Total Messages</div>
-            </div>
-          </div>
-
-          <div class="stat-card">
             <div class="stat-icon online-users">
               <i class="fas fa-users"></i>
             </div>
@@ -150,7 +140,6 @@
             <div class="header-cell">Participants</div>
             <div class="header-cell">Status</div>
             <div class="header-cell">Last Activity</div>
-            <div class="header-cell">Messages</div>
           </div>
 
           @for (chat of chats(); track chat.chatId) {
@@ -182,9 +171,6 @@
                 <div class="last-activity">
                   {{ formatTimestamp(chat.updatedAt) }}
                 </div>
-              </div>
-              <div class="table-cell">
-                <div class="message-count">{{ chat.messageCount }}</div>
               </div>
             </div>
           }

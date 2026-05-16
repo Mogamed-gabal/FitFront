@@ -13,7 +13,6 @@ interface DashboardStats {
   totalChats: number;
   activeChats: number;
   closedChats: number;
-  totalMessages: number;
   onlineUsers: number;
   averageResponseTime: number;
 }
@@ -39,7 +38,6 @@ export class ChatDashboardComponent implements OnInit {
     totalChats: 0,
     activeChats: 0,
     closedChats: 0,
-    totalMessages: 0,
     onlineUsers: 0,
     averageResponseTime: 0
   });
@@ -84,9 +82,9 @@ export class ChatDashboardComponent implements OnInit {
     this.chatService.getAllChats(this.currentFilters)
       .subscribe({
         next: (response: any) => {
-          this.chats.set(response.chats || []);
-          this.pagination.set(response.pagination || {});
-          this.calculateStats(response.chats || []);
+          this.chats.set(response.data?.chats || []);
+          this.pagination.set(response.data?.pagination || {});
+          this.calculateStats(response.data?.chats || []);
           this.isLoading.set(false);
         },
         error: (error) => {
@@ -101,15 +99,13 @@ export class ChatDashboardComponent implements OnInit {
     const totalChats = chats.length;
     const activeChats = chats.filter(chat => chat.status === 'ACTIVE').length;
     const closedChats = chats.filter(chat => chat.status === 'CLOSED').length;
-    const totalMessages = chats.reduce((sum, chat) => sum + chat.messageCount, 0);
-    const onlineUsers = chats.reduce((sum, chat) => 
-      sum + chat.participants.filter(p => p.isOnline).length, 0);
+    const onlineUsers = chats.reduce((sum, chat) =>
+      sum + chat.participants.filter(p => p.isActive).length, 0);
 
     this.stats.set({
       totalChats,
       activeChats,
       closedChats,
-      totalMessages,
       onlineUsers,
       averageResponseTime: 0 // Will be updated from API if available
     });

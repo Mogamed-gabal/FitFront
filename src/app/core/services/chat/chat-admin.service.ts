@@ -31,7 +31,7 @@ export class ChatAdminService {
 
   getMessages(chatId: string, params: GetMessagesParams = {}): Observable<GetMessagesResponse> {
     let httpParams = this.buildHttpParams(params);
-    
+
     return this.http.get<GetMessagesResponse>(`${this.baseUrl}/api/chat/admin/${chatId}/messages`, { params: httpParams });
   }
 

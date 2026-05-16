@@ -301,18 +301,24 @@
 
     // Table
     .chats-table {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+
       .table-header {
         display: grid;
-        grid-template-columns: 1fr 2fr 100px 150px 80px;
+        grid-template-columns: 1.5fr 2fr 100px 140px;
         gap: 16px;
-        padding: 16px 24px;
-        background: #f8f9fa;
-        border-bottom: 2px solid #e9ecef;
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-bottom: 1px solid #e2e8f0;
 
         .header-cell {
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 600;
-          color: #6c757d;
+          color: white;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
@@ -320,14 +326,18 @@
 
       .table-row {
         display: grid;
-        grid-template-columns: 1fr 2fr 100px 150px 80px;
+        grid-template-columns: 1.5fr 2fr 100px 140px;
         gap: 16px;
-        padding: 16px 24px;
-        border-bottom: 1px solid #f1f3f4;
-        transition: background-color 0.2s ease;
+        padding: 20px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
 
         &:hover {
-          background: #f8f9fa;
+          background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+          transform: translateX(4px);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
 
         &:last-child {
@@ -338,98 +348,103 @@
           display: flex;
           align-items: center;
           font-size: 14px;
-          color: #2c3e50;
+          color: #334155;
 
           .chat-title {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 500;
 
             .chat-type {
-              padding: 2px 6px;
-              background: #e9ecef;
-              border-radius: 4px;
-              font-size: 10px;
-              font-weight: 500;
-              color: #6c757d;
+              padding: 4px 10px;
+              border-radius: 8px;
+              font-size: 11px;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
             }
           }
 
           .participants {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             flex-wrap: wrap;
 
             .participant {
-              padding: 2px 6px;
-              border-radius: 4px;
-              font-size: 11px;
-              font-weight: 500;
+              padding: 4px 10px;
+              border-radius: 20px;
+              font-size: 12px;
+              font-weight: 600;
               white-space: nowrap;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
               &.role-doctor {
-                background: #e3f2fd;
-                color: #1976d2;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
               }
 
               &.role-client {
-                background: #f3e5f5;
-                color: #9c27b0;
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
               }
 
               &.role-admin {
-                background: #e8f5e8;
-                color: #4caf50;
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
               }
 
               &.role-supervisor {
-                background: #fff3e0;
-                color: #ff9800;
+                background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                color: white;
               }
             }
 
             .participant-more {
-              padding: 2px 6px;
-              background: #f8f9fa;
-              color: #6c757d;
-              border-radius: 4px;
-              font-size: 11px;
-              font-weight: 500;
+              padding: 4px 10px;
+              background: #f1f5f9;
+              color: #64748b;
+              border-radius: 20px;
+              font-size: 12px;
+              font-weight: 600;
             }
           }
 
           .status-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
 
             &.status-active {
-              background: #d4edda;
-              color: #155724;
+              background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+              color: white;
+              box-shadow: 0 2px 8px rgba(17, 153, 142, 0.3);
             }
 
             &.status-suspended {
-              background: #fff3cd;
-              color: #856404;
+              background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+              color: white;
+              box-shadow: 0 2px 8px rgba(240, 147, 251, 0.3);
             }
 
             &.status-closed {
-              background: #f8d7da;
-              color: #721c24;
+              background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+              color: white;
+              box-shadow: 0 2px 8px rgba(235, 51, 73, 0.3);
             }
           }
 
           .last-activity {
-            font-size: 12px;
-            color: #6c757d;
-          }
-
-          .message-count {
-            font-weight: 600;
-            color: #3498db;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
           }
         }
       }
@@ -575,6 +590,117 @@
 
     .stat-card {
       padding: 16px;
+    }
+  }
+}
+
+// Chat Window Modal
+.chat-window-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    height: 80vh;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+
+      h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e293b;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        color: #64748b;
+        transition: all 0.2s;
+        font-size: 1.25rem;
+
+        &:hover {
+          background: #f1f5f9;
+          color: #ef4444;
+        }
+      }
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+}
+
+// Dark Mode
+:host-context(body.dark-mode) .chat-dashboard {
+  background: #0f172a;
+}
+
+:host-context(body.dark-mode) .dashboard-header {
+  background: #1e293b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+  .page-title {
+    color: #f1f5f9;
+  }
+}
+
+:host-context(body.dark-mode) .modal-content {
+  background: #1e293b;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+  .modal-header {
+    background: #334155;
+    border-bottom-color: #475569;
+
+    h2 {
+      color: #f1f5f9;
+    }
+
+    .close-btn {
+      color: #94a3b8;
+
+      &:hover {
+        background: #475569;
+        color: #ef4444;
+      }
     }
   }
 }

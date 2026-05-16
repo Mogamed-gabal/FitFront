@@ -8,6 +8,7 @@ import { Chat, ChatStatistics } from '../../../../core/models/chat/chat.model';
 import { Message } from '../../../../core/models/chat/message.model';
 import { ChatFilters } from '../../../../core/models/chat/chat-filters.model';
 import { ChatsFiltersComponent } from '../../components/chats-filters/chats-filters.component';
+import { MessagesListComponent } from '../../components/messages-list/messages-list.component';
 
 interface DashboardStats {
   totalChats: number;
@@ -23,7 +24,8 @@ interface DashboardStats {
   imports: [
     CommonModule,
     FormsModule,
-    ChatsFiltersComponent
+    ChatsFiltersComponent,
+    MessagesListComponent
   ],
   templateUrl: './chat-dashboard.component.html',
   styleUrl: './chat-dashboard.component.scss'
@@ -44,6 +46,8 @@ export class ChatDashboardComponent implements OnInit {
   protected readonly isLoading = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly socketConnected = signal(false);
+  protected readonly selectedChatId = signal<string | null>(null);
+  protected readonly isChatWindowOpen = signal(false);
 
   // Pagination signals
   protected readonly pagination = signal<any>({});
@@ -161,27 +165,37 @@ export class ChatDashboardComponent implements OnInit {
     const total = this.totalPages();
     const current = this.currentPage();
     const delta = 2; // Show 2 pages before and after current
-    
+
     let start = Math.max(1, current - delta);
     let end = Math.min(total, current + delta);
-    
+
     // Always show first page if current is far from start
     if (start > 1) {
       start = 1;
       end = Math.min(total, 5); // Show first 5 pages
     }
-    
+
     // Show last pages if we're near the end
     if (end >= total - 1) {
       start = Math.max(1, total - 4);
       end = total;
     }
-    
+
     const pages: number[] = [];
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-    
+
     return pages;
+  }
+
+  protected openChatWindow(chatId: string): void {
+    this.selectedChatId.set(chatId);
+    this.isChatWindowOpen.set(true);
+  }
+
+  protected closeChatWindow(): void {
+    this.selectedChatId.set(null);
+    this.isChatWindowOpen.set(false);
   }
 }

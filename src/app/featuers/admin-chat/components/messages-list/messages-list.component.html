@@ -1,1 +1,83 @@
-<p>messages-list works!</p>
+<div class="messages-list">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading messages...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @else if (error()) {
+    <div class="error-state">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ error() }}</p>
+      <button class="btn btn-primary" (click)="onRetry()">
+        <i class="fas fa-redo"></i>
+        Retry
+      </button>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @else if (messages().length === 0) {
+    <div class="empty-state">
+      <i class="fas fa-comments"></i>
+      <p>No messages yet</p>
+    </div>
+  }
+
+  <!-- Messages -->
+  @else {
+    <div class="messages-container">
+      @for (message of messages(); track message.messageId) {
+        <div class="message-wrapper" [class.own-message]="isOwnMessage(message)">
+          <div class="message-bubble" [class]="getSenderClass(message.senderId.role)">
+            <!-- Message Header -->
+            <div class="message-header">
+              <span class="sender-name">{{ message.senderId.name }}</span>
+              <span class="message-time">{{ formatTimestamp(message.createdAt) }}</span>
+              @if (message.metadata.isEdited) {
+                <span class="edited-badge">(edited)</span>
+              }
+            </div>
+
+            <!-- Text Message -->
+            @if (message.type === 'TEXT' && !message.isDeleted) {
+              <div class="message-content">
+                {{ message.content }}
+              </div>
+            }
+
+            <!-- Image Message -->
+            @else if (message.type === 'IMAGE' && message.attachment) {
+              <div class="message-image">
+                <img [src]="getSafeUrl(message.attachment.url)" [alt]="message.attachment.filename" />
+                <div class="image-caption">{{ message.content }}</div>
+              </div>
+            }
+
+            <!-- Deleted Message -->
+            @else if (message.isDeleted) {
+              <div class="message-deleted">
+                <i class="fas fa-trash"></i>
+                <span>This message was deleted</span>
+              </div>
+            }
+
+            <!-- Message Footer -->
+            <div class="message-footer">
+              <span class="message-status">{{ message.status }}</span>
+              @if (message.readBy && message.readBy.length > 0) {
+                <span class="read-by">
+                  <i class="fas fa-check-double"></i>
+                  Read by {{ message.readBy.length }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

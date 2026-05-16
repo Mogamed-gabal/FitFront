@@ -484,7 +484,7 @@
 }
 
 // Dark Mode Styles
-:global(body.dark-mode) .workout-card {
+:host-context(body.dark-mode) .workout-card {
   background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
   border-color: #404040;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);

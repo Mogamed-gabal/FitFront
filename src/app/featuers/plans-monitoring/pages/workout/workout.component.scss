@@ -226,3 +226,69 @@
     }
   }
 }
+
+// Dark Mode Styles
+:host-context(body.dark-mode) .workout-page {
+  background: #1a1a1a;
+}
+
+:host-context(body.dark-mode) .workout-header {
+  .header-content {
+    .back-button {
+      background: #2d2d2d;
+      border-color: #404040;
+      color: #9ca3af;
+
+      &:hover {
+        background: #3a3a3a;
+        color: #e5e7eb;
+        border-color: #505050;
+      }
+    }
+
+    .header-info {
+      h1 {
+        color: #ffffff;
+      }
+
+      p {
+        color: #9ca3af;
+      }
+    }
+  }
+}
+
+:host-context(body.dark-mode) .loading-container {
+  .loading-spinner {
+    border-color: #404040;
+    border-top-color: #10b981;
+  }
+
+  p {
+    color: #9ca3af;
+  }
+}
+
+:host-context(body.dark-mode) .empty-state {
+  .empty-icon {
+    i {
+      color: #6b7280;
+    }
+  }
+
+  h3 {
+    color: #ffffff;
+  }
+
+  p {
+    color: #9ca3af;
+  }
+
+  .reset-filters-btn {
+    background: #10b981;
+
+    &:hover {
+      background: #059669;
+    }
+  }
+}

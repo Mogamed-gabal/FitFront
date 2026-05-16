@@ -515,3 +515,235 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Dark Mode Styles
+:host-context(body.dark-mode) .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+:host-context(body.dark-mode) .doctor-modal-card {
+  background: #2d2d2d;
+  border-color: #404040;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.5);
+
+  h3 {
+    color: #ffffff;
+  }
+}
+
+:host-context(body.dark-mode) .close-btn {
+  background: #3a3a3a;
+  border-color: #505050;
+  color: #ffffff;
+
+  &:hover {
+    background: #4a4a4a;
+    color: #ffffff;
+  }
+}
+
+:host-context(body.dark-mode) .profile-section {
+  border-bottom-color: #404040;
+}
+
+:host-context(body.dark-mode) .profile-picture {
+  border-color: #404040;
+}
+
+:host-context(body.dark-mode) .profile-placeholder {
+  background: #3a3a3a;
+  color: #9ca3af;
+}
+
+:host-context(body.dark-mode) .profile-info {
+  h4 {
+    color: #ffffff;
+  }
+
+  .specialization {
+    color: #818cf8;
+  }
+
+  .status {
+    background: rgba(99, 102, 241, 0.2);
+    color: #c7d2fe;
+  }
+}
+
+:host-context(body.dark-mode) .bio-section {
+  border-bottom-color: #404040;
+
+  h5 {
+    color: #ffffff;
+  }
+
+  p {
+    color: #e5e7eb;
+  }
+}
+
+:host-context(body.dark-mode) .contact-section {
+  border-bottom-color: #404040;
+}
+
+:host-context(body.dark-mode) .contact-item {
+  .label {
+    color: #9ca3af;
+  }
+
+  p {
+    color: #e5e7eb;
+  }
+}
+
+:host-context(body.dark-mode) .id-cards-section h5,
+:host-context(body.dark-mode) .certificates-section h5,
+:host-context(body.dark-mode) .packages-section h5 {
+  color: #ffffff;
+}
+
+:host-context(body.dark-mode) .id-card {
+  background: #2d2d2d;
+  border-color: #404040;
+
+  h6 {
+    color: #ffffff;
+  }
+
+  .id-card-image {
+    border-color: #404040;
+  }
+
+  .id-card-placeholder {
+    background: #3a3a3a;
+    border-color: #404040;
+
+    i {
+      color: #9ca3af;
+    }
+
+    p {
+      color: #e5e7eb;
+    }
+
+    small {
+      color: #9ca3af;
+    }
+  }
+
+  p {
+    color: #9ca3af;
+  }
+}
+
+:host-context(body.dark-mode) .certificate-card {
+  background: #3a3a3a;
+  border-color: #404040;
+
+  .cert-image {
+    border-color: #404040;
+  }
+
+  .cert-info {
+    h6 {
+      color: #ffffff;
+    }
+
+    p {
+      color: #9ca3af;
+    }
+  }
+
+  .cert-link {
+    background: rgba(99, 102, 241, 0.2);
+    color: #c7d2fe;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.3);
+    }
+  }
+}
+
+:host-context(body.dark-mode) .cert-details {
+  p {
+    color: #e5e7eb;
+
+    strong {
+      color: #ffffff;
+    }
+  }
+}
+
+:host-context(body.dark-mode) .package-card {
+  background: #2d2d2d;
+  border-color: #404040;
+
+  &:hover {
+    border-color: #818cf8;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  }
+}
+
+:host-context(body.dark-mode) .package-header {
+  h6 {
+    color: #ffffff;
+  }
+
+  .package-price {
+    color: #22c55e;
+  }
+}
+
+:host-context(body.dark-mode) .package-details {
+  p {
+    color: #e5e7eb;
+  }
+}
+
+:host-context(body.dark-mode) .package-meta {
+  .duration {
+    background: rgba(124, 58, 237, 0.2);
+    color: #a78bfa;
+  }
+
+  .status {
+    &.active {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+    }
+
+    &.inactive {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+  }
+}
+
+:host-context(body.dark-mode) .package-features {
+  border-top-color: #404040;
+
+  h7 {
+    color: #ffffff;
+  }
+
+  ul {
+    color: #e5e7eb;
+
+    li {
+      &::marker {
+        color: #818cf8;
+      }
+    }
+  }
+}
+
+:host-context(body.dark-mode) .modal-loader {
+  .spinner {
+    border-color: #404040;
+    border-top-color: #818cf8;
+  }
+
+  p {
+    color: #9ca3af;
+  }
+}

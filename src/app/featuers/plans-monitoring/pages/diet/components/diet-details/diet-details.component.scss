@@ -257,3 +257,104 @@
     }
   }
 }
+
+// Dark Mode Styles
+:host-context(body.dark-mode) .diet-details {
+  background: #2d2d2d;
+  border-color: #404040;
+}
+
+:host-context(body.dark-mode) .description-section {
+  h4 {
+    color: #ffffff;
+  }
+
+  p {
+    color: #9ca3af;
+  }
+}
+
+:host-context(body.dark-mode) .weekly-plan-section {
+  h4 {
+    color: #ffffff;
+  }
+}
+
+:host-context(body.dark-mode) .day-card {
+  background: #3a3a3a;
+  border-color: #404040;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  }
+
+  .day-header {
+    border-bottom-color: #404040;
+
+    h5 {
+      color: #ffffff;
+    }
+
+    .day-total-calories {
+      .calories {
+        color: #4ade80;
+        background: rgba(34, 197, 94, 0.2);
+      }
+    }
+  }
+
+  .meal-card {
+    background: #4a4a4a;
+    border-color: #404040;
+
+    .meal-header {
+      background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+      border-bottom-color: #404040;
+
+      i {
+        color: #9ca3af;
+      }
+
+      .meal-type {
+        color: #e5e7eb;
+      }
+
+      .meal-calories {
+        color: #4ade80;
+        background: rgba(34, 197, 94, 0.2);
+      }
+    }
+
+    .meal-content {
+      .food-name {
+        color: #ffffff;
+      }
+
+      .nutrition-info {
+        .nutrition-item {
+          color: #9ca3af;
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+  }
+
+  .no-plan {
+    color: #9ca3af;
+
+    i {
+      color: #6b7280;
+    }
+  }
+}
+
+:host-context(body.dark-mode) .no-data {
+  color: #9ca3af;
+  background: #3a3a3a;
+  border-color: #404040;
+
+  i {
+    color: #6b7280;
+  }
+}

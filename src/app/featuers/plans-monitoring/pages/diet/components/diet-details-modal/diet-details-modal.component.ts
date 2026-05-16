@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DietPlanMonitoring } from '../../../../../../core/models/admin/admin-monitoring.model';
 
@@ -7,7 +7,8 @@ import { DietPlanMonitoring } from '../../../../../../core/models/admin/admin-mo
   standalone: true,
   imports: [CommonModule],
   templateUrl: './diet-details-modal.component.html',
-  styleUrl: './diet-details-modal.component.scss'
+  styleUrl: './diet-details-modal.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class DietDetailsModalComponent {
   @Input() plan: DietPlanMonitoring | null = null;

@@ -656,3 +656,218 @@
     }
   }
 }
+
+// Dark Mode Styles
+body.dark-mode .modal-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .modal-container {
+  background: #2d2d2d;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .modal-header {
+  border-bottom-color: #404040;
+
+  .close-btn {
+    background: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    i {
+      color: #9ca3af;
+    }
+  }
+
+  .plan-basic-info {
+    .plan-title {
+      color: #ffffff;
+    }
+
+    .plan-meta {
+      .meta-item {
+        color: #e5e7eb;
+
+        i {
+          color: #818cf8;
+        }
+      }
+    }
+
+    .date-range {
+      color: #9ca3af;
+    }
+  }
+}
+
+body.dark-mode .days-tabs {
+  border-bottom-color: #404040;
+  background: #3a3a3a;
+
+  .tabs-container {
+    .day-tab {
+      &:hover {
+        background: rgba(99, 102, 241, 0.1);
+      }
+
+      &.active {
+        border-bottom-color: #818cf8;
+        background: rgba(99, 102, 241, 0.2);
+
+        .day-name {
+          color: #818cf8;
+        }
+      }
+
+      .day-name {
+        color: #e5e7eb;
+      }
+
+      .day-status {
+        color: #9ca3af;
+      }
+    }
+  }
+}
+
+body.dark-mode .day-details {
+  .day-header {
+    .day-info {
+      .day-name {
+        color: #ffffff;
+      }
+
+      .day-progress {
+        .progress-bar {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-text {
+          color: #818cf8;
+        }
+      }
+    }
+  }
+
+  .nutrition-summary {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.2);
+
+    .nutrition-item {
+      i {
+        color: #818cf8;
+      }
+
+      .nutrition-value {
+        color: #ffffff;
+      }
+
+      .nutrition-label {
+        color: #9ca3af;
+      }
+    }
+  }
+
+  .meals-grid {
+    .meal-card {
+      background: #3a3a3a;
+      border-color: #404040;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      }
+
+      &.completed {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.3);
+      }
+
+      .meal-header {
+        .meal-main-info {
+          .meal-type {
+            i {
+              color: #818cf8;
+            }
+
+            .meal-name {
+              color: #ffffff;
+            }
+          }
+
+          .meal-meta {
+            .calories-tag {
+              background: rgba(251, 191, 36, 0.2);
+              color: #fbbf24;
+            }
+
+            .completed-badge {
+              background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            }
+          }
+        }
+
+        .meal-expand-icon {
+          i {
+            color: #9ca3af;
+          }
+        }
+      }
+
+      .meal-basic {
+        .info-row {
+          .info-item {
+            i {
+              color: #818cf8;
+            }
+
+            span {
+              color: #e5e7eb;
+            }
+          }
+        }
+      }
+
+      .food-items {
+        border-top-color: #404040;
+
+        .food-items-header {
+          i {
+            color: #818cf8;
+          }
+
+          span {
+            color: #ffffff;
+          }
+        }
+
+        .food-item {
+          background: #4a4a4a;
+
+          .food-info {
+            .food-name {
+              color: #ffffff;
+            }
+
+            .food-nutrition {
+              .nutrition-item {
+                color: #9ca3af;
+                background: rgba(255, 255, 255, 0.1);
+              }
+            }
+          }
+
+          .food-source {
+            .source-tag {
+              color: #9ca3af;
+              background: rgba(255, 255, 255, 0.1);
+            }
+          }
+        }
+      }
+    }
+  }
+}

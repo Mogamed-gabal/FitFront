@@ -102,3 +102,38 @@
     padding: 1.5rem;
   }
 }
+
+// Dark Mode Styles
+:host-context(body.dark-mode) .plans-monitoring {
+  background: #1a1a1a;
+}
+
+:host-context(body.dark-mode) .selection-header {
+  h2 {
+    color: #ffffff;
+  }
+
+  p {
+    color: #9ca3af;
+  }
+}
+
+:host-context(body.dark-mode) .selection-card {
+  background: #2d2d2d;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    border-color: #10b981;
+  }
+
+  .selection-content {
+    h3 {
+      color: #ffffff;
+    }
+
+    p {
+      color: #9ca3af;
+    }
+  }
+}

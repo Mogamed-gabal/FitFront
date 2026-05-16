@@ -141,39 +141,29 @@
 }
 
 // Dark Mode Styles
-:global(body.dark-mode) .sidebar {
-  background: #1a1a1a;
-  border-right-color: #404040;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+:host-context(body.dark-mode) .sidebar {
+  background: var(--sidebar-bg, #2d2d2d);
+  border-color: var(--sidebar-border, #404040);
 
-  .brand {
-    border-bottom-color: #404040;
+  .logo-section {
+    border-bottom-color: var(--sidebar-border, #404040);
 
-    .brand-icon {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-    }
-
-    .brand-text {
-      h2 {
-        color: #ffffff;
-      }
-
-      span {
-        color: #9ca3af;
-      }
+    h2 {
+      color: var(--logo-color, #ffffff);
     }
   }
 
-  .menu-link {
-    color: #9ca3af;
+  .menu-section {
+    .menu-link {
+      color: var(--menu-color, #e5e7eb);
 
-    &:hover {
-      background: #2d2d2d;
-      color: #ffffff;
+      &:hover {
+        background: var(--menu-hover-bg, #3a3a3a);
+        color: var(--menu-hover-color, #ffffff);
 
-      i {
-        color: #3b82f6;
+        i {
+          color: #3b82f6;
+        }
       }
     }
   }

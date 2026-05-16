@@ -594,3 +594,205 @@
     }
   }
 }
+
+// Dark Mode Styles
+:host-context(body.dark-mode) .modal-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+:host-context(body.dark-mode) .modal-container {
+  background: #2d2d2d;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+:host-context(body.dark-mode) .modal-header {
+  border-bottom-color: #404040;
+
+  .close-btn {
+    background: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    i {
+      color: #9ca3af;
+    }
+  }
+
+  .plan-basic-info {
+    .plan-title {
+      color: #ffffff;
+    }
+
+    .plan-meta {
+      .meta-item {
+        color: #e5e7eb;
+
+        i {
+          color: #818cf8;
+        }
+
+        .difficulty-badge {
+          color: white;
+        }
+      }
+    }
+
+    .date-range {
+      color: #9ca3af;
+    }
+
+    .plan-description {
+      color: #e5e7eb;
+    }
+  }
+}
+
+:host-context(body.dark-mode) .days-tabs {
+  border-bottom-color: #404040;
+  background: #3a3a3a;
+
+  .tabs-container {
+    .day-tab {
+      &:hover {
+        background: rgba(99, 102, 241, 0.1);
+      }
+
+      &.active {
+        border-bottom-color: #818cf8;
+        background: rgba(99, 102, 241, 0.2);
+
+        .day-name {
+          color: #818cf8;
+        }
+      }
+
+      .day-name {
+        color: #e5e7eb;
+      }
+
+      .day-status {
+        color: #9ca3af;
+      }
+    }
+  }
+}
+
+:host-context(body.dark-mode) .day-details {
+  .day-header {
+    .day-info {
+      .daily-plan-name {
+        color: #ffffff;
+      }
+
+      .day-progress {
+        .progress-bar {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-text {
+          color: #818cf8;
+        }
+      }
+    }
+  }
+
+  .body-info {
+    .info-group {
+      .info-label {
+        color: #9ca3af;
+      }
+
+      .tags {
+        .tag {
+          &.body-part {
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            border-color: rgba(99, 102, 241, 0.3);
+          }
+
+          &.muscle {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.3);
+          }
+        }
+      }
+    }
+  }
+
+  .exercises-grid {
+    .exercise-card {
+      background: #3a3a3a;
+      border-color: #404040;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      }
+
+      &.completed {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.3);
+      }
+
+      .exercise-header {
+        .exercise-main-info {
+          .exercise-name {
+            color: #ffffff;
+          }
+
+          .exercise-meta {
+            .equipment-tag {
+              background: rgba(255, 255, 255, 0.1);
+              color: #9ca3af;
+            }
+
+            .completed-badge {
+              background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            }
+          }
+        }
+
+        .exercise-expand-icon {
+          i {
+            color: #9ca3af;
+          }
+        }
+      }
+
+      .exercise-basic {
+        .info-row {
+          .info-item {
+            i {
+              color: #818cf8;
+            }
+
+            span {
+              color: #e5e7eb;
+            }
+          }
+        }
+      }
+
+      .exercise-instructions {
+        border-top-color: #404040;
+
+        .instructions-header {
+          i {
+            color: #818cf8;
+          }
+
+          span {
+            color: #ffffff;
+          }
+        }
+
+        .instructions-text {
+          color: #e5e7eb;
+        }
+      }
+    }
+  }
+}

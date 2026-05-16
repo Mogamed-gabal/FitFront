@@ -31,11 +31,12 @@
   @else {
     <div class="messages-container">
       @for (message of messages(); track message.messageId) {
-        <div class="message-wrapper" [class.own-message]="isOwnMessage(message)">
+        <div class="message-wrapper" [class.doctor-message]="isDoctorMessage(message)" [class.client-message]="isClientMessage(message)" [class.admin-message]="isAdminMessage(message)">
           <div class="message-bubble" [class]="getSenderClass(message.senderId.role)">
             <!-- Message Header -->
             <div class="message-header">
               <span class="sender-name">{{ message.senderId.name }}</span>
+              <span class="sender-role">{{ message.senderId.role }}</span>
               <span class="message-time">{{ formatTimestamp(message.createdAt) }}</span>
               @if (message.metadata.isEdited) {
                 <span class="edited-badge">(edited)</span>

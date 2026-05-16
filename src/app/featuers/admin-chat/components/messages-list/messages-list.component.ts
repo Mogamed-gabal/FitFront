@@ -63,8 +63,15 @@ export class MessagesListComponent implements OnInit {
     }
   }
 
-  protected isOwnMessage(message: Message): boolean {
-    // Check if the message is from the current user (admin)
+  protected isDoctorMessage(message: Message): boolean {
+    return message.senderId.role === 'doctor';
+  }
+
+  protected isClientMessage(message: Message): boolean {
+    return message.senderId.role === 'client';
+  }
+
+  protected isAdminMessage(message: Message): boolean {
     return message.senderId.role === 'admin';
   }
 

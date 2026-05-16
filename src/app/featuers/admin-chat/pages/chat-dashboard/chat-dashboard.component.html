@@ -217,7 +217,6 @@
   <!-- Chat Window Modal -->
   @if (isChatWindowOpen() && selectedChatId()) {
     <div class="chat-window-modal">
-      <div class="modal-backdrop" (click)="closeChatWindow()"></div>
       <div class="modal-content">
         <div class="modal-header">
           <h2>Chat: {{ selectedChatId() }}</h2>
